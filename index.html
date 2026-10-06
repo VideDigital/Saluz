@@ -33,7 +33,6 @@
 
       <div class="header-actions">
         <button type="button" data-search-trigger>Buscar</button>
-        <button type="button">Entrar</button>
         <button type="button" class="bag">Sacola <span>0</span></button>
       </div>
     </div>
@@ -340,15 +339,23 @@
     </div>
   </footer>
 
-  <dialog class="search-dialog" data-search-dialog>
-    <form method="dialog">
+  <dialog class="search-dialog" data-search-dialog aria-label="Busca">
+    <div class="search-panel">
       <div class="search-head">
         <span>BUSCAR NA SALUZ</span>
-        <button value="close" aria-label="Fechar">×</button>
+        <button type="button" aria-label="Fechar busca" data-search-close>×</button>
       </div>
-      <input type="search" placeholder="O que você procura?" autofocus>
-      <p>A busca será conectada ao catálogo real quando os produtos forem definidos.</p>
-    </form>
+
+      <div class="search-field">
+        <label class="sr-only" for="site-search">O que você procura?</label>
+        <input id="site-search" type="search" placeholder="O que você procura?" autocomplete="off" data-search-input>
+        <span aria-hidden="true">⌕</span>
+      </div>
+
+      <div class="search-results" data-search-results aria-live="polite">
+        <p class="search-hint">Experimente buscar por “viagem”, “presente”, “nécessaire” ou “organização”.</p>
+      </div>
+    </div>
   </dialog>
 </body>
 </html>
