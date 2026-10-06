@@ -6,54 +6,32 @@ const searchDialog = document.querySelector("[data-search-dialog]");
 const newsletter = document.querySelector("[data-newsletter]");
 const year = document.querySelector("[data-year]");
 
-const detailCopy = {
-  "01": "Forma e função pensadas para conviver sem esforço.",
-  "02": "Pequenas decisões visuais que tornam o uso mais agradável.",
-  "03": "Detalhes que ajudam a organizar sem transformar a rotina em tarefa."
-};
+if (year) year.textContent = new Date().getFullYear();
 
-year.textContent = new Date().getFullYear();
-
-window.addEventListener("scroll", () => {
-  header.classList.toggle("is-scrolled", window.scrollY > 8);
-}, { passive: true });
-
-menuToggle.addEventListener("click", () => {
-  const isOpen = menuToggle.getAttribute("aria-expanded") === "true";
-  menuToggle.setAttribute("aria-expanded", String(!isOpen));
-  mobileNav.classList.toggle("is-open", !isOpen);
-  document.body.classList.toggle("menu-open", !isOpen);
+menuToggle?.addEventListener("click", () => {
+  const open = menuToggle.getAttribute("aria-expanded") === "true";
+  menuToggle.setAttribute("aria-expanded", String(!open));
+  mobileNav?.classList.toggle("is-open", !open);
+  document.body.classList.toggle("menu-open", !open);
 });
 
-mobileNav.querySelectorAll("a").forEach((link) => {
+mobileNav?.querySelectorAll("a").forEach(link => {
   link.addEventListener("click", () => {
-    menuToggle.setAttribute("aria-expanded", "false");
+    menuToggle?.setAttribute("aria-expanded", "false");
     mobileNav.classList.remove("is-open");
     document.body.classList.remove("menu-open");
   });
 });
 
-searchTrigger?.addEventListener("click", () => {
-  searchDialog.showModal();
-});
+searchTrigger?.addEventListener("click", () => searchDialog?.showModal());
 
-document.querySelectorAll("[data-detail]").forEach((button) => {
-  button.addEventListener("click", () => {
-    const id = button.dataset.detail;
-    document.querySelectorAll("[data-detail]").forEach((item) => item.classList.remove("is-active"));
-    button.classList.add("is-active");
-    document.querySelector("[data-detail-number]").textContent = id;
-    document.querySelector("[data-detail-text]").textContent = detailCopy[id];
-  });
-});
-
-newsletter.addEventListener("submit", (event) => {
+newsletter?.addEventListener("submit", event => {
   event.preventDefault();
-  const message = document.querySelector("[data-form-message]");
-  message.textContent = "Cadastro demonstrativo — integração será conectada na etapa comercial.";
+  const message = newsletter.querySelector("[data-form-message]");
+  if (message) message.textContent = "Cadastro demonstrativo — integração será conectada depois.";
   newsletter.reset();
 });
 
-document.querySelectorAll('a[href="#"]').forEach((link) => {
-  link.addEventListener("click", (event) => event.preventDefault());
+document.querySelectorAll('a[href="#"]').forEach(link => {
+  link.addEventListener("click", event => event.preventDefault());
 });
