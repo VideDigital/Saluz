@@ -5,7 +5,6 @@ const searchDialog = document.querySelector("[data-search-dialog]");
 const searchClose = document.querySelector("[data-search-close]");
 const searchInput = document.querySelector("[data-search-input]");
 const searchResults = document.querySelector("[data-search-results]");
-const newsletter = document.querySelector("[data-newsletter]");
 const year = document.querySelector("[data-year]");
 
 if (year) year.textContent = new Date().getFullYear();
@@ -125,13 +124,6 @@ searchDialog?.addEventListener("cancel", event => {
   closeSearch();
 });
 
-newsletter?.addEventListener("submit", event => {
-  event.preventDefault();
-  const message = newsletter.querySelector("[data-form-message]");
-  if (message) {
-    message.textContent = "Cadastro demonstrativo — a integração de contatos ainda será configurada.";
-  }
-});
 
 document.querySelectorAll('a[href="#"]').forEach(link => {
   link.addEventListener("click", event => event.preventDefault());
