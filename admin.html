@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<title>SALUZ Admin — Gestão da loja</title>
+<meta name="theme-color" content="#51443b">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./admin.css">
+<script src="./admin.js" defer></script>
+</head>
+<body>
+<main>
+<section class="login" id="login-screen" aria-labelledby="login-title">
+  <div class="login-brand">SALUZ <span>✦</span></div>
+  <div class="login-card">
+    <span class="eyebrow">ACESSO RESTRITO</span>
+    <h1 id="login-title">Painel SALUZ</h1>
+    <p>Entre com uma conta administrativa autorizada para acompanhar produtos, pedidos e resultados.</p>
+    <form id="login-form">
+      <label>E-mail<input name="email" type="email" autocomplete="username" required></label>
+      <label>Senha<input name="password" type="password" autocomplete="current-password" required></label>
+      <button type="submit">Entrar no painel <span>↗</span></button>
+    </form>
+    <p class="message" id="login-message" role="status">Verificando ambiente...</p>
+    <a class="store-link" href="./loja.html">← Voltar à loja</a>
+  </div>
+</section>
+<section class="dashboard hidden" id="dashboard">
+  <aside class="sidebar">
+    <div class="sidebar-logo">SALUZ <span>✦</span><small>ADMINISTRAÇÃO</small></div>
+    <nav class="tabs" aria-label="Navegação administrativa">
+      <button class="selected" type="button" data-tab="orders">Pedidos <span>↗</span></button>
+      <button type="button" data-tab="products">Produtos <span>↗</span></button>
+      <button type="button" data-tab="reports">Relatórios <span>↗</span></button>
+    </nav>
+    <div class="sidebar-bottom"><a href="./loja.html" target="_blank" rel="noopener">Ver loja ↗</a><button id="logout" type="button">Sair</button></div>
+  </aside>
+  <div class="workspace">
+    <header class="workspace-head"><div><span class="eyebrow">BELEZA NOS DETALHES</span><h1 id="section-title">Pedidos</h1></div><span id="admin-notice">Área de gestão</span></header>
+    <p id="action-message" class="action-message" role="status"></p>
+    <section id="tab-orders" class="tab">
+      <div class="tab-toolbar"><p>Solicitações recebidas no checkout. Um pedido recebido <strong>não significa que foi pago</strong>.</p><button type="button" id="refresh-orders" class="outline">Atualizar pedidos</button></div>
+      <div id="orders" class="order-grid"><p>Carregando pedidos...</p></div>
+    </section>
+    <section id="tab-products" class="tab hidden">
+      <div class="tab-toolbar"><p>Cadastre itens reais, defina preço e variações e controle quais aparecem na loja.</p><button type="button" id="new-product" class="outline">+ Novo produto</button></div>
+      <div class="product-workspace">
+        <div id="admin-products" class="product-list"><p>Carregando catálogo...</p></div>
+        <form id="product-form" class="product-form">
+          <span class="eyebrow" id="product-form-label">NOVO PRODUTO</span>
+          <h2>Informações do produto</h2>
+          <input type="hidden" name="id">
+          <label>Nome<input name="name" required minlength="2" maxlength="140" placeholder="Nome real do produto"></label>
+          <label>Categoria<select name="category">
+            <option value="Nécessaires">Nécessaires</option><option value="Porta-joias">Porta-joias</option>
+            <option value="Organizadores de maquiagem">Organizadores de maquiagem</option>
+            <option value="Organizadores de bolsa">Organizadores de bolsa</option>
+            <option value="Acessórios de viagem">Acessórios de viagem</option>
+            <option value="Autocuidado">Autocuidado</option>
+            <option value="Acessórios femininos">Acessórios femininos</option>
+            <option value="Kits e presentes">Kits e presentes</option>
+            <option value="Maquiagem">Maquiagem (futura)</option>
+          </select></label>
+          <label>Preço (R$)<input name="price" type="number" required min="0" max="500000" step=".01" placeholder="0,00"></label>
+          <label>URL HTTPS da imagem<input name="image_url" type="url" placeholder="https://..."></label>
+          <label>Descrição<textarea name="description" rows="3" maxlength="2000"></textarea></label>
+          <label>Variações: uma por linha <small>Cor | Tamanho | Estoque</small>
+            <textarea name="variants" rows="5" placeholder="Branco | Único | 5&#10;Bege | Único | 7&#10;Preto | Único | 3"></textarea>
+          </label>
+          <label class="switch"><input type="checkbox" name="is_active"> Produto ativo na loja</label>
+          <p class="hint">O produto só poderá entrar na sacola quando tiver variação com estoque maior que zero.</p>
+          <button type="submit" class="primary">Salvar produto</button>
+        </form>
+      </div>
+    </section>
+    <section id="tab-reports" class="tab hidden">
+      <div class="tab-toolbar"><p>Visitas e cliques registrados apenas após o consentimento do visitante.</p>
+        <label>Período <select id="period"><option value="7">Últimos 7 dias</option><option value="30">Últimos 30 dias</option></select></label></div>
+      <div class="stats" id="stats"></div>
+      <div class="reports-chart"><div class="chart-title"><h2>Visitas por dia</h2><small>Visualizações de página consentidas</small></div><div id="daily-chart" class="daily-chart"></div></div>
+      <p class="hint">Visitas = visualizações de página; visitantes = sessões únicas, não pessoas identificadas. Bloqueadores, recusa de consentimento e acessos sem conexão podem reduzir os números.</p>
+    </section>
+  </div>
+</section>
+</main>
+</body>
+</html>
