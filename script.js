@@ -131,3 +131,10 @@ document.querySelectorAll('a[href="#"]').forEach(link => {
 // The official bag is on the new storefront; no faux checkout on this prototype.
 
 searchInput?.addEventListener("keydown", event => { if(event.key==='Enter'){const query=event.target.value.trim();if(query)window.location.href='./loja.html?q='+encodeURIComponent(query)+'#produtos';} });
+
+// The sacola badge on the homepage reflects selections kept on this device.
+try {
+ const item=JSON.parse(localStorage.getItem("saluz-bag-v1")||"[]");
+ const badge=document.querySelector(".header-actions .bag span");
+ if(badge&&Array.isArray(item))badge.textContent=String(item.reduce((total,line)=>total+Math.max(0,Number(line.quantity)||0),0));
+}catch{ /* Corrupted local bag should not block navigation. */ }
