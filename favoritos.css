@@ -45,3 +45,6 @@
 .favorites-missing{grid-column:1/-1;color:#51443B;font:500 14px/1.6 "DM Sans",sans-serif;padding:14px 18px;background:#f6eee8;border:1px solid #ddc8b9;margin:0}
 .product-page-favorite[hidden]{display:none!important}
 @media(max-width:560px){.product-heart{right:8px;top:8px;width:42px;height:42px}}
+
+.category-product{position:relative}
+.category-product .product-heart{z-index:5}
