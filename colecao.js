@@ -17,7 +17,7 @@ fetch("/api/products",{cache:"no-store"}).then(async response=>{
  empty.hidden=items.length>0;
  for(const p of items){
   const card=el("article","category-product"),link=el("a","category-product-photo"),copy=el("div","category-product-copy");
-  link.href="./loja.html?produto="+encodeURIComponent(p.id)+"#produtos";
+  link.href="./produto.html?id="+encodeURIComponent(p.id);
   link.setAttribute("aria-label","Ver "+p.name);
   const variant=(Array.isArray(p.variants)?p.variants:[]).find(v=>Number(v.stock)>0)||p.variants?.[0];
   const image=variant?.image_url||p.image_url;
