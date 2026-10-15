@@ -72,3 +72,9 @@
  .detail-content{padding:16px 0}.detail-content h2{font-size:34px}
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+/* Overriding the generic card button interaction for clickable product imagery */
+.product .product-image-button,.product .product-image-button:hover{display:block;width:100%;margin:0!important;padding:0!important;border:0!important;background:transparent!important;color:#51443B!important}
+.product-image-button:focus-visible{outline:2px solid #51443B;outline-offset:3px}
+.product-image-button img{transition:transform .22s ease}
+.product-image-button:hover img{transform:scale(1.025)}
