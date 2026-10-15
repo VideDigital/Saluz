@@ -20,4 +20,4 @@ jobs:
         with:
           node-version: '22'
       - name: Testes sem credenciais reais
-        run: node --test tests/smoke.test.mjs
+        run: node --test tests/*.test.mjs
