@@ -1,0 +1,71 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#f7f4ef"><title>Produto | SALUZ</title><meta name="description" content="Explore os produtos e suas variações na loja SALUZ."><link rel="icon" href="./favicon.svg" type="image/svg+xml"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet"><link rel="stylesheet" href="./loja.css"><link rel="stylesheet" href="./saluz-refinamento.css"><link rel="stylesheet" href="./saluz-shell.css"><link rel="stylesheet" href="./saluz-paginas.css"><link rel="stylesheet" href="./produto.css"><script src="./saluz-shell.js" defer></script><script src="./produto.js" defer></script></head><body><div class="commerce-top"><span>✦ SALUZ · Beleza nos detalhes</span><span>Atendimento de segunda a sexta, 8h às 19h</span></div>
+<header class="commerce-header">
+ <div class="commerce-primary">
+  <button class="commerce-menu-toggle" id="menu-toggle" type="button" aria-controls="loja-nav" aria-expanded="false" aria-label="Abrir menu">☰ <span>Menu</span></button>
+  <a class="commerce-brand" href="./index.html" aria-label="SALUZ — página inicial">SALUZ <span>✦</span></a>
+  <div class="commerce-actions"><a class="commerce-search" href="./loja.html#produtos">Buscar</a><a class="commerce-bag" href="./loja.html#sacola" aria-label="Ir para a sacola">Sacola <span class="commerce-count" data-bag-count>0</span></a></div>
+ </div>
+ <nav class="commerce-nav" id="loja-nav" aria-label="Navegação principal">
+  <a href="./index.html">Início</a>
+  <a href="./colecoes.html">Todas as coleções</a>
+  <details class="commerce-mega"><summary>Categorias <span aria-hidden="true">⌄</span></summary><div class="commerce-mega-panel">
+   <div><p class="commerce-overline">EXPLORE A SALUZ</p><h2>Cada detalhe conta.</h2><p>Encontre seus favoritos nas coleções.</p></div>
+   <div class="commerce-mega-links"><a href="./colecao-necessaires.html">Nécessaires</a><a href="./colecao-porta-joias.html">Porta-joias</a><a href="./colecao-organizadores-maquiagem.html">Organizadores de maquiagem</a><a href="./colecao-organizadores-bolsa.html">Organizadores de bolsa</a><a href="./colecao-acessorios-viagem.html">Acessórios de viagem</a><a href="./colecao-autocuidado.html">Autocuidado</a><a href="./colecao-acessorios-femininos.html">Acessórios femininos</a><a href="./colecao-kits-presentes.html">Kits e presentes</a></div>
+  </div></details>
+  <a href="./loja.html">Todos os produtos</a>
+  <a href="./sobre.html">A SALUZ</a>
+  <a href="./atendimento.html">Atendimento</a>
+ </nav>
+</header><main class="commerce-page product-page" id="conteudo">
+ <nav class="breadcrumbs" aria-label="Caminho">
+  <a href="./index.html">Início</a><span aria-hidden="true">/</span>
+  <a href="./colecoes.html">Coleções</a><span aria-hidden="true">/</span>
+  <a href="./colecoes.html" id="breadcrumb-category">Categoria</a><span aria-hidden="true">/</span>
+  <span id="breadcrumb-product">Produto</span>
+ </nav>
+ <div id="product-loading" class="product-loading" role="status">Carregando produto...</div>
+ <article id="product-panel" class="product-page-grid" hidden>
+  <div class="product-page-media">
+   <div class="product-page-photo" id="product-photo" aria-live="polite"></div>
+   <div class="product-page-thumbs" id="product-gallery-thumbs" aria-label="Outras fotos do produto"></div>
+  </div>
+  <div class="product-page-copy">
+   <span class="eyebrow" id="product-category">SALUZ / PRODUTO</span>
+   <h1 id="product-title"></h1>
+   <strong id="product-price" class="product-page-price"></strong>
+   <p id="product-description" class="product-page-description"></p>
+   <div id="sku-empty" class="product-page-status" hidden>Este produto ainda não possui opções disponíveis.</div>
+   <div id="sku-controls" class="product-page-controls">
+    <label for="sku-color">Cor</label><select id="sku-color"></select>
+    <label for="sku-size">Tamanho</label><select id="sku-size"></select>
+    <p id="sku-availability" class="product-page-status" role="status"></p>
+    <div class="product-page-quantity">
+      <span>Quantidade</span>
+      <div class="qty-control"><button type="button" id="sku-minus" aria-label="Diminuir quantidade">−</button><output id="sku-quantity">1</output><button type="button" id="sku-plus" aria-label="Aumentar quantidade">+</button></div>
+    </div>
+    <button id="sku-add" class="btn-dark product-page-add" type="button">Adicionar à sacola <span aria-hidden="true">↗</span></button>
+   </div>
+   <p id="product-feedback" class="product-page-feedback" role="status" aria-live="polite"></p>
+   <a id="sku-open-bag" href="./loja.html#sacola" class="product-page-go-bag" hidden>Ver minha sacola ↗</a>
+   <button id="product-share" class="product-page-share" type="button">Compartilhar produto ↗</button>
+   <p class="product-page-disclaimer">O envio de pedidos e os pagamentos permanecem desativados enquanto a SALUZ conclui a implantação da loja.</p>
+  </div>
+ </article>
+ <section class="commerce-next">
+  <h2>Continue explorando</h2>
+  <p>Conheça as outras coleções e encontre detalhes para acompanhar sua rotina.</p>
+  <a class="btn-dark" href="./colecoes.html">Explorar coleções ↗</a>
+ </section>
+</main><footer class="commerce-footer">
+ <div class="commerce-footer-inner">
+  <section class="commerce-footer-brand"><a href="./index.html">SALUZ ✦</a><p>Beleza nos detalhes.</p><p>Organização, autocuidado, acessórios e presentes.</p></section>
+  <section><h2>Coleções</h2>
+   <a href="./colecoes.html">Todas as coleções</a><a href="./colecao-necessaires.html">Nécessaires</a><a href="./colecao-porta-joias.html">Porta-joias</a><a href="./colecao-kits-presentes.html">Kits e presentes</a>
+  </section>
+  <section><h2>Informações</h2>
+   <a href="./sobre.html">Sobre a SALUZ</a><a href="./como-comprar.html">Como comprar</a><a href="./atendimento.html">Atendimento</a><a href="./privacidade.html">Privacidade</a>
+  </section>
+  <section><h2>Fale conosco</h2><a href="mailto:anny.csalustiano@gmail.com">anny.csalustiano@gmail.com</a><p>Segunda a sexta, das 8h às 19h</p><p>Pedidos online em preparação.</p></section>
+ </div>
+ <div class="commerce-footer-end"><span>© <span data-commerce-year>2026</span> SALUZ</span><span>Site em implantação · compras ainda não habilitadas</span></div>
+</footer></body></html>
