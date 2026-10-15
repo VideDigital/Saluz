@@ -94,3 +94,9 @@
 .product-body .product-image-button{margin-top:0!important}
 @media(max-width:720px){.product-body .product-page-link{font-size:13px;min-height:46px;padding:10px 7px}}
 @media(prefers-reduced-motion:reduce){.product-body .product-page-link{transition:none}}
+
+.catalog-pagination{text-align:center;padding:30px 12px 18px}
+.catalog-pagination [hidden]{display:none!important}
+.catalog-pagination button{min-height:47px;padding:12px 25px;cursor:pointer;background:#51443B;color:#fffdfb;border:1px solid #51443B;font:700 15px/1.5 "DM Sans",sans-serif}
+.catalog-pagination button:disabled{opacity:.55;cursor:wait}
+.catalog-pagination p{margin:10px 0;font:500 14px/1.5 "DM Sans",sans-serif;color:#51443B}
