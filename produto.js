@@ -88,8 +88,32 @@ function render(p){
  byId("sku-empty").hidden=!!variations().length;
  updateSelection();
 }
+function showDesignPreview(){
+  // Protótipo visual sem catálogo, preço, fotos ou estoque inventados.
+  render({
+    id:"preview",
+    name:"Modelo de página do produto",
+    category:"Coleções",
+    description:"Aqui aparecerão a descrição real, as imagens, as cores e os tamanhos cadastrados pela SALUZ.",
+    price_cents:0,
+    image_url:"",
+    variants:[{color:"A definir",size:"A definir",stock:0,image_url:""}]
+  });
+  byId("product-category").textContent="SALUZ / PRÉVIA VISUAL";
+  byId("product-price").textContent="Preço a definir";
+  byId("sku-availability").textContent="As opções aparecerão após o cadastro dos produtos.";
+  byId("sku-add").disabled=true;
+  byId("sku-minus").disabled=true;
+  byId("sku-plus").disabled=true;
+  byId("sku-color").disabled=true;
+  byId("sku-size").disabled=true;
+  byId("product-share").hidden=true;
+  byId("product-feedback").textContent="Esta é somente uma prévia do layout. Nenhum produto real está cadastrado nesta página.";
+}
 async function load(){
- const id=new URLSearchParams(location.search).get("id");
+ const params=new URLSearchParams(location.search);
+ if(params.get("preview")==="1"){showDesignPreview();return;}
+ const id=params.get("id");
  if(!id||!uuid.test(id)){byId("product-loading").textContent="Produto não encontrado.";return;}
  try{
   const res=await fetch("/api/products",{cache:"no-store"});
