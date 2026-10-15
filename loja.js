@@ -90,7 +90,10 @@ function productCard(p){
     image.append(node("span","product-status","Indisponível"));
     const noStock=node("button","","Indisponível");noStock.disabled=true;b.append(noStock);
   }
-  const more=node("button","","Ver detalhes");more.type="button";more.className="view-details";more.onclick=()=>showProductDetails(p);b.append(more);
+  const more=node("a","view-details product-page-link","Ver página do produto ↗");
+  more.href="./produto.html?id="+encodeURIComponent(p.id);
+  more.setAttribute("aria-label","Abrir página de "+p.name);
+  b.append(more);
   card.append(b);return card;
 }
 function renderProducts(){
