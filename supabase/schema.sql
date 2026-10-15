@@ -64,6 +64,10 @@ alter table public.saluz_orders enable row level security;
 alter table public.saluz_events enable row level security;
 revoke all on public.saluz_admins, public.saluz_products, public.saluz_orders, public.saluz_events from anon, authenticated;
 revoke all on sequence public.saluz_events_id_seq from anon, authenticated;
+-- Autorizar somente a função backend com service_role, não visitantes.
+grant usage on schema public to service_role;
+grant all privileges on public.saluz_admins, public.saluz_products, public.saluz_orders, public.saluz_events to service_role;
+grant usage, select on sequence public.saluz_events_id_seq to service_role;
 
 -- Apenas Workers autenticados e autorizados usam service_role.
 -- Cadastrar administradora somente após criar usuário em Auth > Users:
