@@ -18,3 +18,56 @@
 .upload-preview{display:flex;align-items:center;gap:14px}
 .product-row{align-items:center}
 @media(max-width:680px){.variant-row{grid-template-columns:1fr}.product-row{align-items:start;flex-direction:column}.product-row-actions{width:100%}.product-row-actions button{flex:1}}
+
+/* SALUZ Admin — Cadastro gerenciável, legível e confortável no celular */
+#product-list-panel{padding:24px;min-width:0}
+.product-list-header h2{margin:0;font:400 28px/1.2 "DM Serif Display",Georgia,serif;color:#51443B}
+.product-list-header p{font-size:14px;line-height:1.6;color:#625247;margin:9px 0 18px}
+.product-tools{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:12px;border-bottom:1px solid #ddcfc3;padding-bottom:18px}
+.product-tools label{font-size:14px;font-weight:600;line-height:1.5;color:#51443B;min-width:0}
+.product-tools input,.product-tools select{font-size:15px;min-height:47px;padding:11px 12px;color:#51443B}
+.product-items{padding-top:4px}
+.product-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:19px 0}
+.product-row-details{display:flex;align-items:center;gap:13px;min-width:0;flex:1}
+.product-list-image{display:grid;place-items:center;width:65px;min-width:65px;height:78px;overflow:hidden;background:#f0e5dc;border:1px solid #e6d7ca;color:#b18f7b;font:400 32px/1 Georgia,serif}
+.product-list-image img{width:100%;height:100%;object-fit:cover}
+.product-row-info{min-width:0}
+.product-row-info strong{display:block;font-size:15px;line-height:1.4;word-break:break-word}
+.product-row-info small{display:block;font-size:13px;line-height:1.5;color:#625247;margin-top:5px}
+.product-row-badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+.product-badge{display:inline-flex;align-items:center;padding:5px 8px;border:1px solid #dac7b8;background:#f6f0eb;color:#51443B;font-size:12px;font-weight:700;line-height:1.35}
+.product-badge.public{background:#e7e3db;border-color:#a6a08e}
+.product-badge.warning{background:#f8e9de;border-color:#d4a98e}
+.product-row-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.product-row-actions button{white-space:nowrap;min-height:42px;font-size:13px;padding:10px 13px}
+.product-preview{margin:9px 0;padding:20px;background:#f2e8df;border:1px solid #d8c7b8}
+.product-preview>.eyebrow{display:block;margin-bottom:15px}
+.preview-content{display:flex;align-items:center;gap:16px}
+.preview-photo{width:98px;min-width:98px;aspect-ratio:4/5;overflow:hidden;display:grid;place-items:center;background:#e3d3c6;font:400 34px Georgia,serif;color:#a3846d}
+.preview-photo img{width:100%;height:100%;object-fit:cover}
+.preview-copy{display:flex;flex-direction:column;gap:6px;min-width:0}
+.preview-copy strong{font-size:16px;line-height:1.45;overflow-wrap:anywhere}
+.preview-copy>span:nth-child(2){font-size:19px;font-weight:700}
+.preview-copy small{font-size:13px;line-height:1.5;color:#625247}
+.preview-visibility{font-size:12px;font-weight:700;line-height:1.4;color:#51443B}
+.preview-visibility.public{color:#3d4d3d}
+body:has(.dashboard) .workspace p,body:has(.dashboard) .workspace label,body:has(.dashboard) .workspace .hint{line-height:1.6}
+body:has(.dashboard) .workspace input,body:has(.dashboard) .workspace textarea,body:has(.dashboard) .workspace select{font-size:16px}
+body:has(.dashboard) .workspace .eyebrow{font-size:13px}
+body:has(.dashboard) .workspace .product-list small{font-size:13px}
+@media(max-width:1100px){.product-row{align-items:flex-start;flex-direction:column}.product-row-actions{width:100%}.product-row-actions button{flex:1}}
+@media(max-width:680px){
+ #product-list-panel{padding:18px}
+ .product-tools{grid-template-columns:1fr;gap:12px}
+ .product-row{padding:18px 0}
+ .product-row-details{align-items:flex-start}
+ .product-row-actions{gap:8px}
+ .product-list-image{width:60px;min-width:60px;height:76px}
+ .product-row-info strong{font-size:15px}
+ .preview-photo{width:75px;min-width:75px}
+ .preview-content{gap:12px}
+ .preview-copy strong{font-size:15px}
+ .product-preview{padding:15px}
+ .sidebar-bottom{display:flex!important;flex-direction:row;gap:25px}
+ .workspace{padding-bottom:65px}
+}
