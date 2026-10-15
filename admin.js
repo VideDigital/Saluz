@@ -112,6 +112,7 @@ function productMatches(p){
   const mode=$("product-filter").value;
   if(q&&!(p.name+" "+p.category).toLocaleLowerCase("pt-BR").includes(q))return false;
   if(mode==="active"&&!p.is_active)return false;
+  if(mode==="featured"&&!(p.is_active&&p.is_featured))return false;
   if(mode==="inactive"&&p.is_active)return false;
   if(mode==="out"&&productStock(p)>0)return false;
   return true;
@@ -136,6 +137,7 @@ function renderProductList(){
   const head=text("strong",p.name),meta=text("small",fmt(p.price_cents)+" · "+p.category);
   const badges=text("div",undefined,"product-row-badges");
   badges.append(text("span",p.is_active?"Visível na loja":"Oculto",p.is_active?"product-badge public":"product-badge"));
+  if(p.is_featured)badges.append(text("span",p.is_active?"✦ Destaque na Home":"✦ Destaque aguardando ativação","product-badge"));
   const units=productStock(p);
   badges.append(text("span",units?units+" unidade(s)":"Sem estoque",units?"product-badge":"product-badge warning"));
   body.append(head,meta,badges);summary.append(imgWrap,body);
@@ -152,6 +154,19 @@ function renderProductList(){
       message(p.is_active?"Produto ocultado da loja.":"Produto publicado na loja.");
     }catch(e){message(e.message);toggle.disabled=false;}
   };
+  const featured=text("button",p.is_featured?"Remover destaque":"✦ Destacar",p.is_featured?"outline":"visibility");
+  featured.type="button";
+  featured.setAttribute("aria-label",(p.is_featured?"Remover destaque de ":"Destacar na Home: ")+p.name);
+  featured.onclick=async()=>{
+    featured.disabled=true;
+    try{
+      if(!p.is_featured&&!p.is_active)throw new Error("Ative o produto antes de destacá-lo na Home.");
+      await api("admin/products/"+p.id,{method:"PATCH",body:JSON.stringify({...p,is_featured:!p.is_featured})});
+      message("Configuração de destaque atualizada.");
+      await loadProducts();
+    }catch(e){message(e.message);featured.disabled=false;}
+  };
+  actions.append(featured);
   const btn=text("button","Editar","outline");btn.type="button";btn.onclick=()=>editProduct(p);
   actions.append(toggle,btn);row.append(summary,actions);root.append(row);
  }
@@ -166,7 +181,7 @@ function updateProductPreview(){
  const rows=[...$("variant-rows").children];
  const units=rows.reduce((n,row)=>n+(Number(row.querySelector('[data-field="stock"]')?.value)||0),0);
  $("preview-variants").textContent=rows.length+" variação(ões) · "+Math.max(0,units)+" unidade(s) cadastrada(s)";
- $("preview-visibility").textContent=f.elements.is_active.checked?"Marcado para exibir no site":"Oculto até publicar";
+ $("preview-visibility").textContent=f.elements.is_active.checked?(f.elements.is_featured.checked?"Visível na loja e marcado como destaque":"Marcado para exibir no site"):"Oculto até publicar";
  $("preview-visibility").classList.toggle("public",f.elements.is_active.checked);
  const source=f.elements.image_url.value.trim()||rows.find(row=>row.querySelector('[data-field="image"]')?.value)?.querySelector('[data-field="image"]').value||"";
  if(/^https:\/\//.test(source)){
@@ -183,6 +198,7 @@ function editProduct(p){
  f.elements.image_url.value=p.image_url||"";
  $("variant-rows").replaceChildren();(p.variants||[]).forEach(addVariantRow);
  f.elements.is_active.checked=!!p.is_active;
+ f.elements.is_featured.checked=!!p.is_featured;
  $("main-preview").replaceChildren();if(p.image_url){const img=document.createElement("img");img.src=p.image_url;img.alt="Imagem principal";$("main-preview").append(img);}
  $("product-form-label").textContent="EDITANDO PRODUTO";
  updateProductPreview();
@@ -209,7 +225,7 @@ $("product-form").addEventListener("submit",async e=>{
   if(!Number.isFinite(price))throw new Error("Preço inválido");
   const product={name:f.elements.name.value,category:f.elements.category.value,
    description:f.elements.description.value,image_url:f.elements.image_url.value,
-   price_cents:Math.round(price*100),is_active:f.elements.is_active.checked,variants};
+   price_cents:Math.round(price*100),is_active:f.elements.is_active.checked,is_featured:f.elements.is_featured.checked,variants};
   const id=f.elements.id.value;
   await api(id?"admin/products/"+id:"admin/products",{method:id?"PATCH":"POST",body:JSON.stringify(product)});
   message("Produto salvo. Confira as variações e o estoque antes de ativar.");
