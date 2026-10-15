@@ -4,7 +4,7 @@ const money = cents => (Number(cents||0)/100).toLocaleString("pt-BR",{style:"cur
 const knownCategories=["Nécessaires","Porta-joias","Organizadores de maquiagem","Organizadores de bolsa","Acessórios de viagem","Autocuidado","Acessórios femininos","Kits e presentes"];
 const urlParams=new URLSearchParams(location.search);
 const requestedCategory=urlParams.get("categoria")||"all";
-let products=[],bag=[],activeCategory=knownCategories.includes(requestedCategory)?requestedCategory:"all",available=false,checkoutEnabled=false;
+let products=[],bag=[],activeCategory=knownCategories.includes(requestedCategory)?requestedCategory:"all",available=false,checkoutEnabled=false,detailProduct=null,detailCount=1;
 try { bag=JSON.parse(localStorage.getItem("saluz-bag-v1")||"[]"); if (!Array.isArray(bag)) bag=[]; } catch {bag=[]}
 const emit=(type,label="")=>{
   if(localStorage.getItem("saluz-analytics")!=="accepted")return;
@@ -28,7 +28,19 @@ function analyticsConsent(){
   }
   notice.append(row);document.body.append(notice);
 }
-function saveBag(){localStorage.setItem("saluz-bag-v1",JSON.stringify(bag));$("cart-count").textContent=bag.reduce((sum,i)=>sum+i.quantity,0);}
+function saveBag(){localStorage.setItem("saluz-bag-v1",JSON.stringify(bag));const total=bag.reduce((sum,i)=>sum+Math.max(0,Number(i.quantity)||0),0);$("cart-count").textContent=total;$("mobile-cart-count").textContent=total;}
+function variationImage(p,v){return v?.image_url||p?.image_url||"";}
+function maxQuantity(v){return Math.min(10,Math.max(0,Number(v?.stock)||0));}
+function addToBag(p,v,quantity=1){
+ if(!p||!v||maxQuantity(v)===0)return {ok:false,message:"Variação indisponível."};
+ const key=p.id+"|"+(v.color||"")+"|"+(v.size||"");
+ const current=bag.find(i=>i.key===key);
+ const next=(current?Number(current.quantity):0)+quantity;
+ if(!Number.isInteger(next)||next<1||next>maxQuantity(v))return {ok:false,message:"Quantidade indisponível para esta variação."};
+ if(current)current.quantity=next;
+ else bag.push({key,id:p.id,color:v.color||"",size:v.size||"",quantity:next});
+ saveBag();renderBag();emit("add_to_cart",p.name);return {ok:true};
+}
 function node(tag,cls,text){const e=document.createElement(tag);if(cls)e.className=cls;if(text!==undefined)e.textContent=String(text);return e;}
 function variantsFor(p){return Array.isArray(p.variants)?p.variants.filter(v=>Number(v.stock)>0):[];}
 function renderFilters(){
