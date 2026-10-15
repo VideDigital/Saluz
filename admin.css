@@ -71,3 +71,21 @@ body:has(.dashboard) .workspace .product-list small{font-size:13px}
  .sidebar-bottom{display:flex!important;flex-direction:row;gap:25px}
  .workspace{padding-bottom:65px}
 }
+
+/* SALUZ — Orientação de cadastro e prevenção de publicação incompleta */
+.publish-check{padding:19px;margin:18px 0;background:#f9f5f1;border:1px solid #decfc3;color:#51443B}
+.publish-check-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px}
+.publish-check-head strong{font:700 16px/1.5 "DM Sans",sans-serif}
+.publish-check-head span{font:700 13px/1.5 "DM Sans",sans-serif;background:#f1e3d9;padding:6px 10px}
+.publish-check-head span.complete{background:#e2eadf;color:#364e36}
+.publish-check-list{list-style:none;margin:14px 0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 13px}
+.publish-check-list li{font:500 14px/1.55 "DM Sans",sans-serif;padding:9px 11px;border:1px solid #e3d5c9}
+.publish-check-list li.complete{background:#f0f5ed;color:#3c5039;border-color:#cad8c5}
+.publish-check-list li.incomplete{background:#fffdfb;color:#51443B}
+.publish-check-note{font:400 14px/1.6 "DM Sans",sans-serif;margin:13px 0 0}
+.product-form-footer{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-top:10px}
+.product-form-footer button{min-height:46px}
+.product-form-footer .primary:disabled{opacity:.5;cursor:wait}
+.product-form-footer [hidden]{display:none!important}
+.product-form-footer a{font:700 14px/1.5 "DM Sans",sans-serif;text-decoration:underline;text-underline-offset:4px;color:#51443B;padding:8px}
+@media(max-width:680px){.publish-check{padding:15px}.publish-check-list{grid-template-columns:1fr}.product-form-footer{align-items:stretch}.product-form-footer button{flex:1}.product-form-footer a{width:100%;text-align:center}}
