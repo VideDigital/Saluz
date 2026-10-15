@@ -88,6 +88,15 @@
   }
 
   document.querySelectorAll("[data-commerce-year]").forEach(el=>el.textContent=String(new Date().getFullYear()));
+  const refreshFavoritesCount=()=>{
+    const count=window.SaluzFavorites?.count()||0;
+    document.querySelectorAll("[data-favorites-count]").forEach(el=>el.textContent=String(count));
+  };
+  refreshFavoritesCount();
+  window.addEventListener("saluz:favorites",refreshFavoritesCount);
+  window.addEventListener("storage",event=>{
+    if(event.key==="saluz-favorites-v1"||event.key===null)refreshFavoritesCount();
+  });
   const refreshBagCount=()=>{
     let count=0;
     if(window.SaluzBag){
