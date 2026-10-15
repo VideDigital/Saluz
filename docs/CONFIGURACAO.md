@@ -10,6 +10,32 @@
 
 **Sequência do handoff do painel, quando a Anny autorizar o acesso:** configurar Secret no Cloudflare correto → implantar a compilação atual do repositório no projeto Direct Upload dela incluindo Functions → confirmar `/api/status` → autenticar com conta autorizada → cadastrar um produto oculto com imagens/variações reais → testar visualização da loja e seleção de destaque → aprovar com a Anny. **Não mudar CHECKOUT_ENABLED**.
 
+## Atualização de segurança e escala — 15/10/2026
+
+As melhorias das três fases estão no GitHub, mas **não foram implantadas automaticamente na Cloudflare da Anny**, que continua como projeto Direct Upload.
+
+### Credenciais necessárias antes de liberar o painel
+
+Na Cloudflare Pages correta (`saluz-loja`, conta SALUZ), configurar como *Secrets*, sem enviar por chat:
+
+- `SUPABASE_SERVICE_ROLE_KEY`: chave de serviço privada existente no Supabase SALUZ.
+- `LOGIN_RATE_SECRET`: **nova chave aleatória de pelo menos 32 caracteres**, exclusiva para o limitador do login; não reutilizar senhas, tokens ou a `service_role`.
+
+O backend só habilita o formulário de login se `LOGIN_RATE_SECRET` estiver configurada. A migração `supabase/migrations/20261015_login_limit.sql` foi aplicada ao projeto Supabase SALUZ. A API gera identificador HMAC a partir do IP informado pela infraestrutura, armazena apenas o hash e aplica **8 tentativas a cada 15 minutos por identificador**. Testar esta proteção no ambiente de homologação, incluindo cabeçalho de IP e múltiplos clientes. Organizar exclusão periódica de dados antigos do limitador, conforme comentário no SQL.
+
+### Mudanças de catálogo
+
+- `GET /api/products?page=1&limit=48`: carrega 1 a 48 produtos ativos por página e sinaliza `has_more`. Páginas posteriores usam `page=2`, etc. A vitrine e coleções exibem botão para carregar mais itens.
+- `GET /api/admin/products?page=1`: exige autenticação e lista produtos em páginas de 48, incluindo itens ocultos.
+- A sacola pode consultar de novo, com acesso público controlado, os produtos ativos cujos IDs já estavam salvos no navegador, mesmo que não estejam na primeira página.
+- `GET /api/status` informa **checkout desativado**. `POST /api/checkout` permanece bloqueado também no backend, mesmo se `CHECKOUT_ENABLED` for alterada por engano. **Não existe ainda reserva atômica, conciliação de pagamentos ou cálculo automático de frete.**
+
+### SEO e performance
+
+A página de produto atualiza título e descrição ao carregar dados reais; imagens do catálogo usam carregamento sob demanda e decodificação assíncrona onde implementados. Os metadados dinâmicos no navegador **não substituem SSR/pré-renderização para indexação**, nem constituem SEO completo. O `noindex` da prévia deve permanecer enquanto a SALUZ estiver em homologação.
+
+**Pendentes antes de tráfego comercial:** testar login, imagens e fluxo do painel na Cloudflare real; validar SEO em mecanismos de busca; limites por IP para eventos; políticas comerciais, backup/retensão de dados; checkout transacional e antifraude quando houver decisão comercial; privacidade e autorização da Anny.
+
 ## 0. Escopo atual (15/10/2026)
 
 Site personalizado, cadastro de produtos e variações, sacola, solicitação de pedido antes de pagamento, painel protegido para dados de clientes e métricas opt-in de visitas e cliques. **Nenhum pagamento ou cálculo de frete automático está integrado.** Pedido registrado != pagamento confirmado.
