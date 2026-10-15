@@ -11,6 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="./loja.css">
 <link rel="stylesheet" href="./saluz-refinamento.css">
+<link rel="stylesheet" href="./loja-melhorias.css">
 <script src="./loja.js" defer></script>
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
 </head>
@@ -19,8 +20,8 @@
 <div class="saluz-top"><span>✦ Beleza nos detalhes</span><span>Sua rotina, seus detalhes</span><span>Atendimento: dias úteis, 8h às 19h</span></div>
 <header class="nav">
   <a href="./index.html" class="logo" aria-label="SALUZ início">SALUZ <span>✦</span></a>
-  <nav aria-label="Principal"><a href="./index.html">Início</a><a href="#colecoes">Categorias</a><a href="#produtos">Produtos</a><a href="#atendimento">Atendimento</a></nav>
-  <button class="cart-toggle" type="button" id="cart-open" aria-label="Abrir sacola">Minha sacola <span class="count" id="cart-count">0</span></button>
+  <nav id="loja-nav" aria-label="Principal"><a href="./index.html">Início</a><a href="#colecoes">Categorias</a><a href="#produtos">Produtos</a><a href="#atendimento">Atendimento</a></nav>
+  <div class="nav-actions"><button class="menu-toggle" type="button" id="menu-toggle" aria-expanded="false" aria-controls="loja-nav" aria-label="Abrir menu de navegação"><span aria-hidden="true">☰</span> Menu</button><button class="cart-toggle" type="button" id="cart-open" aria-label="Abrir sacola de compras">Sacola <span class="count" id="cart-count">0</span></button></div>
 </header>
 <main>
   <section class="lead"><div class="lead-inner">
@@ -42,7 +43,7 @@
     <div class="section-head"><div><span class="eyebrow">SALUZ / PRODUTOS</span><h2>Explore a coleção</h2><p>Use os filtros e a busca para descobrir os produtos cadastrados.</p></div>
       <label class="search"><span>Buscar</span><input type="search" id="search" placeholder="Nome do produto..." autocomplete="off"></label></div>
     <div class="filters" id="filters"><button type="button" class="filter active" data-category="all">Todos</button></div>
-    <div class="catalog-meta"><p class="notice" id="catalog-status" role="status">Carregando catálogo...</p><span>Itens cadastrados pela SALUZ</span></div>
+    <div class="catalog-meta"><p class="notice" id="catalog-status" role="status">Carregando catálogo...</p><label class="catalog-sort">Ordenar por <select id="sort"><option value="newest">Novidades</option><option value="price-asc">Menor preço</option><option value="price-desc">Maior preço</option><option value="az">Nome A–Z</option></select></label></div>
     <div class="products" id="products" aria-live="polite"></div>
   </section>
   <section id="atendimento" class="contact"><div><span class="eyebrow">NÓS NOS IMPORTAMOS</span><h2>Alguma dúvida?</h2><p>Fale com a equipe SALUZ. Atendimento de segunda a sexta, das 8h às 19h.</p></div><a href="mailto:anny.csalustiano@gmail.com" id="email-link">anny.csalustiano@gmail.com ↗</a></section>
@@ -51,6 +52,7 @@
 <dialog id="cart-dialog" class="cart-dialog" aria-labelledby="cart-title">
   <div class="cart-header"><div><span class="eyebrow">SALUZ</span><h2 id="cart-title">Minha sacola</h2></div><button type="button" class="close" id="cart-close" aria-label="Fechar">×</button></div>
   <div id="cart-items" class="cart-items"></div>
+  <p id="cart-feedback" class="cart-feedback" role="status" aria-live="polite"></p>
   <div class="cart-total"><span>Subtotal dos produtos</span><strong id="cart-total">R$ 0,00</strong></div>
   <p class="small">Frete e disponibilidade serão confirmados antes do pagamento.</p>
   <button class="btn-dark wide" id="checkout-open" type="button">Continuar com meus dados</button>
@@ -83,13 +85,27 @@
   </form>
 </dialog>
 <dialog id="product-dialog" class="product-dialog" aria-labelledby="details-title">
- <div class="cart-header"><span class="eyebrow">SALUZ / DETALHES</span><button type="button" class="close" id="details-close" aria-label="Fechar">×</button></div>
- <div class="product-detail-image" id="details-image"></div>
- <div class="eyebrow" id="details-category"></div>
- <h2 id="details-title"></h2>
- <p id="details-description"></p>
- <strong id="details-price"></strong>
- <p class="small">Selecione cor e tamanho no catálogo para adicionar o produto à sacola.</p>
+ <div class="cart-header"><div><span class="eyebrow">SALUZ / DETALHES</span><p class="dialog-kicker">Escolha cada detalhe do seu produto.</p></div><button type="button" class="close" id="details-close" aria-label="Fechar">×</button></div>
+ <div class="detail-layout">
+  <div class="detail-gallery"><div class="product-detail-image" id="details-image"></div><div id="details-thumbs" class="detail-thumbs" aria-label="Fotos do produto"></div></div>
+  <div class="detail-content">
+   <div class="eyebrow" id="details-category"></div>
+   <h2 id="details-title"></h2>
+   <strong class="detail-price" id="details-price"></strong>
+   <p id="details-description"></p>
+   <div class="detail-options" id="detail-options">
+    <label for="details-color">Cor</label><select id="details-color"></select>
+    <label for="details-size">Tamanho</label><select id="details-size"></select>
+    <p id="details-stock" class="detail-stock" role="status"></p>
+    <div class="detail-quantity"><span>Quantidade</span><div class="qty-control"><button type="button" id="details-minus" aria-label="Diminuir quantidade">−</button><output id="details-quantity" aria-live="polite">1</output><button type="button" id="details-plus" aria-label="Aumentar quantidade">+</button></div></div>
+    <button class="btn-dark detail-add" id="details-add" type="button">Adicionar à sacola <span aria-hidden="true">↗</span></button>
+   </div>
+   <p id="details-feedback" class="detail-feedback" role="status"></p>
+   <button id="details-share" class="detail-share" type="button">Compartilhar este produto ↗</button>
+   <p class="detail-help">Frete e pagamento serão confirmados pela SALUZ antes da compra.</p>
+  </div>
+ </div>
 </dialog>
+<nav class="mobile-shop-nav" aria-label="Acesso rápido à loja"><a href="#colecoes">Coleções</a><a href="#produtos">Produtos</a><button id="mobile-cart-open" type="button">Sacola <span id="mobile-cart-count">0</span></button></nav>
 </body>
 </html>
