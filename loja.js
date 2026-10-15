@@ -5,7 +5,7 @@ const knownCategories=["Nécessaires","Porta-joias","Organizadores de maquiagem"
 const urlParams=new URLSearchParams(location.search);
 const requestedCategory=urlParams.get("categoria")||"all";
 let products=[],bag=[],activeCategory=knownCategories.includes(requestedCategory)?requestedCategory:"all",available=false,checkoutEnabled=false,detailProduct=null,detailCount=1;
-let catalogPage=0,catalogHasMore=false,catalogLoading=false;
+let catalogPage=0,catalogHasMore=false,catalogLoading=false,bagLookup=[];
 bag=window.SaluzBag.read();
 const emit=(type,label="")=>{
   if(localStorage.getItem("saluz-analytics")!=="accepted")return;
@@ -161,7 +161,7 @@ function renderProducts(){
     : (activeCategory!=="all" ? "A coleção "+activeCategory+" está em preparação. Os produtos serão exibidos quando o catálogo for ativado." : "O catálogo da SALUZ está em preparação. Os produtos reais aparecerão nesta vitrine.");
 }
 function findItem(i){
-  const product=products.find(p=>p.id===i.id);
+  const product=products.find(p=>p.id===i.id)||bagLookup.find(p=>p.id===i.id);
   const variation=product&&variantsFor(product).find(v=>(v.color||"")===i.color&&(v.size||"")===i.size);
   return product&&variation?{product,variation}:null;
 }
@@ -230,6 +230,16 @@ async function loadNextPage(){
  finally{catalogLoading=false;$("load-more").disabled=false;$("load-more").hidden=!catalogHasMore;}
 }
 $("load-more").onclick=loadNextPage;
+async function loadBagReferences(){
+ const ids=[...new Set(window.SaluzBag.read().map(line=>line.id))];
+ if(!ids.length){bagLookup=[];return;}
+ try{
+  const response=await fetch("/api/products/favorites?ids="+encodeURIComponent(ids.join(",")),{cache:"no-store"});
+  if(!response.ok)throw new Error("Dados indisponíveis");
+  const result=await response.json();
+  bagLookup=Array.isArray(result.products)?result.products:[];
+ }catch{bagLookup=[];}
+}
 async function loadStore(){
   checkoutEnabled=false;
   catalogLoading=true;
@@ -240,6 +250,7 @@ async function loadStore(){
     checkoutEnabled=settings.checkout_enabled===true;
     products=[];catalogPage=0;
     await fetchCatalogPage(1);
+    await loadBagReferences();
   }catch{available=false;checkoutEnabled=false;products=[];catalogHasMore=false;}
   finally{catalogLoading=false;}
   $("checkout-status").textContent=checkoutEnabled?"Solicitação sem pagamento online. A SALUZ entrará em contato para confirmar valores, frete e forma de pagamento.":"O cadastro de pedidos está desativado até concluirmos a infraestrutura, segurança e políticas da loja.";
@@ -247,8 +258,9 @@ async function loadStore(){
   renderFilters();renderProducts();renderBag();saveBag();
   const target=products.find(p=>p.id===urlParams.get("produto"));if(target)showProductDetails(target,false);
 }
-function syncBagFromOtherTab(){
+async function syncBagFromOtherTab(){
  bag=window.SaluzBag.read();
+ await loadBagReferences();
  const count=window.SaluzBag.count(bag);
  $("cart-count").textContent=count;
  $("mobile-cart-count").textContent=count;
