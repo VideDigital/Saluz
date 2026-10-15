@@ -7,6 +7,20 @@ const status=document.getElementById("category-status");
 const empty=document.getElementById("category-empty");
 const el=(name,cls,value)=>{const e=document.createElement(name);if(cls)e.className=cls;if(value!==undefined)e.textContent=String(value);return e};
 const brl=n=>(Number(n||0)/100).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+const syncHearts=()=>{
+  root.querySelectorAll("[data-favorite-product]").forEach(button=>{
+    const saved=window.SaluzFavorites.has(button.dataset.favoriteProduct);
+    button.textContent=saved?"♥":"♡";
+    button.classList.toggle("is-favorite",saved);
+    button.setAttribute("aria-pressed",String(saved));
+    button.setAttribute("aria-label",(saved?"Remover dos favoritos: ":"Salvar nos favoritos: ")+button.dataset.productName);
+  });
+};
+window.addEventListener("saluz:favorites",syncHearts);
+window.addEventListener("storage",event=>{
+  if(event.key==="saluz-favorites-v1"||event.key===null)syncHearts();
+});
+
 fetch("/api/products?category="+encodeURIComponent(chosen),{cache:"no-store"}).then(async response=>{
  if(!response.ok)throw new Error("Serviço temporariamente indisponível");
  return response.json();
@@ -24,8 +38,16 @@ fetch("/api/products?category="+encodeURIComponent(chosen),{cache:"no-store"}).t
   if(image){const img=el("img");img.src=image;img.alt=p.name;img.loading="lazy";link.append(img);}else link.append(el("span","category-product-placeholder","✦"));
   const title=el("h2","",p.name);copy.append(el("span","category-product-category",p.category),title,el("strong","category-product-price",brl(p.price_cents)));
   const buy=el("a","category-product-link","Ver produto e opções ↗");buy.href=link.href;copy.append(buy);
-  card.append(link,copy);root.append(card);
+  const heart=el("button","product-heart");
+  heart.type="button";heart.dataset.favoriteProduct=p.id;heart.dataset.productName=p.name;
+  heart.onclick=()=>{
+    const result=window.SaluzFavorites.toggle(p.id);
+    if(!result.ok){status.textContent=result.message;return;}
+    syncHearts();
+  };
+  card.append(link,copy,heart);root.append(card);
  }
+ syncHearts();
 }).catch(()=>{
  status.textContent="Catálogo temporariamente indisponível.";
  empty.hidden=false;
