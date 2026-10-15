@@ -175,6 +175,7 @@ function close(dialog){if(dialog.open)dialog.close();}
 $("year").textContent=new Date().getFullYear();
 $("search").value=urlParams.get("q")||"";
 $("search").addEventListener("input",renderProducts);
+$("sort").addEventListener("change",renderProducts);
 $("cart-open").onclick=()=>{renderBag();$("cart-dialog").showModal();};
 $("cart-close").onclick=()=>close($("cart-dialog"));
 $("checkout-close").onclick=()=>close($("checkout-dialog"));
