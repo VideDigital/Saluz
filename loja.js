@@ -274,3 +274,22 @@ $("product-dialog").addEventListener("close",()=>{
  detailProduct=null;const u=new URL(location.href);
  if(u.searchParams.has("produto")){u.searchParams.delete("produto");history.replaceState(null,"",u);}
 });
+$("details-color").onchange=()=>{fillDetailSizes();detailCount=1;renderDetailSelection();};
+$("details-size").onchange=()=>{detailCount=1;renderDetailSelection();};
+$("details-minus").onclick=()=>{detailCount=Math.max(1,detailCount-1);renderDetailSelection();};
+$("details-plus").onclick=()=>{detailCount=Math.min(maxQuantity(detailVariant()),detailCount+1);renderDetailSelection();};
+$("details-add").onclick=()=>{
+ const result=addToBag(detailProduct,detailVariant(),detailCount);
+ if(!result.ok){$("details-feedback").textContent=result.message;return;}
+ close($("product-dialog"));$("cart-dialog").showModal();
+};
+$("details-share").onclick=async()=>{
+ if(!detailProduct)return;
+ const url=new URL(location.href);url.searchParams.set("produto",detailProduct.id);url.hash="produtos";
+ try{
+  if(navigator.share)await navigator.share({title:detailProduct.name,url:url.href});
+  else if(navigator.clipboard){await navigator.clipboard.writeText(url.href);$("details-feedback").textContent="Link copiado.";}
+  else $("details-feedback").textContent="Link: "+url.href;
+ }catch(e){if(e.name!=="AbortError")$("details-feedback").textContent="Não foi possível compartilhar agora.";}
+};
+
