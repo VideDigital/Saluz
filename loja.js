@@ -57,7 +57,13 @@ function productCard(p){
       if(values.includes(old))size.value=old;
     };
     availableColors.forEach(c=>{const op=node("option","",c);op.value=c;color.append(op);});
-    fillSizes();color.onchange=fillSizes;
+    const swapPhoto=()=>{
+      const selected=inStock.find(v=>(v.color||"Única")===color.value&&(v.size||"Único")===size.value);
+      const url=selected?.image_url||p.image_url||"";
+      image.replaceChildren();image.classList.toggle("placeholder",!url);
+      if(url){const img=node("img");img.src=url;img.loading="lazy";img.alt=p.name+" na cor "+color.value+", tamanho "+size.value;img.onerror=()=>{img.remove();image.classList.add("placeholder");};image.append(img);}
+    };
+    fillSizes();color.onchange=()=>{fillSizes();swapPhoto();};size.onchange=swapPhoto;swapPhoto();
     color.setAttribute("aria-label","Cor");size.setAttribute("aria-label","Tamanho");
     opts.append(color,size);b.append(opts);
     const add=node("button","","Adicionar à sacola");
@@ -170,8 +176,9 @@ function showProductDetails(p){
  $("details-title").textContent=p.name;
  $("details-description").textContent=p.description||"Descrição a definir.";
  $("details-price").textContent=money(p.price_cents);
+ const first=variantsFor(p)[0];
  const image=$("details-image");image.replaceChildren();
- if(p.image_url){const img=document.createElement("img");img.alt="Imagem de "+p.name;img.src=p.image_url;image.append(img);}
+ if(first?.image_url||p.image_url){const img=document.createElement("img");img.alt="Imagem de "+p.name;img.src=first?.image_url||p.image_url;image.append(img);}
  else image.textContent="✦";
  $("product-dialog").showModal();emit("product_view",p.name);
 }
