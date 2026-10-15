@@ -262,7 +262,7 @@ export async function onRequest({request,env}) {
   }
   try {
     if (route[0]==="status" && request.method==="GET")
-      return output({configured:true,checkout_enabled:String(env.CHECKOUT_ENABLED)==="true"});
+      return output({configured:true,checkout_enabled:false,orders_locked:true});
     if (route[0]==="products" && request.method==="GET") {
       const columns="id,name,description,category,image_url,price_cents,variants";
       if(route[1]==="home" && route.length===2){
