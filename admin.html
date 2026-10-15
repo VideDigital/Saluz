@@ -67,11 +67,9 @@
             <option value="Maquiagem">Maquiagem (futura)</option>
           </select></label>
           <label>Preço (R$)<input name="price" type="number" required min="0" max="500000" step=".01" placeholder="0,00"></label>
-          <label>URL HTTPS da imagem<input name="image_url" type="url" placeholder="https://..."></label>
+          <label>Imagem principal do produto <input name="image_url" type="url" placeholder="https://... (opcional)"></label><label>Enviar foto principal <input type="file" id="main-photo" accept="image/jpeg,image/png,image/webp"></label><div id="main-preview" class="upload-preview"></div>
           <label>Descrição<textarea name="description" rows="3" maxlength="2000"></textarea></label>
-          <label>Variações: uma por linha <small>Cor | Tamanho | Estoque</small>
-            <textarea name="variants" rows="5" placeholder="Branco | Único | 5&#10;Bege | Único | 7&#10;Preto | Único | 3"></textarea>
-          </label>
+          <div class="variant-editor"><div class="tab-toolbar"><div><strong>Cores, tamanhos e fotografias</strong><p>Cada combinação pode ter sua própria foto e quantidade.</p></div><button type="button" class="outline" id="add-variant">+ Adicionar variação</button></div><div id="variant-rows" class="variant-rows"></div></div>
           <label class="switch"><input type="checkbox" name="is_active"> Produto ativo na loja</label>
           <p class="hint">O produto só poderá entrar na sacola quando tiver variação com estoque maior que zero.</p>
           <button type="submit" class="primary">Salvar produto</button>
