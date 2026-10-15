@@ -87,6 +87,19 @@
     }
   }
 
+  // A busca do menu leva diretamente ao campo de pesquisa da vitrine.
+  document.querySelectorAll(".commerce-search").forEach(link=>{
+    link.href="./loja.html?busca=1#produtos";
+    if(location.pathname.endsWith("/loja.html")){
+      link.addEventListener("click",event=>{
+        event.preventDefault();
+        const field=document.getElementById("search");
+        if(!field)return;
+        field.scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"center"});
+        field.focus({preventScroll:true});
+      });
+    }
+  });
   document.querySelectorAll("[data-commerce-year]").forEach(el=>el.textContent=String(new Date().getFullYear()));
   const refreshFavoritesCount=()=>{
     const count=window.SaluzFavorites?.count()||0;
