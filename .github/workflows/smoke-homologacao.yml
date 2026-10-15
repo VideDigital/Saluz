@@ -64,5 +64,29 @@ jobs:
           assert code==200 and "/api/products/home" in text
           print("Arquivos atuais da Home disponíveis.")
 
+          # Testes negativos: não utilizam conta real nem criam pedidos.
+          code,text=get("/api/auth/me")
+          print("Sessão anônima HTTP:",code)
+          assert code==200 and json.loads(text).get("admin") is False, "Sem sessão, o painel não pode autenticar"
+
+          from urllib.request import Request
+          def post(path,payload):
+              req=Request(BASE+path,data=json.dumps(payload).encode("utf-8"),
+                          headers={"User-Agent":"Saluz-CI-Homologacao/1.0","Content-Type":"application/json"},
+                          method="POST")
+              try:
+                  with urlopen(req,timeout=20) as res:
+                      return res.status
+              except HTTPError as ex:
+                  return ex.code
+
+          login_code=post("/api/auth/login",{"email":"verificacao@saluz.example.invalid","password":"senha-invalida-apenas-teste"})
+          print("Login fictício HTTP:",login_code)
+          assert login_code==401, "O teste de login fictício não retornou acesso negado; conferir integração de Auth e rate limit"
+
+          checkout_code=post("/api/checkout",{})
+          print("Checkout desabilitado HTTP:",checkout_code)
+          assert checkout_code==503, "Checkout não está bloqueado para operação comercial"
+
           print("Homologação pública aprovada, sem dados privados.")
           PY
