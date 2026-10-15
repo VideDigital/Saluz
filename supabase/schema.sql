@@ -74,3 +74,50 @@ comment on table public.saluz_orders is
 
 -- A hospedagem antiga GitHub Pages NÃO executa Pages Functions.
 -- CHECKOUT_ENABLED deve ficar false até: domínio, termos/privacidade, backups e testes seguros.
+
+
+-- Agregações para o painel. Não expor eventos individuais aos visitantes.
+create or replace function public.saluz_analytics(period_days integer default 7)
+returns jsonb
+language sql
+stable
+set search_path = public
+as $analytics$
+  with events_in_period as (
+    select event_type, session_id, event_label, created_at
+    from public.saluz_events
+    where created_at >= now() - (greatest(1,least(coalesce(period_days,7),30)) * interval '1 day')
+  ),
+  totals as (
+    select
+      count(*) filter (where event_type='page_view') as page_views,
+      count(distinct session_id) filter (where event_type='page_view') as visitors,
+      count(*) filter (where event_type='product_view') as product_views,
+      count(*) filter (where event_type='add_to_cart') as add_to_cart,
+      count(*) filter (where event_type='checkout_start') as checkout_starts,
+      count(*) filter (where event_type='checkout_submit') as checkout_submits,
+      count(*) filter (where event_type='contact_click') as contact_clicks
+    from events_in_period
+  ),
+  daily as (
+    select (created_at at time zone 'America/Sao_Paulo')::date as day,
+      count(*) filter (where event_type='page_view') as page_views,
+      count(*) filter (where event_type='add_to_cart') as add_to_cart,
+      count(*) filter (where event_type='contact_click') as contact_clicks
+    from events_in_period
+    group by 1 order by 1
+  ),
+  daily_list as (
+    select coalesce(jsonb_agg(jsonb_build_object(
+      'day',day,'page_views',page_views,'add_to_cart',add_to_cart,'contact_clicks',contact_clicks)
+      order by day), '[]'::jsonb) as stats from daily
+  )
+  select jsonb_build_object(
+    'page_views',t.page_views,'visitors',t.visitors,'product_views',t.product_views,
+    'add_to_cart',t.add_to_cart,'checkout_starts',t.checkout_starts,
+    'checkout_submits',t.checkout_submits,'contact_clicks',t.contact_clicks,
+    'daily',d.stats
+  ) from totals t cross join daily_list d;
+$analytics$;
+revoke all on function public.saluz_analytics(integer) from public, anon, authenticated;
+grant execute on function public.saluz_analytics(integer) to service_role;
