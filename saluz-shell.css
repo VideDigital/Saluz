@@ -227,3 +227,10 @@ body:has(.collections) .product .price{font-size:19px!important}
   :where(.category-card strong,.collection-tile strong,.product-info h3){font-size:16px!important}
   :where(.product-body button,.detail-add,.btn-dark,.button){font-size:14px!important}
 }
+
+/* Busca claramente acessível no menu mobile; cabeçalho desktop permanece enxuto. */
+.commerce-nav>.commerce-mobile-search{display:none}
+@media(max-width:930px){
+  .commerce-nav.is-open>.commerce-mobile-search{display:flex;align-items:center;font-weight:700;color:#51443B;background:#f4e8de;padding-left:13px;padding-right:13px;margin-top:6px}
+  .commerce-nav.is-open>.commerce-mobile-search:focus-visible{outline:2px solid #51443B;outline-offset:2px}
+}
