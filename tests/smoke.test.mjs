@@ -17,9 +17,9 @@ test('arquivos de navegação apontam para páginas/estilos/scripts reais',()=>{
   const html=readdirSync(root).filter(name=>name.endsWith('.html'));
   assert.ok(html.length>=17);
   for(const name of html){
-    const body=file(name),ids=[...body.matchAll(/\\bid="([^"]+)"/g)].map(m=>m[1]);
+    const body=file(name),ids=[...body.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]);
     assert.equal(ids.length,new Set(ids).size,name+' contém IDs repetidos');
-    for(const m of body.matchAll(/(?:src|href)="(\\.\\/[^"#?]+)(?:\\?[^"#]*)?(?:#[^"]*)?"/g)){
+    for(const m of body.matchAll(/(?:src|href)="(\.\/[^"#?]+)(?:\?[^"#]*)?(?:#[^"]*)?"/g)){
       const relative=m[1].slice(2);
       assert.ok(existsSync(resolve(root,relative)),name+' referencia arquivo ausente: '+relative);
     }
@@ -31,7 +31,7 @@ test('menu público e rodapé são consistentes nas páginas de loja',()=>{
   const body=file(name);
   assert.match(body,/<header class="commerce-header">/,name);
   assert.match(body,/<footer class="commerce-footer">/,name);
-  assert.match(body,/saluz-shell\\.js/,name);
+  assert.match(body,/saluz-shell\.js/,name);
  }
 });
 test('backend exige configuração sem expor segredos ou pedidos',async()=>{
@@ -76,7 +76,7 @@ test('categoria é filtrada no Supabase, não no browser',async()=>{
 test('consulta individual retorna somente o produto autorizado',async()=>{
  const original=globalThis.fetch;
  globalThis.fetch=async url=>{
-   assert.match(String(url),/is_active=eq\\.true/);
+   assert.match(String(url),/is_active=eq\.true/);
    return Response.json([{id:exampleId,name:'Produto de teste',variants:[],price_cents:0}]);
  };
  try{
