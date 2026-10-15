@@ -107,6 +107,23 @@ test('favoritos recusam IDs inválidos sem acessar o banco',async()=>{
  assert.equal(empty.status,200);
  assert.deepEqual((await empty.json()).products,[]);
 });
+test('Home retorna apenas produtos ativos em destaques e novidades',async()=>{
+ const previous=globalThis.fetch;const calls=[];
+ globalThis.fetch=async url=>{
+  calls.push(String(url));
+  return Response.json([]);
+ };
+ try{
+  const response=await handler('/api/products/home');
+  assert.equal(response.status,200);
+  const data=await response.json();
+  assert.deepEqual(data.featured,[]);
+  assert.deepEqual(data.newest,[]);
+  assert.equal(calls.length,2);
+  assert.ok(calls.every(url=>url.includes('is_active=eq.true')));
+  assert.ok(calls.some(url=>url.includes('is_featured=eq.true')));
+ }finally{globalThis.fetch=previous;}
+});
 test('sem sessão administrativa, rotas de gestão são negadas',async()=>{
  const res=await handler('/api/admin/products');
  assert.equal(res.status,401);
