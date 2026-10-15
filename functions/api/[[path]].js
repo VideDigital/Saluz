@@ -225,8 +225,12 @@ async function adminAction(request,env,parts) {
     return output({url:sbUrl(env,"/storage/v1/object/public/saluz-produtos/"+path)},201);
   }
   if (parts[1]==="products" && request.method==="GET") {
-    const products=await sb(env,"/rest/v1/saluz_products?select=*&order=created_at.desc&limit=300");
-    return output({products});
+    const query=new URL(request.url).searchParams;
+    const rawPage=query.get("page")||"1";
+    if(!/^[1-9][0-9]{0,4}$/.test(rawPage)||Number(rawPage)>10000)return error("Paginação inválida",400);
+    const page=Number(rawPage),limit=48;
+    const rows=await sb(env,"/rest/v1/saluz_products?select=*&order=created_at.desc,id.desc&limit="+(limit+1)+"&offset="+((page-1)*limit));
+    return output({products:rows.slice(0,limit),page,has_more:rows.length>limit});
   }
   if (parts[1]==="products" && request.method==="POST" && parts.length===2) {
     const product=validateProduct(await bodyJson(request));
