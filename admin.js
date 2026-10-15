@@ -119,13 +119,14 @@ function editProduct(p){
  f.elements.name.value=p.name;f.elements.description.value=p.description;
  f.elements.category.value=p.category;f.elements.price.value=(p.price_cents/100).toFixed(2);
  f.elements.image_url.value=p.image_url||"";
- f.elements.variants.value=(p.variants||[]).map(v=>[v.color,v.size,v.stock].join(" | ")).join("\n");
+ $("variant-rows").replaceChildren();(p.variants||[]).forEach(addVariantRow);
  f.elements.is_active.checked=!!p.is_active;
+ $("main-preview").replaceChildren();if(p.image_url){const img=document.createElement("img");img.src=p.image_url;img.alt="Imagem principal";$("main-preview").append(img);}
  $("product-form-label").textContent="EDITANDO PRODUTO";
  f.scrollIntoView({behavior:"smooth",block:"start"});
 }
 function newProduct(){
- const f=$("product-form");f.reset();f.elements.id.value="";
+ const f=$("product-form");f.reset();f.elements.id.value="";$("variant-rows").replaceChildren();addVariantRow();$("main-preview").replaceChildren();
  $("product-form-label").textContent="NOVO PRODUTO";
 }
 $("new-product").onclick=()=>{newProduct();$("product-form").scrollIntoView({behavior:"smooth"});};
@@ -137,11 +138,9 @@ $("product-form").addEventListener("submit",async e=>{
  e.preventDefault();const f=e.currentTarget;
  let variants=[];
  try{
-  variants=f.elements.variants.value.split("\n").map(l=>l.trim()).filter(Boolean).map(l=>{
-   const parts=l.split("|").map(x=>x.trim());
-   if(parts.length!==3||!Number.isInteger(Number(parts[2]))||Number(parts[2])<0)throw new Error("Use: Cor | Tamanho | Estoque. Exemplo: Bege | Único | 5");
-   return {color:parts[0],size:parts[1],stock:Number(parts[2])};
-  });
+  variants=[...$("variant-rows").children].map(row=>({color:row.querySelector('[data-field="color"]').value.trim(),size:row.querySelector('[data-field="size"]').value.trim(),stock:Number(row.querySelector('[data-field="stock"]').value),image_url:row.querySelector('[data-field="image"]').value.trim()}));
+  if(!variants.length)throw new Error("Adicione pelo menos uma variação.");
+  if(variants.some(v=>!v.color||!v.size||!Number.isInteger(v.stock)||v.stock<0))throw new Error("Preencha cor, tamanho e estoque em cada variação.");
   const price=Number(f.elements.price.value);
   if(!Number.isFinite(price))throw new Error("Preço inválido");
   const product={name:f.elements.name.value,category:f.elements.category.value,
@@ -153,6 +152,48 @@ $("product-form").addEventListener("submit",async e=>{
   newProduct();await loadProducts();
  }catch(err){message(err.message);}
 });
+
+async function uploadPhoto(file){
+ if(!file)return "";
+ if(!["image/jpeg","image/png","image/webp"].includes(file.type)||file.size>5*1024*1024)throw new Error("Use uma foto JPG, PNG ou WebP de até 5 MB.");
+ const res=await fetch("/api/admin/upload",{method:"POST",credentials:"same-origin",headers:{"content-type":file.type},body:file});
+ const data=await res.json().catch(()=>({}));
+ if(!res.ok)throw new Error(data.error||"Não foi possível enviar a foto.");
+ return data.url;
+}
+function addVariantRow(v={color:"",size:"Único",stock:0,image_url:""}){
+ const row=text("div",undefined,"variant-row");
+ for(const [field,label,type,value] of [["color","Cor","text",v.color],["size","Tamanho","text",v.size],["stock","Estoque","number",v.stock],["image","URL da foto","url",v.image_url]]){
+  const wrap=text("label",label),input=document.createElement("input");
+  input.dataset.field=field;input.type=type;input.value=value??"";input.required=field!=="image";
+  if(field==="stock")input.min="0";
+  input.maxLength=field==="image"?650:40;wrap.append(input);row.append(wrap);
+ }
+ const imageWrap=text("div",undefined,"variant-photo");
+ const preview=document.createElement("img");preview.alt="Prévia da variação";preview.loading="lazy";
+ const current=()=>{const url=row.querySelector('[data-field="image"]').value;preview.hidden=!url;if(url)preview.src=url;};
+ row.querySelector('[data-field="image"]').addEventListener("input",current);current();
+ const upload=document.createElement("input");upload.type="file";upload.accept="image/jpeg,image/png,image/webp";
+ upload.setAttribute("aria-label","Enviar foto desta cor e tamanho");
+ upload.onchange=async()=>{
+   if(!upload.files?.[0])return;
+   upload.disabled=true;message("Enviando imagem...");
+   try{const url=await uploadPhoto(upload.files[0]);row.querySelector('[data-field="image"]').value=url;current();message("Foto enviada com sucesso.");}
+   catch(e){message(e.message);}
+   finally{upload.disabled=false;upload.value="";}
+ };
+ imageWrap.append(preview,upload);row.append(imageWrap);
+ const remove=text("button","Remover variação","outline");remove.type="button";remove.onclick=()=>row.remove();row.append(remove);
+ $("variant-rows").append(row);
+}
+$("add-variant").onclick=()=>addVariantRow();
+$("main-photo").onchange=async e=>{
+ const f=e.target.files?.[0];if(!f)return;
+ e.target.disabled=true;message("Enviando imagem principal...");
+ try{const url=await uploadPhoto(f);$("product-form").elements.image_url.value=url;const preview=$("main-preview");preview.replaceChildren();const image=document.createElement("img");image.src=url;image.alt="Imagem principal";preview.append(image);message("Foto principal enviada.");}
+ catch(err){message(err.message);}finally{e.target.value="";e.target.disabled=false;}
+};
+
 const statNames={page_views:"Visualizações de página",visitors:"Sessões únicas",product_views:"Visualizações de produto",add_to_cart:"Adições à sacola",checkout_starts:"Inícios de checkout",checkout_submits:"Solicitações enviadas",contact_clicks:"Cliques no contato"};
 function renderReports(stats){
  const root=$("stats"),chart=$("daily-chart");root.replaceChildren();chart.replaceChildren();
@@ -174,4 +215,5 @@ async function loadReports(){
  catch(e){message(e.message);}
 }
 $("period").onchange=loadReports;
+addVariantRow();
 checkSession();
