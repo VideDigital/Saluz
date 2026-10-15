@@ -182,6 +182,19 @@ async function loadStore(){
   renderFilters();renderProducts();renderBag();saveBag();
   const target=products.find(p=>p.id===urlParams.get("produto"));if(target)showProductDetails(target,false);
 }
+function syncBagFromOtherTab(){
+ bag=window.SaluzBag.read();
+ const count=window.SaluzBag.count(bag);
+ $("cart-count").textContent=count;
+ $("mobile-cart-count").textContent=count;
+ renderBag();
+}
+window.addEventListener("storage",event=>{
+ if(event.key==="saluz-bag-v1"||event.key===null)syncBagFromOtherTab();
+});
+window.addEventListener("pageshow",event=>{
+ if(event.persisted)syncBagFromOtherTab();
+});
 function close(dialog){if(dialog.open)dialog.close();}
 if($("year"))$("year").textContent=new Date().getFullYear();
 $("search").value=urlParams.get("q")||"";
