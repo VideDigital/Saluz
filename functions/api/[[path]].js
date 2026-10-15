@@ -81,7 +81,7 @@ function validateProduct(raw) {
     const color=safeText(v.color,40), size=safeText(v.size,30);
     const stock=Number(v.stock);
     if (!Number.isInteger(stock)||stock<0||stock>100000) throw new Error("Estoque inválido");
-    return {color,size,stock};
+    const image_url=safeText(v.image_url,650); if(image_url && !/^https:\/\//.test(image_url)) throw new Error("Foto inválida"); return {color,size,stock,image_url};
   });
   const seen=new Set();
   for (const v of normalized) {
@@ -172,6 +172,23 @@ async function adminAction(request,env,parts) {
       method:"PATCH",data:{status:b.status,updated_at:new Date().toISOString()}
     });
     return output({order:rows[0]||null});
+  }
+  if(parts[1]==="upload" && request.method==="POST"){
+    const mime=request.headers.get("content-type")||"";
+    if(!["image/jpeg","image/png","image/webp"].includes(mime)) return error("Use JPG, PNG ou WebP",400);
+    const bytes=await request.arrayBuffer();
+    if(!bytes.byteLength || bytes.byteLength>5*1024*1024) return error("Imagem deve ter até 5 MB",400);
+    const signature=new Uint8Array(bytes.slice(0,12));
+    const jpg=signature[0]===255&&signature[1]===216&&signature[2]===255;
+    const png=signature.slice(0,8).join(",")==="137,80,78,71,13,10,26,10";
+    const webp=String.fromCharCode(...signature.slice(0,4))==="RIFF"&&String.fromCharCode(...signature.slice(8,12))==="WEBP";
+    if(!(mime==="image/jpeg"&&jpg||mime==="image/png"&&png||mime==="image/webp"&&webp))return error("Arquivo de imagem inválido",400);
+    const ext=mime==="image/jpeg"?"jpg":mime==="image/png"?"png":"webp";
+    const path=crypto.randomUUID()+"."+ext;
+    const res=await fetch(sbUrl(env,"/storage/v1/object/saluz-produtos/"+path),{method:"POST",
+      headers:{apikey:env.SUPABASE_SERVICE_ROLE_KEY,authorization:"Bearer "+env.SUPABASE_SERVICE_ROLE_KEY,"content-type":mime,"cache-control":"3600"},body:bytes});
+    if(!res.ok)throw new Error("storage "+res.status);
+    return output({url:sbUrl(env,"/storage/v1/object/public/saluz-produtos/"+path)},201);
   }
   if (parts[1]==="products" && request.method==="GET") {
     const products=await sb(env,"/rest/v1/saluz_products?select=*&order=created_at.desc&limit=300");
