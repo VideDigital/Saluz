@@ -128,3 +128,4 @@ searchDialog?.addEventListener("cancel", event => {
 document.querySelectorAll('a[href="#"]').forEach(link => {
   link.addEventListener("click", event => event.preventDefault());
 });
+// The official bag is on the new storefront; no faux checkout on this prototype.
