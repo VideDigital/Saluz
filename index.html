@@ -23,50 +23,25 @@
 <body>
   <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
 
-  <div class="topbar">
-    <span>✦ Beleza nos detalhes</span>
-    <span class="topbar-center">Sua rotina, seus detalhes</span>
-    <span>Atendimento: dias úteis, 8h às 19h</span>
-  </div>
-
-  <header class="site-header" data-header>
-    <div class="header-main">
-      <button class="menu-toggle" type="button" aria-label="Abrir menu" aria-expanded="false" data-menu-toggle>
-        <span></span><span></span>
-      </button>
-
-      <a class="brand" href="./index.html" aria-label="SALUZ — início">
-        <span>SALUZ</span><b>✦</b>
-      </a>
-
-      <div class="header-actions">
-        <button type="button" data-search-trigger>Buscar</button>
-        <a class="bag" href="./loja.html#sacola">Sacola <span>0</span></a>
-      </div>
-    </div>
-
-    <nav class="category-nav" aria-label="Categorias principais">
-      <a href="./loja.html">Ver todos os produtos</a>
-      <a href="./loja.html#produtos">Novidades</a>
-      <a href="./colecao-organizadores-bolsa.html">Organização</a>
-      <a href="./colecao-autocuidado.html">Autocuidado</a>
-      <a href="./colecao-acessorios-viagem.html">Viagem</a>
-      <a href="./colecao-kits-presentes.html">Presentes</a>
-      <a href="./colecao-kits-presentes.html">Kits</a>
-      <a href="#momentos">Inspirações</a>
-    </nav>
-
-    <nav class="mobile-nav" aria-label="Menu para celular" data-mobile-nav>
-      <a href="./loja.html">Ver todos os produtos</a>
-      <a href="./loja.html#produtos">Produtos</a>
-      <a href="./colecoes.html">Organização</a>
-      <a href="./colecao-autocuidado.html">Autocuidado</a>
-      <a href="./colecao-acessorios-viagem.html">Viagem</a>
-      <a href="./colecao-kits-presentes.html">Presentes</a>
-      <a href="#kits">Kits</a>
-      <a href="#momentos">Comprar por momento</a>
-    </nav>
-  </header>
+  <div class="commerce-top"><span>✦ SALUZ · Beleza nos detalhes</span><span>Atendimento de segunda a sexta, 8h às 19h</span></div>
+<header class="commerce-header">
+ <div class="commerce-primary">
+  <button class="commerce-menu-toggle" id="menu-toggle" type="button" aria-controls="loja-nav" aria-expanded="false" aria-label="Abrir menu">☰ <span>Menu</span></button>
+  <a class="commerce-brand" href="./index.html" aria-label="SALUZ — página inicial">SALUZ <span>✦</span></a>
+  <div class="commerce-actions"><a class="commerce-search" href="./loja.html#produtos" data-search-trigger>Buscar</a><a class="commerce-bag" href="./loja.html#sacola" aria-label="Ir para a sacola">Sacola <span class="commerce-count" data-bag-count>0</span></a></div>
+ </div>
+ <nav class="commerce-nav" id="loja-nav" aria-label="Navegação principal">
+  <a href="./index.html" aria-current="page">Início</a>
+  <a href="./colecoes.html">Todas as coleções</a>
+  <details class="commerce-mega"><summary>Categorias <span aria-hidden="true">⌄</span></summary><div class="commerce-mega-panel">
+   <div><p class="commerce-overline">EXPLORE A SALUZ</p><h2>Cada detalhe conta.</h2><p>Encontre seus favoritos nas coleções.</p></div>
+   <div class="commerce-mega-links"><a href="./colecao-necessaires.html">Nécessaires</a><a href="./colecao-porta-joias.html">Porta-joias</a><a href="./colecao-organizadores-maquiagem.html">Organizadores de maquiagem</a><a href="./colecao-organizadores-bolsa.html">Organizadores de bolsa</a><a href="./colecao-acessorios-viagem.html">Acessórios de viagem</a><a href="./colecao-autocuidado.html">Autocuidado</a><a href="./colecao-acessorios-femininos.html">Acessórios femininos</a><a href="./colecao-kits-presentes.html">Kits e presentes</a></div>
+  </div></details>
+  <a href="./loja.html">Todos os produtos</a>
+  <a href="./sobre.html">A SALUZ</a>
+  <a href="./atendimento.html">Atendimento</a>
+ </nav>
+</header>
 
   <main id="conteudo">
     <section class="hero" id="inicio">
@@ -308,31 +283,19 @@
     </section>
   </main>
 
-  <footer class="site-footer">
-    <div class="footer-brand">SALUZ <span>✦</span></div>
-    <div class="footer-columns">
-      <div>
-        <strong>Explorar</strong>
-        <a href="./loja.html">Loja / Produtos</a>
-        <a href="#novidades">Novidades</a>
-        <a href="#presentes">Presentes</a>
-      </div>
-      <div>
-        <strong>Atendimento</strong>
-        <a href="mailto:anny.csalustiano@gmail.com">anny.csalustiano@gmail.com</a>
-        <span>Dias úteis, das 8h às 19h</span>
-      </div>
-      <div>
-        <strong>SALUZ</strong>
-        <a href="#detalhes">Beleza nos detalhes</a>
-        <span>Instagram em preparação</span>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <span>© <span data-year></span> SALUZ</span>
-      <a href="./privacidade.html">Privacidade</a>
-    </div>
-  </footer>
+  <footer class="commerce-footer">
+ <div class="commerce-footer-inner">
+  <section class="commerce-footer-brand"><a href="./index.html">SALUZ ✦</a><p>Beleza nos detalhes.</p><p>Organização, autocuidado, acessórios e presentes.</p></section>
+  <section><h2>Coleções</h2>
+   <a href="./colecoes.html">Todas as coleções</a><a href="./colecao-necessaires.html">Nécessaires</a><a href="./colecao-porta-joias.html">Porta-joias</a><a href="./colecao-kits-presentes.html">Kits e presentes</a>
+  </section>
+  <section><h2>Informações</h2>
+   <a href="./sobre.html">Sobre a SALUZ</a><a href="./como-comprar.html">Como comprar</a><a href="./atendimento.html">Atendimento</a><a href="./privacidade.html">Privacidade</a>
+  </section>
+  <section><h2>Fale conosco</h2><a href="mailto:anny.csalustiano@gmail.com">anny.csalustiano@gmail.com</a><p>Segunda a sexta, das 8h às 19h</p><p>Pedidos online em preparação.</p></section>
+ </div>
+ <div class="commerce-footer-end"><span>© <span data-commerce-year>2026</span> SALUZ</span><span>Site em implantação · compras ainda não habilitadas</span></div>
+</footer>
 
   <dialog class="search-dialog" data-search-dialog aria-label="Busca">
     <div class="search-panel">
