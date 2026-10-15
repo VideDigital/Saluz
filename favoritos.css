@@ -39,3 +39,9 @@
 @media(max-width:1100px){.favorites-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:720px){.favorites-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.favorite-card-body{padding:12px}.favorite-card-body h3{font-size:15px}.favorite-card-category{font-size:12px}.favorite-card-price{font-size:17px}.favorite-card-view{font-size:13px}.favorites-heading{flex-direction:column;align-items:flex-start;gap:7px}.favorites-empty{padding:55px 19px}.commerce-favorites-link{min-height:50px}}
 @media(prefers-reduced-motion:reduce){.product-heart,.favorite-card-photo img{transition:none!important}}
+
+/* Botões de coração sobre fotos e itens ocultos */
+.products .product{position:relative}
+.favorites-missing{grid-column:1/-1;color:#51443B;font:500 14px/1.6 "DM Sans",sans-serif;padding:14px 18px;background:#f6eee8;border:1px solid #ddc8b9;margin:0}
+.product-page-favorite[hidden]{display:none!important}
+@media(max-width:560px){.product-heart{right:8px;top:8px;width:42px;height:42px}}
