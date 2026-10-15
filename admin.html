@@ -12,8 +12,10 @@
 <link rel="stylesheet" href="./saluz-refinamento.css">
 <link rel="stylesheet" href="./saluz-admin-improvements.css">
 <link rel="stylesheet" href="./saluz-control.css?v=20261015-dashboard1">
+<link rel="stylesheet" href="./saluz-mobile.css?v=20261015-mobile2">
 <script src="./admin.js?v=20261015-login2" defer></script>
 <script src="./saluz-admin-extras.js?v=20261015-login2" defer></script>
+<script src="./saluz-mobile.js?v=20261015-mobile2" defer></script>
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
 </head>
 <body>
@@ -35,8 +37,8 @@
 </section>
 <section class="dashboard hidden" id="dashboard">
   <aside class="sidebar">
-    <div class="sidebar-logo">SALUZ <span>✦</span><small>CENTRAL DE GESTÃO</small></div>
-    <nav class="tabs" aria-label="Navegação administrativa">
+    <div class="sidebar-top"><div class="sidebar-logo">SALUZ <span>✦</span><small>CENTRAL DE GESTÃO</small></div><button id="mobile-menu-toggle" class="mobile-menu-toggle" type="button" aria-expanded="false" aria-controls="admin-nav" aria-label="Abrir menu">☰</button></div>
+    <nav class="tabs" id="admin-nav" aria-label="Navegação administrativa">
       <button class="selected" type="button" data-tab="overview">Visão geral <span>↗</span></button>
       <button type="button" data-tab="orders">Pedidos <span>↗</span></button>
       <button type="button" data-tab="customers">Clientes <span>↗</span></button>
@@ -44,24 +46,27 @@
       <button type="button" data-tab="finance">Financeiro <span>↗</span></button>
       <button type="button" data-tab="reports">Relatórios <span>↗</span></button>
     </nav>
-    <div class="sidebar-bottom"><a href="./loja.html" target="_blank" rel="noopener">Ver loja ↗</a><button id="logout" type="button">Sair</button></div>
+    <div class="sidebar-bottom" id="admin-sidebar-actions"><a href="./loja.html" target="_blank" rel="noopener">Ver loja ↗</a><button id="logout" type="button">Sair</button></div>
   </aside>
   <div class="workspace">
     <header class="workspace-head"><div><span class="eyebrow">CENTRAL DE OPERAÇÕES</span><h1 id="section-title">Visão geral</h1></div><span id="admin-notice">Ambiente administrativo</span></header>
+    <nav class="mobile-bottom-nav" aria-label="Acesso rápido"><button type="button" data-mobile-tab="overview"><span aria-hidden="true">▦</span><small>Início</small></button><button type="button" data-mobile-tab="orders"><span aria-hidden="true">▤</span><small>Pedidos</small></button><button type="button" data-mobile-tab="products"><span aria-hidden="true">▧</span><small>Produtos</small></button><button type="button" data-mobile-tab="customers"><span aria-hidden="true">♙</span><small>Clientes</small></button><button type="button" id="mobile-more" aria-expanded="false"><span aria-hidden="true">☰</span><small>Mais</small></button></nav>
     <p id="action-message" class="action-message" role="status"></p>
     <section id="tab-overview" class="tab">
       <div class="panel-intro"><div><span class="eyebrow">RESUMO DA OPERAÇÃO</span><h2>Bem-vinda ao painel SALUZ</h2><p>Acompanhe pedidos registrados e as próximas ações da loja em um só lugar.</p></div><button type="button" class="outline" id="overview-refresh">Atualizar dados</button></div>
       <div class="management-notice" role="note"><strong>Ambiente de preparação.</strong> O checkout online ainda está desativado. Pedidos marcados como pagos exigem confirmação manual; não representam faturamento conciliado.</div>
+      <div class="overview-shortcuts"><button type="button" data-quick-tab="orders"><span>▤</span><strong>Gerenciar pedidos</strong><small>Consultar solicitações</small></button><button type="button" data-quick-tab="products"><span>▧</span><strong>Gerenciar produtos</strong><small>Estoque e catálogo</small></button><button type="button" data-quick-tab="customers"><span>♙</span><strong>Ver clientes</strong><small>Histórico de pedidos</small></button></div>
       <div id="overview-kpis" class="overview-kpis" aria-live="polite"><p class="muted">Carregando indicadores...</p></div>
       <div class="panel-surface"><div class="panel-section-header"><h3>Pedidos recentes</h3><button type="button" id="overview-open-orders" class="outline">Ver pedidos ↗</button></div><div id="overview-recent">Carregando...</div></div>
     </section>
     <section id="tab-orders" class="tab hidden">
       <div class="tab-toolbar"><p>Solicitações recebidas no checkout. Um pedido recebido <strong>não significa que foi pago</strong>.</p><button type="button" id="refresh-orders" class="outline">Atualizar pedidos</button></div>
+      <div class="orders-toolbar"><label for="order-search">Buscar pedido<input type="search" id="order-search" placeholder="Cliente, telefone ou número"></label><label for="order-status-filter">Status<select id="order-status-filter"><option value="all">Todos os pedidos</option><option value="solicitacao_recebida">Solicitação recebida</option><option value="contatado">Cliente contatado</option><option value="aguardando_pagamento">Aguardando pagamento</option><option value="pago_confirmado">Pagamento confirmado</option><option value="em_preparacao">Em preparação</option><option value="enviado">Enviado</option><option value="cancelado">Cancelado</option></select></label><span id="order-filter-count" role="status"></span></div>
       <div id="orders" class="order-grid"><p>Carregando pedidos...</p></div>
     </section>
     <section id="tab-customers" class="tab hidden">
       <div class="panel-intro"><div><span class="eyebrow">RELACIONAMENTO</span><h2>Clientes da loja</h2><p>Dados de contato associados aos pedidos registrados. Não é uma base independente de CRM.</p></div><button type="button" class="outline" id="customers-refresh">Atualizar clientes</button></div>
-      <div class="management-notice" role="note">Exibição derivada dos <strong>150 pedidos mais recentes</strong>. Informações pessoais devem ser usadas somente para atendimento e gestão legítima da loja.</div>
+      <div class="management-notice" role="note">Exibição derivada dos pedidos retornados pelo sistema. Informações pessoais devem ser usadas somente para atendimento e gestão legítima da loja.</div>
       <div class="panel-filter"><label for="customer-search">Buscar por nome, e-mail ou telefone<input type="search" id="customer-search" placeholder="Pesquisar cliente..." autocomplete="off"></label></div>
       <div class="panel-surface" id="customers-list" aria-live="polite"><p class="muted">Carregando clientes...</p></div>
     </section>

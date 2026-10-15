@@ -48,7 +48,7 @@
       const markedPaidCents = markedPaid.reduce((sum,o)=>sum+Number(o.subtotal_cents||0),0);
       const unique = summarize(rows);
       root.replaceChildren(
-        makeStat("Pedidos recentes",rows.length,"Últimos "+ORDERS_MAX+" registros"),
+        makeStat("Pedidos recentes",rows.length,"Pedidos retornados pela consulta"),
         makeStat("Em atendimento",pending,"Acompanhar no painel"),
         makeStat("Clientes identificados",unique.length,"Nos pedidos recentes"),
         makeStat("Total marcado como pago",reais(markedPaidCents),"Sem conciliação bancária")

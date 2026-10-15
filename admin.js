@@ -106,6 +106,7 @@ $("logout").onclick=async()=>{
 function changeTab(name){
  currentTab=name;
  for(const b of document.querySelectorAll("[data-tab]"))b.classList.toggle("selected",b.dataset.tab===name);
+ window.dispatchEvent(new CustomEvent("saluz:tabchange",{detail:{tab:name}}));
  for(const name2 of ["overview","orders","customers","products","finance","reports"])$("tab-"+name2).classList.toggle("hidden",name!==name2);
  $("section-title").textContent={overview:"Visão geral",orders:"Pedidos",customers:"Clientes",products:"Produtos",finance:"Financeiro",reports:"Relatórios"}[name];
  message("");
@@ -122,8 +123,12 @@ function line(parent,label,value){
 }
 function renderOrders(){
  const root=$("orders");root.replaceChildren();
- if(!orders.length){root.append(text("p","Nenhuma solicitação recebida até o momento.","muted"));return;}
- for(const o of orders){
+ const q=String($("order-search")?.value||"").trim().toLocaleLowerCase("pt-BR");
+ const status=$("order-status-filter")?.value||"all";
+ const filtered=orders.filter(o=>(status==="all"||o.status===status)&&(!q||[o.id,o.customer_name,o.customer_email,o.customer_phone].some(v=>String(v||"").toLocaleLowerCase("pt-BR").includes(q))));
+ $("order-filter-count").textContent=filtered.length+" de "+orders.length+" pedido(s)";
+ if(!filtered.length){const empty=text("div",undefined,"orders-empty");empty.append(text("strong",orders.length?"Nenhum pedido corresponde aos filtros.":"Nenhum pedido recebido ainda."),text("p",orders.length?"Altere a busca ou o status para consultar outras solicitações.":"Quando houver solicitações, você poderá acompanhar cada pedido e atualizar seu andamento aqui."));root.append(empty);return;}
+ for(const o of filtered){
   const card=text("article",undefined,"order-card"),head=text("div",undefined,"order-top");
   head.append(text("strong","Pedido #"+o.id.slice(0,8).toUpperCase()),text("span",statusNames[o.status]||o.status,"pill"));card.append(head);
   const details=text("div",undefined,"order-details"),left=text("div"),right=text("div");
@@ -170,6 +175,8 @@ async function loadOrders(){
  catch(e){message(e.message);}
 }
 $("refresh-orders").onclick=loadOrders;
+$("order-search").addEventListener("input",renderOrders);
+$("order-status-filter").addEventListener("change",renderOrders);
 function productStock(p){
   return (Array.isArray(p.variants)?p.variants:[]).reduce((total,v)=>total+Math.max(0,Number(v.stock)||0),0);
 }
