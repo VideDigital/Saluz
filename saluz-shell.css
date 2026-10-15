@@ -92,3 +92,21 @@ body:has(.collections) footer.commerce-footer>.commerce-footer-end{display:flex;
  :where(.topbar,.saluz-top,.eyebrow,.product-type,.product-category,.category-card small,.collection-tile small){font-size:13px}
  :where(.product button,.filter,.text-link){font-size:14px}
 }
+
+/* Correções específicas de legibilidade: suplantam CSS antigo. */
+.collection-tile strong,.category-card strong{font-size:18px!important;line-height:1.45}
+.collection-tile small,.category-card small,.product-type,.product-status,.product-category{font-size:14px!important;opacity:1!important;color:#51443B!important}
+.section-head p,.catalog-meta .notice,.lead p,.empty-collection .empty-copy,.contact p{font-size:17px!important;color:#51443B!important;opacity:1!important;line-height:1.65}
+.eyebrow{font-size:14px!important;letter-spacing:.09em}
+.filters .filter{font-size:15px!important;font-weight:600}
+.search,.search label,.catalog-sort{font-size:15px!important}
+.search input,.catalog-sort select{font-size:15px!important}
+body:has(.collections) .products-section .product h3{font-size:18px!important}
+body:has(.collections) .product .price{font-size:19px!important}
+.contact a{font-size:16px!important;overflow-wrap:anywhere}
+@media(max-width:600px){
+ .collection-tile strong,.category-card strong{font-size:16px!important}
+ .collection-tile small,.category-card small{font-size:13px!important}
+ .section-head p,.catalog-meta .notice,.lead p,.empty-collection .empty-copy,.contact p{font-size:15px!important}
+ .filters .filter{font-size:14px!important}
+}
