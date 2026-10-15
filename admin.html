@@ -50,7 +50,26 @@
     <section id="tab-products" class="tab hidden">
       <div class="tab-toolbar"><p>Cadastre itens reais, defina preço e variações e controle quais aparecem na loja.</p><button type="button" id="new-product" class="outline">+ Novo produto</button></div>
       <div class="product-workspace">
-        <div id="admin-products" class="product-list"><p>Carregando catálogo...</p></div>
+        <div class="product-list" id="product-list-panel">
+          <div class="product-list-header">
+            <h2>Produtos cadastrados</h2>
+            <p id="product-summary" role="status">Aguardando catálogo...</p>
+          </div>
+          <div class="product-tools">
+            <label for="product-search">Buscar produto
+              <input id="product-search" type="search" placeholder="Nome ou categoria" autocomplete="off">
+            </label>
+            <label for="product-filter">Exibição no site
+              <select id="product-filter">
+                <option value="all">Todos</option>
+                <option value="active">Visíveis</option>
+                <option value="inactive">Ocultos</option>
+                <option value="out">Sem estoque</option>
+              </select>
+            </label>
+          </div>
+          <div id="admin-products" class="product-items"><p>Carregando catálogo...</p></div>
+        </div>
         <form id="product-form" class="product-form">
           <span class="eyebrow" id="product-form-label">NOVO PRODUTO</span>
           <h2>Informações do produto</h2>
@@ -71,7 +90,19 @@
           <label>Descrição<textarea name="description" rows="3" maxlength="2000"></textarea></label>
           <div class="variant-editor"><div class="tab-toolbar"><div><strong>Cores, tamanhos e fotografias</strong><p>Cada combinação pode ter sua própria foto e quantidade.</p></div><button type="button" class="outline" id="add-variant">+ Adicionar variação</button></div><div id="variant-rows" class="variant-rows"></div></div>
           <label class="switch"><input type="checkbox" name="is_active"> Produto ativo na loja</label>
-          <p class="hint">O produto só poderá entrar na sacola quando tiver variação com estoque maior que zero.</p>
+          <p class="hint">Produtos ocultos não aparecem na loja. Um produto visível sem estoque permanece indisponível para compra.</p>
+          <div class="product-preview" id="product-preview" aria-live="polite">
+            <span class="eyebrow">PRÉVIA DO CADASTRO</span>
+            <div class="preview-content">
+              <div id="preview-photo" class="preview-photo" aria-hidden="true">✦</div>
+              <div class="preview-copy">
+                <strong id="preview-name">Seu produto aparecerá aqui</strong>
+                <span id="preview-price">R$ 0,00</span>
+                <small id="preview-variants">Adicione cores, tamanhos e fotos.</small>
+                <span id="preview-visibility" class="preview-visibility">Oculto até publicar</span>
+              </div>
+            </div>
+          </div>
           <button type="submit" class="primary">Salvar produto</button>
         </form>
       </div>
