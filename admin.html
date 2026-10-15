@@ -83,7 +83,7 @@
             <option value="Autocuidado">Autocuidado</option>
             <option value="Acessórios femininos">Acessórios femininos</option>
             <option value="Kits e presentes">Kits e presentes</option>
-            <option value="Maquiagem">Maquiagem (futura)</option>
+            
           </select></label>
           <label>Preço (R$)<input name="price" type="number" required min="0" max="500000" step=".01" placeholder="0,00"></label>
           <label>Imagem principal do produto <input name="image_url" type="url" placeholder="https://... (opcional)"></label><label>Enviar foto principal <input type="file" id="main-photo" accept="image/jpeg,image/png,image/webp"></label><div id="main-preview" class="upload-preview"></div>
@@ -91,7 +91,7 @@
           <div class="variant-editor"><div class="tab-toolbar"><div><strong>Cores, tamanhos e fotografias</strong><p>Cada combinação pode ter sua própria foto e quantidade.</p></div><button type="button" class="outline" id="add-variant">+ Adicionar variação</button></div><div id="variant-rows" class="variant-rows"></div></div>
           <label class="switch"><input type="checkbox" name="is_active"> Produto ativo na loja</label>
           <label class="switch"><input type="checkbox" name="is_featured"> Destacar na página inicial (aparece somente quando ativo)</label>
-          <p class="hint">Produtos ocultos não aparecem na loja. Um produto visível sem estoque permanece indisponível para compra.</p>
+          <p class="hint">Para publicar, cadastre ao menos uma foto e uma variação com cor e tamanho. Produtos ocultos não aparecem na loja; estoque zerado impede adicionar à sacola.</p>
           <div class="product-preview" id="product-preview" aria-live="polite">
             <span class="eyebrow">PRÉVIA DO CADASTRO</span>
             <div class="preview-content">
