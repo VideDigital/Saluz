@@ -119,23 +119,44 @@ function findItem(i){
   const variation=product&&variantsFor(product).find(v=>(v.color||"")===i.color&&(v.size||"")===i.size);
   return product&&variation?{product,variation}:null;
 }
+function changeBagQuantity(index,delta){
+ const line=bag[index],current=line?findItem(line):null;
+ if(!current)return;
+ const value=Number(line.quantity)+delta;
+ if(value<=0){bag.splice(index,1);}
+ else if(value>maxQuantity(current.variation)){$("cart-feedback").textContent="Quantidade maior que o estoque disponível.";return;}
+ else line.quantity=value;
+ saveBag();renderBag();
+}
 function renderBag(){
-  const root=$("cart-items");root.replaceChildren();
-  let total=0;
-  bag.forEach((line,index)=>{
-    const current=findItem(line);
-    const row=node("div","cart-line"),info=node("div"),right=node("div");
-    info.append(node("strong","",current?.product.name||"Produto indisponível"));
-    info.append(node("span","",line.color+" · "+line.size+" · "+line.quantity+" un."));
-    right.append(node("strong","",current?money(current.product.price_cents*line.quantity):"—"));
-    if(current) total+=current.product.price_cents*line.quantity;
-    const remove=node("button","","Remover");remove.type="button";
-    remove.onclick=()=>{bag.splice(index,1);saveBag();renderBag();};
-    right.append(remove);row.append(info,right);root.append(row);
-  });
-  if(!bag.length)root.append(node("p","notice","Sua sacola está vazia."));
-  $("cart-total").textContent=money(total);
-  $("checkout-open").disabled=!bag.length||!bag.every(i=>!!findItem(i));
+ const root=$("cart-items");root.replaceChildren();let total=0,unavailable=false;
+ bag.forEach((line,index)=>{
+  const found=findItem(line),p=found?.product,v=found?.variation;
+  const row=node("div","cart-line"),thumb=node("div","cart-thumbnail");
+  const src=variationImage(p,v);
+  if(src){const img=node("img");img.src=src;img.loading="lazy";img.alt=p.name;thumb.append(img);}
+  else thumb.append(node("span","","✦"));
+  const info=node("div","cart-line-info"),side=node("div","cart-side");
+  info.append(node("strong","",p?.name||"Produto indisponível"));
+  info.append(node("span","cart-variant",(line.color||"Cor única")+" · "+(line.size||"Tamanho único")));
+  if(!found||line.quantity>maxQuantity(v)){
+   unavailable=true;info.append(node("span","cart-variant","Variação indisponível no momento."));
+  }else{
+   const controls=node("div","qty-control"),minus=node("button","","−"),plus=node("button","","+");
+   minus.type="button";minus.setAttribute("aria-label","Diminuir quantidade");minus.onclick=()=>changeBagQuantity(index,-1);
+   plus.type="button";plus.setAttribute("aria-label","Aumentar quantidade");plus.disabled=line.quantity>=maxQuantity(v);plus.onclick=()=>changeBagQuantity(index,1);
+   controls.append(minus,node("output","",line.quantity),plus);info.append(controls);
+   total+=p.price_cents*line.quantity;
+  }
+  side.append(node("strong","",found?money(p.price_cents*line.quantity):"—"));
+  const remove=node("button","remove","Remover");remove.type="button";remove.onclick=()=>{bag.splice(index,1);saveBag();renderBag();};
+  side.append(remove);row.append(thumb,info,side);root.append(row);
+ });
+ if(!bag.length)root.append(node("p","notice","Sua sacola está vazia. Explore as coleções para começar."));
+ $("cart-total").textContent=money(total);
+ $("checkout-open").disabled=!checkoutEnabled||!bag.length||unavailable;
+ $("checkout-open").textContent=checkoutEnabled?"Continuar com meus dados":"Pedidos em preparação";
+ $("cart-feedback").textContent=checkoutEnabled?(unavailable?"Revise a disponibilidade dos itens.":""):"Você pode montar sua sacola. Os pedidos ainda não estão liberados.";
 }
 async function loadStore(){
   try{
