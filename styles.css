@@ -193,3 +193,9 @@ body{font-size:16px}
   .search-hint,.search-empty span{font-size:12px}
   .search-result strong{font-size:19px}
 }
+
+
+.analytics-banner{position:fixed;z-index:200;left:14px;bottom:14px;width:min(430px,calc(100% - 28px));background:#fffdf9;border:1px solid #ddd0c6;box-shadow:0 8px 32px #0002;padding:18px;color:#51443b;font:13px/1.55 "DM Sans",sans-serif}
+.analytics-actions{display:flex;gap:10px;margin-top:12px}
+.analytics-choice{border:1px solid #51443b;background:transparent;color:#51443b;padding:9px 12px;cursor:pointer}
+.analytics-choice.primary{background:#51443b;color:white}
