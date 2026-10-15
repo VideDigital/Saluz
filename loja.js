@@ -5,6 +5,7 @@ const knownCategories=["Nécessaires","Porta-joias","Organizadores de maquiagem"
 const urlParams=new URLSearchParams(location.search);
 const requestedCategory=urlParams.get("categoria")||"all";
 let products=[],bag=[],activeCategory=knownCategories.includes(requestedCategory)?requestedCategory:"all",available=false,checkoutEnabled=false,detailProduct=null,detailCount=1;
+let catalogPage=0,catalogHasMore=false,catalogLoading=false;
 bag=window.SaluzBag.read();
 const emit=(type,label="")=>{
   if(localStorage.getItem("saluz-analytics")!=="accepted")return;
@@ -83,7 +84,7 @@ function productCard(p){
   };
   card.append(favorite);
   const image=node("div","product-image"+(p.image_url?"":" placeholder"));
-  if(p.image_url){const img=node("img");img.src=p.image_url;img.loading="lazy";img.alt="Produto "+p.name;img.onerror=()=>{img.remove();image.classList.add("placeholder");};image.append(img);}
+  if(p.image_url){const img=node("img");img.src=p.image_url;img.loading="lazy";img.decoding="async";img.alt="Produto "+p.name;img.onerror=()=>{img.remove();image.classList.add("placeholder");};image.append(img);}
   const picture=node("a","product-image-button");picture.href="./produto.html?id="+encodeURIComponent(p.id);picture.setAttribute("aria-label","Abrir página do produto "+p.name);picture.append(image);card.append(picture);
   const b=node("div","product-body");b.append(node("span","product-category",p.category||"SALUZ"),node("h3","",p.name),node("span","price",money(p.price_cents)));
   const inStock=variantsFor(p);
@@ -102,7 +103,7 @@ function productCard(p){
       const selected=inStock.find(v=>(v.color||"Única")===color.value&&(v.size||"Único")===size.value);
       const url=selected?.image_url||p.image_url||"";
       image.replaceChildren();image.classList.toggle("placeholder",!url);
-      if(url){const img=node("img");img.src=url;img.loading="lazy";img.alt=p.name+" na cor "+color.value+", tamanho "+size.value;img.onerror=()=>{img.remove();image.classList.add("placeholder");};image.append(img);}
+      if(url){const img=node("img");img.src=url;img.loading="lazy";img.decoding="async";img.alt=p.name+" na cor "+color.value+", tamanho "+size.value;img.onerror=()=>{img.remove();image.classList.add("placeholder");};image.append(img);}
     };
     fillSizes();color.onchange=()=>{fillSizes();swapPhoto();};size.onchange=swapPhoto;swapPhoto();
     color.setAttribute("aria-label","Cor");size.setAttribute("aria-label","Tamanho");
@@ -151,6 +152,10 @@ function renderProducts(){
     const browse=node("a","empty-link","Explorar outras categorias ↗");
     browse.href="#colecoes";empty.append(browse);list.append(empty);
   }
+  const more=$("load-more");
+  more.hidden=!catalogHasMore;
+  more.disabled=catalogLoading;
+  $("pagination-status").textContent=available?(catalogHasMore?"Há mais produtos para carregar.":"Produtos carregados nesta consulta."):"";
   $("catalog-status").textContent=available
     ? (chosen.length ? chosen.length+" produto(s) encontrado(s)" : "Ainda não há produtos disponíveis nesta categoria.")
     : (activeCategory!=="all" ? "A coleção "+activeCategory+" está em preparação. Os produtos serão exibidos quando o catálogo for ativado." : "O catálogo da SALUZ está em preparação. Os produtos reais aparecerão nesta vitrine.");
@@ -201,15 +206,42 @@ function renderBag(){
  $("checkout-open").textContent=checkoutEnabled?"Continuar com meus dados":"Pedidos em preparação";
  $("cart-feedback").textContent=checkoutEnabled?(unavailable?"Revise a disponibilidade dos itens.":""):"Você pode montar sua sacola. Os pedidos ainda não estão liberados.";
 }
+async function fetchCatalogPage(page){
+ const response=await fetch("/api/products?page="+page+"&limit=48",{cache:"no-store"});
+ if(!response.ok)throw new Error("Não foi possível carregar os produtos.");
+ const payload=await response.json();
+ if(!payload.configured)throw new Error("A loja ainda está sendo configurada.");
+ const incoming=Array.isArray(payload.products)?payload.products:[];
+ const ids=new Set(products.map(p=>p.id));
+ products.push(...incoming.filter(p=>p.id&&!ids.has(p.id)));
+ catalogPage=page;
+ catalogHasMore=payload.has_more===true;
+ available=true;
+ renderFilters();renderProducts();renderBag();
+ return incoming.length;
+}
+async function loadNextPage(){
+ if(catalogLoading||!catalogHasMore)return;
+ catalogLoading=true;
+ $("load-more").disabled=true;
+ $("pagination-status").textContent="Carregando produtos...";
+ try{await fetchCatalogPage(catalogPage+1);}
+ catch(e){$("pagination-status").textContent=e.message;catalogHasMore=true;}
+ finally{catalogLoading=false;$("load-more").disabled=false;$("load-more").hidden=!catalogHasMore;}
+}
+$("load-more").onclick=loadNextPage;
 async function loadStore(){
+  checkoutEnabled=false;
+  catalogLoading=true;
   try{
-    const [pr,st]=await Promise.all([fetch("/api/products",{cache:"no-store"}),fetch("/api/status",{cache:"no-store"})]);
-    if(!pr.ok||!st.ok)throw new Error("A loja ainda não foi conectada");
-    const a=await pr.json(),b=await st.json();
-    available=!!a.configured;
-    products=Array.isArray(a.products)?a.products:[];
-    checkoutEnabled=b.checkout_enabled===true;
-  }catch{available=false;checkoutEnabled=false;products=[];}
+    const st=await fetch("/api/status",{cache:"no-store"});
+    if(!st.ok)throw new Error("Loja indisponível");
+    const settings=await st.json();
+    checkoutEnabled=settings.checkout_enabled===true;
+    products=[];catalogPage=0;
+    await fetchCatalogPage(1);
+  }catch{available=false;checkoutEnabled=false;products=[];catalogHasMore=false;}
+  finally{catalogLoading=false;}
   $("checkout-status").textContent=checkoutEnabled?"Solicitação sem pagamento online. A SALUZ entrará em contato para confirmar valores, frete e forma de pagamento.":"O cadastro de pedidos está desativado até concluirmos a infraestrutura, segurança e políticas da loja.";
   $("checkout-submit").disabled=!checkoutEnabled;
   renderFilters();renderProducts();renderBag();saveBag();
