@@ -173,6 +173,47 @@ function renderProductList(){
 }
 $("product-search").addEventListener("input",renderProductList);
 $("product-filter").addEventListener("change",renderProductList);
+function publishingChecklist(){
+  const form=$("product-form"),rows=[...$("variant-rows").children];
+  const name=form.elements.name.value.trim(),priceString=form.elements.price.value.trim();
+  const price=Number(priceString);
+  const hasName=name.length>=2;
+  const hasPrice=priceString!==""&&Number.isFinite(price)&&price>=0&&price<=500000;
+  const validPhoto=url=>/^https:\/\//i.test(String(url||"").trim());
+  const hasPhoto=validPhoto(form.elements.image_url.value)||rows.some(row=>validPhoto(row.querySelector('[data-field="image"]')?.value));
+  const validVariants=rows.length>0&&rows.every(row=>{
+    const color=row.querySelector('[data-field="color"]').value.trim();
+    const size=row.querySelector('[data-field="size"]').value.trim();
+    const stock=row.querySelector('[data-field="stock"]').value;
+    return color.length>0&&size.length>0&&stock!==""&&Number.isInteger(Number(stock))&&Number(stock)>=0;
+  });
+  const unique=new Set();
+  const noDuplicates=rows.every(row=>{
+    const key=JSON.stringify([row.querySelector('[data-field="color"]').value.trim().toLocaleLowerCase("pt-BR"),row.querySelector('[data-field="size"]').value.trim().toLocaleLowerCase("pt-BR")]);
+    if(unique.has(key))return false;unique.add(key);return true;
+  });
+  const checks=[
+    {ok:hasName,label:"Nome do produto preenchido"},
+    {ok:hasPrice,label:"Preço informado corretamente"},
+    {ok:hasPhoto,label:"Foto principal ou de variação em HTTPS"},
+    {ok:validVariants,label:"Cores, tamanhos e estoques preenchidos"},
+    {ok:noDuplicates,label:"Variações sem combinações repetidas"}
+  ];
+  return {checks,ready:checks.every(x=>x.ok)};
+}
+function renderPublishingChecklist(){
+  const list=$("publish-check-list"),info=$("publish-check-status");
+  if(!list||!info)return;
+  const {checks,ready}=publishingChecklist();
+  list.replaceChildren();
+  for(const check of checks){
+    const item=text("li",(check.ok?"✓ ":"○ ")+check.label,check.ok?"complete":"incomplete");
+    list.append(item);
+  }
+  const visible=$("product-form").elements.is_active.checked;
+  info.textContent=visible?(ready?"Pronto para ativação":"Complete os itens pendentes"):(ready?"Cadastro conferido":"Rascunho em edição");
+  info.classList.toggle("complete",ready);
+}
 function updateProductPreview(){
  const f=$("product-form"),p=$("preview-photo");p.replaceChildren();
  const name=f.elements.name.value.trim(),price=Number(f.elements.price.value);
@@ -188,6 +229,7 @@ function updateProductPreview(){
   const img=document.createElement("img");img.src=source;img.alt="Prévia do produto";
   img.onerror=()=>{p.replaceChildren(text("span","✦"));};p.append(img);
  }else p.append(text("span","✦"));
+ renderPublishingChecklist();
 }
 $("product-form").addEventListener("input",updateProductPreview);
 $("product-form").addEventListener("change",updateProductPreview);
@@ -201,24 +243,39 @@ function editProduct(p){
  f.elements.is_featured.checked=!!p.is_featured;
  $("main-preview").replaceChildren();if(p.image_url){const img=document.createElement("img");img.src=p.image_url;img.alt="Imagem principal";$("main-preview").append(img);}
  $("product-form-label").textContent="EDITANDO PRODUTO";
+ $("cancel-edit").hidden=false;
+ const visit=$("visit-product");
+ visit.hidden=!p.is_active;
+ if(p.is_active)visit.href="./produto.html?id="+encodeURIComponent(p.id);
  updateProductPreview();
  f.scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});
 }
 function newProduct(){
  const f=$("product-form");f.reset();f.elements.id.value="";$("variant-rows").replaceChildren();addVariantRow();$("main-preview").replaceChildren();
  $("product-form-label").textContent="NOVO PRODUTO";
+ $("cancel-edit").hidden=true;
+ $("visit-product").hidden=true;
  updateProductPreview();
 }
 $("new-product").onclick=()=>{newProduct();$("product-form").scrollIntoView({behavior:"smooth"});};
+$("cancel-edit").onclick=()=>{
+ newProduct();
+ message("Edição cancelada. Nenhuma alteração foi salva.");
+ $("product-form").scrollIntoView({behavior:"auto",block:"start"});
+};
 async function loadProducts(){
  try{const r=await api("admin/products");catalog=r.products||[];renderProductList();}
  catch(e){message(e.message);}
 }
 $("product-form").addEventListener("submit",async e=>{
- e.preventDefault();const f=e.currentTarget;
+ e.preventDefault();const f=e.currentTarget,button=$("save-product");
+ if(button.disabled)return;
+ button.disabled=true;button.textContent="Salvando...";
  let variants=[];
  try{
   variants=[...$("variant-rows").children].map(row=>({color:row.querySelector('[data-field="color"]').value.trim(),size:row.querySelector('[data-field="size"]').value.trim(),stock:Number(row.querySelector('[data-field="stock"]').value),image_url:row.querySelector('[data-field="image"]').value.trim()}));
+  if(f.elements.is_active.checked&&!publishingChecklist().ready)
+     throw new Error("Antes de publicar, complete a conferência do cadastro.");
   if(!variants.length)throw new Error("Adicione pelo menos uma variação.");
   if(variants.some(v=>!v.color||!v.size||!Number.isInteger(v.stock)||v.stock<0))throw new Error("Preencha cor, tamanho e estoque em cada variação.");
   const price=Number(f.elements.price.value);
@@ -231,6 +288,7 @@ $("product-form").addEventListener("submit",async e=>{
   message("Produto salvo. Confira as variações e o estoque antes de ativar.");
   newProduct();await loadProducts();
  }catch(err){message(err.message);}
+ finally{button.disabled=false;button.textContent="Salvar produto";}
 });
 
 async function uploadPhoto(file){
