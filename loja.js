@@ -14,9 +14,9 @@ const emit=(type,label="")=>{
 function analyticsConsent(){
   if(localStorage.getItem("saluz-analytics"))return;
   const notice=document.createElement("aside");
-  notice.style.cssText="position:fixed;z-index:200;left:14px;bottom:14px;width:min(430px,calc(100% - 28px));background:#fffdf9;border:1px solid #ddd0c6;box-shadow:0 8px 32px #0002;padding:18px;color:#51443b;font:13px/1.55 'DM Sans',sans-serif";
+  notice.className="analytics-banner";
   notice.textContent="Podemos registrar visitas e cliques de forma agregada para melhorar a loja? Não usamos esses dados para identificar compradores.";
-  const row=document.createElement("div");row.style.cssText="display:flex;gap:10px;margin-top:12px";
+  const row=document.createElement("div");row.className="analytics-actions";
   for(const [label,value] of [["Não aceitar","declined"],["Aceitar métricas","accepted"]]){
     const button=document.createElement("button");button.type="button";button.textContent=label;
     button.style.cssText="border:1px solid #51443b;background:"+(value==="accepted"?"#51443b":"transparent")+";color:"+(value==="accepted"?"white":"#51443b")+";padding:9px 12px;cursor:pointer";
