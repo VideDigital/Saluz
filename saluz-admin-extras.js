@@ -189,27 +189,11 @@
     if(!persist()){profiles=previous;return;}
     resetForm();el("fee-feedback").textContent="Condição salva neste navegador.";renderProfiles();
   }
-  function openFinance() {
-    if(!initialized){
-      readSaved();
-      el("fee-form").addEventListener("submit",saveFee);
-      el("fee-amount").addEventListener("input",renderComparison);
-      el("fee-cancel").addEventListener("click",resetForm);
-      el("overview-refresh").addEventListener("click",loadOverview);
-      el("overview-open-orders").addEventListener("click",()=>document.querySelector('[data-tab="orders"]').click());
-      el("customers-refresh").addEventListener("click",loadCustomers);
-      el("customer-search").addEventListener("input",e=>renderCustomers(e.target.value));
-      initialized=true;
-    }
-    renderProfiles();
-  }
   // Bind listeners immediately so overview/clients buttons function before opening Financeiro.
   el("overview-refresh").addEventListener("click",loadOverview);
   el("overview-open-orders").addEventListener("click",()=>document.querySelector('[data-tab="orders"]').click());
   el("customers-refresh").addEventListener("click",loadCustomers);
   el("customer-search").addEventListener("input",e=>renderCustomers(e.target.value));
-  // openFinance will attach only the finance-specific controls once.
-  const originalOpenFinance=openFinance;
   function initFinance(){ if (!initialized){
     readSaved();
     el("fee-form").addEventListener("submit",saveFee);
