@@ -78,3 +78,19 @@
 .product-image-button:focus-visible{outline:2px solid #51443B;outline-offset:3px}
 .product-image-button img{transition:transform .22s ease}
 .product-image-button:hover img{transform:scale(1.025)}
+
+/* Link real de página individual: padrão premium e acessível */
+.product-body .product-page-link{
+ display:flex;align-items:center;justify-content:center;
+ min-height:45px;margin-top:10px;
+ padding:10px 14px;border:1px solid #cdb9aa;
+ background:#f5eee8;color:#51443B!important;
+ font:700 14px/1.5 "DM Sans",sans-serif;
+ letter-spacing:.01em;text-align:center;text-decoration:none;
+ transition:background .2s ease,border-color .2s ease;
+}
+.product-body .product-page-link:hover{background:#e9d9cd;border-color:#51443B;text-decoration:none}
+.product-body .product-page-link:focus-visible{outline:2px solid #51443B;outline-offset:3px}
+.product-body .product-image-button{margin-top:0!important}
+@media(max-width:720px){.product-body .product-page-link{font-size:13px;min-height:46px;padding:10px 7px}}
+@media(prefers-reduced-motion:reduce){.product-body .product-page-link{transition:none}}
