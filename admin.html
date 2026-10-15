@@ -62,7 +62,7 @@
             <label for="product-filter">Exibição no site
               <select id="product-filter">
                 <option value="all">Todos</option>
-                <option value="active">Visíveis</option>
+                <option value="active">Visíveis</option><option value="featured">Destaques da Home</option>
                 <option value="inactive">Ocultos</option>
                 <option value="out">Sem estoque</option>
               </select>
@@ -90,6 +90,7 @@
           <label>Descrição<textarea name="description" rows="3" maxlength="2000"></textarea></label>
           <div class="variant-editor"><div class="tab-toolbar"><div><strong>Cores, tamanhos e fotografias</strong><p>Cada combinação pode ter sua própria foto e quantidade.</p></div><button type="button" class="outline" id="add-variant">+ Adicionar variação</button></div><div id="variant-rows" class="variant-rows"></div></div>
           <label class="switch"><input type="checkbox" name="is_active"> Produto ativo na loja</label>
+          <label class="switch"><input type="checkbox" name="is_featured"> Destacar na página inicial (aparece somente quando ativo)</label>
           <p class="hint">Produtos ocultos não aparecem na loja. Um produto visível sem estoque permanece indisponível para compra.</p>
           <div class="product-preview" id="product-preview" aria-live="polite">
             <span class="eyebrow">PRÉVIA DO CADASTRO</span>
