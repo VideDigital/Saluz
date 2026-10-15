@@ -89,3 +89,8 @@ body:has(.dashboard) .workspace .product-list small{font-size:13px}
 .product-form-footer [hidden]{display:none!important}
 .product-form-footer a{font:700 14px/1.5 "DM Sans",sans-serif;text-decoration:underline;text-underline-offset:4px;color:#51443B;padding:8px}
 @media(max-width:680px){.publish-check{padding:15px}.publish-check-list{grid-template-columns:1fr}.product-form-footer{align-items:stretch}.product-form-footer button{flex:1}.product-form-footer a{width:100%;text-align:center}}
+ 
+.admin-pagination{text-align:center;margin:20px auto}
+.admin-pagination button{min-height:46px;padding:10px 23px}
+.admin-pagination [hidden]{display:none!important}
+.admin-pagination p{font:500 14px/1.6 "DM Sans",sans-serif;color:#51443B}
