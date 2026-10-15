@@ -81,7 +81,16 @@ function productCard(p){
 function renderProducts(){
   const query=$("search").value.trim().toLocaleLowerCase("pt-BR");
   const chosen=products.filter(p=>(activeCategory==="all"||p.category===activeCategory)&&(p.name+" "+p.category+" "+p.description).toLocaleLowerCase("pt-BR").includes(query));
-  $("products").replaceChildren(...chosen.map(productCard));
+  const list=$("products");
+  list.replaceChildren(...chosen.map(productCard));
+  if(!chosen.length){
+    const empty=node("div","empty-collection");
+    empty.append(node("span","empty-mark","✦"),node("p","eyebrow","SALUZ / CATÁLOGO"));
+    empty.append(node("h3","",available?"Essa seleção ainda não tem produtos.":"A coleção está sendo preparada."));
+    empty.append(node("p","empty-copy",available?"Experimente outra categoria ou busque um nome diferente.":"Em breve, você encontrará aqui os produtos e as novidades cadastradas pela SALUZ."));
+    const browse=node("a","empty-link","Explorar outras categorias ↗");
+    browse.href="#colecoes";empty.append(browse);list.append(empty);
+  }
   $("catalog-status").textContent=available
     ? (chosen.length ? chosen.length+" produto(s) encontrado(s)" : "Ainda não há produtos disponíveis nesta categoria.")
     : (activeCategory!=="all" ? "A coleção "+activeCategory+" está em preparação. Os produtos serão exibidos quando o catálogo for ativado." : "O catálogo da SALUZ está em preparação. Os produtos reais aparecerão nesta vitrine.");
