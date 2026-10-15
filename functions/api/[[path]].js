@@ -31,7 +31,8 @@ async function sb(env, path, { method="GET", data, service=true, extraHeaders={}
 async function bodyJson(request) {
   const raw = await request.text();
   if (raw.length > 64000) throw new Error("body too long");
-  return JSON.parse(raw);
+  try{return JSON.parse(raw);}
+  catch{throw new Error("JSON inválido");}
 }
 function safeText(value, max) {
   return String(value ?? "").trim().slice(0,max);
@@ -72,6 +73,9 @@ async function isAdmin(request,env) {
 function validateProduct(raw) {
   const name=safeText(raw.name,140), description=safeText(raw.description,2000);
   const category=safeText(raw.category,70), image_url=safeText(raw.image_url,500);
+  const allowedCategories=new Set(["Nécessaires","Porta-joias","Organizadores de maquiagem",
+    "Organizadores de bolsa","Acessórios de viagem","Autocuidado","Acessórios femininos","Kits e presentes"]);
+  if(!allowedCategories.has(category))throw new Error("Selecione uma categoria válida da SALUZ");
   const price_cents=Number(raw.price_cents);
   if (name.length<2 || !Number.isInteger(price_cents) || price_cents<0 || price_cents>50000000) throw new Error("Nome ou preço inválido");
   if (image_url && !/^https:\/\//.test(image_url)) throw new Error("Imagem precisa ter URL HTTPS");
@@ -91,6 +95,8 @@ function validateProduct(raw) {
     if (seen.has(key)) throw new Error("Variação duplicada");
     seen.add(key);
   }
+  if(raw.is_active===true && !image_url && !normalized.some(v=>v.image_url))
+    throw new Error("Adicione uma foto do produto antes de publicá-lo");
   return {name,description,category,image_url,price_cents,variants:normalized,is_active:raw.is_active===true,is_featured:raw.is_featured===true,updated_at:new Date().toISOString()};
 }
 function validateOrder(b) {
@@ -283,7 +289,7 @@ export async function onRequest({request,env}) {
     return error("Rota inexistente",404);
   } catch(e) {
     // Do not return credentials, customer data, stack traces or raw provider responses.
-    if (e.message && /inválid|incomplet|indisponível|excede|aceitar|Estoque|Muitas|variaç|Nome|Imagem|Um produto|Telefone|Informe|Sacola|Pedido|Endereç|Cadastre|Preencha|repetidas/.test(e.message))
+    if (e.message && /inválid|incomplet|indisponível|excede|aceitar|Estoque|Muitas|variaç|Nome|Imagem|Um produto|Telefone|Informe|Sacola|Pedido|Endereç|Cadastre|Preencha|repetidas|Selecione|Adicione/.test(e.message))
       return error(e.message,400);
     return error("Não foi possível concluir a operação. Tente novamente.",500);
   }
