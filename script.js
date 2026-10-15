@@ -25,18 +25,15 @@ mobileNav?.querySelectorAll("a").forEach(link => {
 });
 
 const searchIndex = [
-  { title: "Nécessaires", type: "Categoria", keywords: "necessaire nécessaires bolsa organização organizacao maquiagem", href: "./loja.html?categoria=N%C3%A9cessaires#produtos" },
-  { title: "Porta-joias", type: "Categoria", keywords: "porta joias joias organização organizacao acessórios acessorios", href: "./loja.html?categoria=Porta-joias#produtos" },
-  { title: "Organização de maquiagem", type: "Categoria", keywords: "maquiagem organizador organização organizacao beleza", href: "./loja.html?categoria=Organizadores%20de%20maquiagem#produtos" },
-  { title: "Viagem", type: "Categoria", keywords: "viagem mala organizadores necessaire acessórios acessorios", href: "./loja.html?categoria=Acess%C3%B3rios%20de%20viagem#produtos" },
-  { title: "Autocuidado", type: "Categoria", keywords: "autocuidado rotina cuidado espelho pente escova", href: "./loja.html?categoria=Autocuidado#produtos" },
-  { title: "Presentes", type: "Categoria", keywords: "presente presentes para ela kits gift", href: "./loja.html?categoria=Kits%20e%20presentes#produtos" },
-  { title: "Kit Nova Rotina", type: "Kit", keywords: "kit nova rotina autocuidado organização organizacao", href: "./loja.html?categoria=Kits%20e%20presentes#produtos" },
-  { title: "Kit Organização", type: "Kit", keywords: "kit organização organizacao bolsa maquiagem", href: "./loja.html?categoria=Kits%20e%20presentes#produtos" },
-  { title: "Presente para Ela", type: "Kit", keywords: "kit presente para ela feminino", href: "./loja.html?categoria=Kits%20e%20presentes#produtos" },
-  { title: "Organizar minha bolsa", type: "Momento", keywords: "bolsa organizar organização organizacao", href: "./loja.html?categoria=Organizadores%20de%20bolsa#produtos" },
-  { title: "Preparar uma viagem", type: "Momento", keywords: "viagem mala preparar organizador", href: "./loja.html?categoria=Acess%C3%B3rios%20de%20viagem#produtos" }
-];
+  {title:"Nécessaires",type:"Coleção",keywords:"necessaire necessaires bolsa organizacao maquiagem",href:"./colecao-necessaires.html"},
+  {title:"Porta-joias",type:"Coleção",keywords:"porta joias joias acessorios organizar",href:"./colecao-porta-joias.html"},
+  {title:"Organizadores de maquiagem",type:"Coleção",keywords:"maquiagem organizador organizacao beleza",href:"./colecao-organizadores-maquiagem.html"},
+  {title:"Organizadores de bolsa",type:"Coleção",keywords:"bolsa organizadores divisorias organizacao",href:"./colecao-organizadores-bolsa.html"},
+  {title:"Acessórios de viagem",type:"Coleção",keywords:"viagem mala acessorios viagem",href:"./colecao-acessorios-viagem.html"},
+  {title:"Autocuidado",type:"Coleção",keywords:"autocuidado rotina cuidado",href:"./colecao-autocuidado.html"},
+  {title:"Acessórios femininos",type:"Coleção",keywords:"acessorios feminino cabelo",href:"./colecao-acessorios-femininos.html"},
+  {title:"Kits e presentes",type:"Coleção",keywords:"kits presentes presente para ela",href:"./colecao-kits-presentes.html"}
+]
 
 function normalizeText(value = "") {
   return value
@@ -63,7 +60,7 @@ function renderSearchResults(query = "") {
 
   if (!matches.length) {
     searchResults.innerHTML =
-      '<div class="search-empty"><strong>Nenhum resultado encontrado.</strong><span>O catálogo ainda está sendo definido. Tente outro termo.</span></div>';
+      '<div class="search-empty"><strong>Nenhuma coleção correspondente.</strong><span>Você também pode procurar pelo nome de um produto no catálogo completo.</span></div>';
     return;
   }
 
@@ -78,6 +75,11 @@ function renderSearchResults(query = "") {
       </a>
     `)
     .join("");
+  const goToCatalog = document.createElement("a");
+  goToCatalog.className = "search-result";
+  goToCatalog.href = "./loja.html?q=" + encodeURIComponent(query.trim()) + "#produtos";
+  goToCatalog.textContent = "Buscar “" + query.trim().slice(0,70) + "” em todos os produtos ↗";
+  searchResults.append(goToCatalog);
 
   searchResults.querySelectorAll("a").forEach(link => {
     link.addEventListener("click", closeSearch);
