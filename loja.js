@@ -55,7 +55,7 @@ function productCard(p){
   const card=node("article","product");
   const image=node("div","product-image"+(p.image_url?"":" placeholder"));
   if(p.image_url){const img=node("img");img.src=p.image_url;img.loading="lazy";img.alt="Produto "+p.name;img.onerror=()=>{img.remove();image.classList.add("placeholder");};image.append(img);}
-  card.append(image);
+  const picture=node("button","product-image-button");picture.type="button";picture.setAttribute("aria-label","Ver detalhes de "+p.name);picture.append(image);picture.onclick=()=>showProductDetails(p);card.append(picture);
   const b=node("div","product-body");b.append(node("span","product-category",p.category||"SALUZ"),node("h3","",p.name),node("span","price",money(p.price_cents)));
   const inStock=variantsFor(p);
   if(inStock.length){
