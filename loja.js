@@ -80,14 +80,10 @@ function productCard(p){
     opts.append(color,size);b.append(opts);
     const add=node("button","","Adicionar à sacola");
     add.type="button";add.onclick=()=>{
-      const selected=inStock.find(v=>(v.color||"Única")===color.value&&(v.size||"Único")===size.value);
-      if(!selected)return;
-      const chosenColor=selected.color||"",chosenSize=selected.size||"";
-      const key=p.id+"|"+chosenColor+"|"+chosenSize;
-      const existing=bag.find(i=>i.key===key);
-      if(existing){if(existing.quantity>=Math.min(10,Number(selected.stock)))return alert("Quantidade indisponível.");existing.quantity++;}
-      else bag.push({key,id:p.id,color:chosenColor,size:chosenSize,quantity:1});
-      saveBag();renderBag();emit("add_to_cart",p.name);$("cart-dialog").showModal();
+      const v=inStock.find(x=>(x.color||"Única")===color.value&&(x.size||"Único")===size.value);
+      const res=addToBag(p,v);
+      if(res.ok)$("cart-dialog").showModal();
+      else $("catalog-status").textContent=res.message;
     };
     b.append(add);
   }else{
