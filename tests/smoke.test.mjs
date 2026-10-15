@@ -124,6 +124,21 @@ test('Home retorna apenas produtos ativos em destaques e novidades',async()=>{
   assert.ok(calls.some(url=>url.includes('is_featured=eq.true')));
  }finally{globalThis.fetch=previous;}
 });
+test('Home não repete um produto destacado no bloco de novidades',async()=>{
+ const old=globalThis.fetch;
+ const selected={id:exampleId,name:'Um item de teste',category:'Nécessaires',price_cents:1000,variants:[]};
+ const second={...selected,id:'00000000-0000-4000-8000-000000000002',name:'Outro item de teste'};
+ globalThis.fetch=async url=>Response.json(
+   String(url).includes('is_featured=eq.true')?[selected]:[selected,second]
+ );
+ try{
+   const response=await handler('/api/products/home');
+   assert.equal(response.status,200);
+   const data=await response.json();
+   assert.deepEqual(data.featured.map(p=>p.id),[selected.id]);
+   assert.deepEqual(data.newest.map(p=>p.id),[second.id]);
+ }finally{globalThis.fetch=old;}
+});
 test('sem sessão administrativa, rotas de gestão são negadas',async()=>{
  const res=await handler('/api/admin/products');
  assert.equal(res.status,401);
