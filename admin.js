@@ -4,6 +4,7 @@ const fmt=n=>(Number(n||0)/100).toLocaleString("pt-BR",{style:"currency",currenc
 const text=(tag,value,cls)=>{const n=document.createElement(tag);n.textContent=value===undefined?"":String(value);if(cls)n.className=cls;return n;};
 const displayDate=s=>new Date(s).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"});
 let catalog=[],orders=[],currentTab="orders";
+let adminPage=0,adminHasMore=false,adminLoading=false;
 const statusNames={
  solicitacao_recebida:"Solicitação recebida",contatado:"Cliente contatado",
  aguardando_pagamento:"Aguardando pagamento",pago_confirmado:"Pago — confirmado",
@@ -263,10 +264,24 @@ $("cancel-edit").onclick=()=>{
  message("Edição cancelada. Nenhuma alteração foi salva.");
  $("product-form").scrollIntoView({behavior:"auto",block:"start"});
 };
-async function loadProducts(){
- try{const r=await api("admin/products");catalog=r.products||[];renderProductList();}
- catch(e){message(e.message);}
+async function loadAdminPage(page){
+ if(adminLoading)return;
+ adminLoading=true;
+ const btn=$("admin-load-more");btn.disabled=true;
+ $("admin-page-status").textContent="Carregando catálogo...";
+ try{
+  const result=await api("admin/products?page="+page);
+  const current=new Set(catalog.map(p=>p.id));
+  if(page===1){catalog=[];current.clear();}
+  catalog.push(...(result.products||[]).filter(p=>!current.has(p.id)));
+  adminPage=page;adminHasMore=result.has_more===true;
+  renderProductList();
+  $("admin-page-status").textContent=adminHasMore?"Existem mais produtos para carregar.":"Catálogo carregado nesta consulta.";
+ }catch(e){message(e.message);$("admin-page-status").textContent="Não foi possível carregar esta página.";}
+ finally{adminLoading=false;btn.disabled=false;btn.hidden=!adminHasMore;}
 }
+async function loadProducts(){return loadAdminPage(1);}
+$("admin-load-more").onclick=()=>{if(adminHasMore)loadAdminPage(adminPage+1);};
 $("product-form").addEventListener("submit",async e=>{
  e.preventDefault();const f=e.currentTarget,button=$("save-product");
  if(button.disabled)return;
