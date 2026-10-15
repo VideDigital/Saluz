@@ -7,7 +7,7 @@ const status=document.getElementById("category-status");
 const empty=document.getElementById("category-empty");
 const el=(name,cls,value)=>{const e=document.createElement(name);if(cls)e.className=cls;if(value!==undefined)e.textContent=String(value);return e};
 const brl=n=>(Number(n||0)/100).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
-fetch("/api/products",{cache:"no-store"}).then(async response=>{
+fetch("/api/products?category="+encodeURIComponent(chosen),{cache:"no-store"}).then(async response=>{
  if(!response.ok)throw new Error("Serviço temporariamente indisponível");
  return response.json();
 }).then(data=>{
