@@ -131,9 +131,12 @@ function productCard(p){
   favorite.setAttribute("aria-label",(selected?"Remover dos favoritos: ":"Salvar nos favoritos: ")+p.name);
   return card;
 }
+const normalizedSearch=value=>String(value??"").normalize("NFD").replace(/\p{M}/gu,"").toLocaleLowerCase("pt-BR").trim();
 function renderProducts(){
-  const query=$("search").value.trim().toLocaleLowerCase("pt-BR");
-  const chosen=products.filter(p=>(activeCategory==="all"||p.category===activeCategory)&&(p.name+" "+p.category+" "+p.description+" "+(p.variants||[]).map(v=>v.color+" "+v.size).join(" ")).toLocaleLowerCase("pt-BR").includes(query));
+  const query=normalizedSearch($("search").value);
+  const chosen=products.filter(p=>(activeCategory==="all"||p.category===activeCategory)&&normalizedSearch(
+    p.name+" "+p.category+" "+p.description+" "+(p.variants||[]).map(v=>v.color+" "+v.size).join(" ")
+  ).includes(query));
   const sort=$("sort").value;
   if(sort==="price-asc")chosen.sort((a,b)=>a.price_cents-b.price_cents);
   if(sort==="price-desc")chosen.sort((a,b)=>b.price_cents-a.price_cents);
@@ -229,6 +232,13 @@ function close(dialog){if(dialog.open)dialog.close();}
 if($("year"))$("year").textContent=new Date().getFullYear();
 $("search").value=urlParams.get("q")||"";
 $("search").addEventListener("input",renderProducts);
+if(urlParams.get("busca")==="1"){
+  window.addEventListener("load",()=>{
+    const field=$("search");
+    field.scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"center"});
+    field.focus({preventScroll:true});
+  },{once:true});
+}
 $("sort").addEventListener("change",renderProducts);
 $("cart-open").onclick=()=>{renderBag();$("cart-dialog").showModal();};
 $("cart-close").onclick=()=>close($("cart-dialog"));
