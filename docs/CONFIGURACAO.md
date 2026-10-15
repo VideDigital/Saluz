@@ -1,5 +1,15 @@
 # SALUZ — Configuração segura do ambiente
 
+## Estado real verificado — 15/10/2026
+
+- Projeto Supabase **Saluz** (`msulvbwahdiztxnlohdv`): ativo, coluna `is_featured` aplicada; catálogo real sem produtos no momento da verificação.
+- Cloudflare Pages da **Anny**: projeto **`saluz-loja`**, criado por **Direct Upload**, não conectado ao GitHub. Atualizações no GitHub Pages **não atualizam automaticamente** este Pages.
+- Variáveis de produção encontradas na Cloudflare da Anny: `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `CHECKOUT_ENABLED`. Falta `SUPABASE_SERVICE_ROLE_KEY` (configurar apenas em **Secret** no projeto dela). Não enviar a chave por chat, GitHub ou WhatsApp.
+- Repositório `VideDigital/Saluz` e GitHub Pages: somente **prévia estática**. Não é possível validar login, fotos e estoque nessa prévia.
+- Domínio `usesaluz.com.br`: não alterar DNS sem autorização e homologação completa. Pagamentos e pedidos devem ficar desativados.
+
+**Sequência do handoff do painel, quando a Anny autorizar o acesso:** configurar Secret no Cloudflare correto → implantar a compilação atual do repositório no projeto Direct Upload dela incluindo Functions → confirmar `/api/status` → autenticar com conta autorizada → cadastrar um produto oculto com imagens/variações reais → testar visualização da loja e seleção de destaque → aprovar com a Anny. **Não mudar CHECKOUT_ENABLED**.
+
 ## 0. Escopo atual (15/10/2026)
 
 Site personalizado, cadastro de produtos e variações, sacola, solicitação de pedido antes de pagamento, painel protegido para dados de clientes e métricas opt-in de visitas e cliques. **Nenhum pagamento ou cálculo de frete automático está integrado.** Pedido registrado != pagamento confirmado.
