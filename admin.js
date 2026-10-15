@@ -110,8 +110,19 @@ function renderProductList(){
  for(const p of catalog){
   const row=text("div",undefined,"product-row"),summary=text("div");
   summary.append(text("strong",p.name),text("small",fmt(p.price_cents)+" · "+(p.is_active?"Ativo":"Inativo")+" · "+(p.variants||[]).length+" variação(ões)"));
+  const actions=text("div",undefined,"product-row-actions");
+  const toggle=text("button",p.is_active?"Ocultar no site":"Exibir no site",p.is_active?"visibility active":"visibility");
+  toggle.type="button";
+  toggle.onclick=async()=>{
+    toggle.disabled=true;
+    try{
+      await api("admin/products/"+p.id,{method:"PATCH",body:JSON.stringify({...p,is_active:!p.is_active})});
+      message(!p.is_active?"Produto ativado na vitrine.":"Produto ocultado da vitrine.");
+      await loadProducts();
+    }catch(e){message(e.message);toggle.disabled=false;}
+  };
   const btn=text("button","Editar");btn.type="button";btn.onclick=()=>editProduct(p);
-  row.append(summary,btn);root.append(row);
+  actions.append(toggle,btn);row.append(summary,actions);root.append(row);
  }
 }
 function editProduct(p){
