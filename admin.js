@@ -36,9 +36,11 @@ $("login-form").addEventListener("submit",async e=>{
  e.preventDefault();const fd=new FormData(e.currentTarget);
  $("login-message").textContent="Validando acesso...";
  try{
-  await api("auth/login",{method:"POST",body:JSON.stringify({email:fd.get("email"),password:fd.get("password")})});
+  await api("auth/login",{method:"POST",body:JSON.stringify({email:String(fd.get("email")||"").trim(),password:fd.get("password")})});
+  const session=await api("auth/me");
+  if(session.admin!==true)throw new Error("Sessão não confirmada");
   e.currentTarget.reset();showDashboard();
- }catch(err){const detail=String(err.message||"");const safe=detail.includes("Muitas tentativas")?"Muitas tentativas de acesso. Aguarde 15 minutos.":detail.includes("Painel em configuração")?"O serviço de autenticação está temporariamente indisponível.":detail.includes("Credenciais inválidas")?"E-mail ou senha não conferem. Use a senha da conta SALUZ cadastrada no Supabase, não a senha do Gmail ou Cloudflare.":detail.includes("Acesso não autorizado")?"Esta conta não tem autorização administrativa.": "Não foi possível entrar. Confira as credenciais ou tente novamente mais tarde.";showLogin(safe);}
+ }catch(err){const detail=String(err.message||"");const safe=detail.includes("Muitas tentativas")?"Muitas tentativas de acesso. Aguarde 15 minutos.":detail.includes("Painel em configuração")?"O serviço de autenticação está temporariamente indisponível.":detail.includes("Credenciais inválidas")?"E-mail ou senha não conferem. Use a senha da conta SALUZ cadastrada no Supabase, não a senha do Gmail ou Cloudflare.":detail.includes("Acesso não autorizado")?"Esta conta não tem autorização administrativa.":detail.includes("Sessão não confirmada")?"A senha foi aceita, mas o navegador não confirmou a sessão. Abra o link diretamente no Chrome e tente novamente.":detail.includes("Acesso negado")?"E-mail autenticado, mas sem autorização administrativa.": "Não foi possível entrar. Confira as credenciais ou tente novamente mais tarde.";showLogin(safe);}
 });
 $("logout").onclick=async()=>{try{await api("auth/logout",{method:"POST",body:"{}"});}catch{}showLogin("Sessão encerrada.");};
 function changeTab(name){
