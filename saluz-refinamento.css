@@ -337,3 +337,19 @@ body:has(.dashboard) .pill{color:var(--coffee);background:#ede0d6}
 .visual-accessories:before{width:39%;height:39%;left:30%;top:29%;border:8px solid #bd9c84;border-radius:50%;box-shadow:10px 14px 25px #51443b1b,inset 0 0 0 13px #f3e6db}
 .visual-accessories:after{width:15%;height:15%;left:43%;top:22%;border:3px solid #e9d3c2;border-radius:50%;background:#bd9c84}
 @media(min-width:721px) and (max-width:980px){.mobile-nav{inset:111px 0 0}}
+
+
+/* Contrast audit: all reading text stays coffee on the approved warm surfaces. */
+.promo-moment{color:var(--coffee)}
+.promo-moment .eyebrow{color:var(--coffee);opacity:.8}
+.moment-links{border-top-color:var(--line)}
+.moment-links a{color:var(--coffee);border-bottom-color:var(--line)}
+.detail-points{border-top-color:var(--line)}
+.detail-points div{border-bottom-color:var(--line)}
+.detail-points span{color:var(--coffee);opacity:.75}
+.footer-brand,.footer-bottom{border-color:var(--line)}
+.footer-columns div{color:var(--coffee)}
+.site-footer .footer-brand span{color:var(--coffee);opacity:.75}
+.product-go{color:var(--coffee);font-size:12px;font-weight:600;text-decoration:underline;text-decoration-color:rgba(81,68,59,.4);text-underline-offset:5px;white-space:normal;text-align:right}
+.product-go:hover{text-decoration-color:var(--coffee)}
+@media(max-width:720px){.product-go{display:inline-block;margin-top:10px;text-align:left}}
