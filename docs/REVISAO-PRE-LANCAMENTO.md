@@ -13,7 +13,11 @@ Atualização: 15/10/2026. **Não é autorização para liberar pedidos, pagamen
 - Back-end: validação de cor/tamanho, prevenção de duplicatas de variação no pedido, limite de envio de fotos.
 - Página de produto: fotos vinculadas à combinação de cor/tamanho, consulta específica por UUID, produtos relacionados da mesma coleção (somente produtos ativos).
 - Sacola unificada em `sacola.js` entre vitrine e produto, com validação de UUID, limite por SKU, saneamento de dados locais e sincronização de contagem entre abas.
+- Favoritos implementados em `favoritos.js`, `favoritos.html` e `favoritos-pagina.js`: salvam só IDs no navegador, não exigem conta, oferecem botões acessíveis na vitrine, categorias e produto, e mostram apenas itens publicados.
+- API pública `/api/products/favorites?ids=...`: aceita até 60 UUIDs válidos; não retorna produtos ocultos. Pesquisa acentuada/desacentuada e botão Buscar do cabeçalho levam ao campo do catálogo.
+- Pesquisas da Home sugerem categorias existentes e permitem buscar o termo no catálogo, sem apresentar kits não cadastrados como produtos disponíveis.
 - Testes automatizados de sacola em `tests/sacola.test.mjs`: adição, agrupamento de variações, estoque, remoção, dados locais adulterados, indisponibilidade de armazenamento e ausência de dados pessoais.
+- Testes automatizados de favoritos em `tests/favoritos.test.mjs`: IDs válidos, remoção, privacidade, sincronização e referências HTML; smoke test verifica filtragem no servidor.
 - Vitrine e páginas de coleção: links para páginas individuais, consulta de categoria filtrada no servidor e limite de catálogo elevado para 300 itens por requisição.
 - Testes automatizados no GitHub Actions (arquivos `tests/smoke.test.mjs` e `tests/sacola.test.mjs`) verificam páginas, rotas protegidas, configuração, checkout desativado e consulta de categoria.
 - **Limitação conhecida:** catálogos com mais de 300 itens exigirão paginação para garantir acesso integral a todos os produtos. Não considerar essa escala homologada.
