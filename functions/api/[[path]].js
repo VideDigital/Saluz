@@ -247,7 +247,10 @@ export async function onRequest({request,env}) {
       const columns="id,name,description,category,image_url,price_cents,variants";
       if(route[1]==="home" && route.length===2){
         const featured=await sb(env,"/rest/v1/saluz_products?is_active=eq.true&is_featured=eq.true&select="+columns+"&order=created_at.desc&limit=8");
-        const newest=await sb(env,"/rest/v1/saluz_products?is_active=eq.true&select="+columns+"&order=created_at.desc&limit=8");
+        const recent=await sb(env,"/rest/v1/saluz_products?is_active=eq.true&select="+columns+"&order=created_at.desc&limit=24");
+        // Não repetir os mesmos produtos nos dois blocos da página inicial.
+        const featuredIds=new Set(featured.map(p=>p.id));
+        const newest=recent.filter(p=>!featuredIds.has(p.id)).slice(0,8);
         return output({featured,newest,configured:true});
       }
       // Favoritos: consultar somente IDs válidos e produtos publicados, sem depender do limite da vitrine.
