@@ -178,6 +178,7 @@ $("search").addEventListener("input",renderProducts);
 $("sort").addEventListener("change",renderProducts);
 $("cart-open").onclick=()=>{renderBag();$("cart-dialog").showModal();};
 $("cart-close").onclick=()=>close($("cart-dialog"));
+$("mobile-cart-open").onclick=()=>$("cart-open").click();
 $("checkout-close").onclick=()=>close($("checkout-dialog"));
 $("checkout-open").onclick=()=>{
   if(!$("checkout-open").disabled){
