@@ -12,6 +12,28 @@ const selected=()=>variations().find(v=>(v.color||"Única")===byId("sku-color").
 const max=v=>Math.min(10,Math.max(0,Number(v?.stock)||0));
 const validImage=url=>typeof url==="string"&&/^https:\/\//i.test(url);
 const note=(text)=>byId("product-feedback").textContent=text;
+function syncProductFavorite(){
+  const button=byId("product-favorite");
+  if(!product||!uuid.test(String(product.id||""))){button.hidden=true;return;}
+  button.hidden=false;
+  const saved=window.SaluzFavorites.has(product.id);
+  button.classList.toggle("is-favorite",saved);
+  button.setAttribute("aria-pressed",String(saved));
+  button.children[0].textContent=saved?"♥":"♡";
+  button.children[1].textContent=saved?"Remover dos favoritos":"Salvar nos favoritos";
+}
+byId("product-favorite").onclick=()=>{
+  if(!product)return;
+  const result=window.SaluzFavorites.toggle(product.id);
+  if(!result.ok){note(result.message);return;}
+  syncProductFavorite();
+  note(result.added?"Salvo na sua lista de favoritos.":"Removido da sua lista de favoritos.");
+};
+window.addEventListener("saluz:favorites",syncProductFavorite);
+window.addEventListener("storage",event=>{
+  if(event.key==="saluz-favorites-v1"||event.key===null)syncProductFavorite();
+});
+
 function updateBagCount(){
  const count=window.SaluzBag.count(window.SaluzBag.read());
  document.querySelectorAll("[data-bag-count]").forEach(e=>e.textContent=count);
@@ -79,6 +101,7 @@ function updateSelection(){
 }
 function render(p){
  product=p;
+ syncProductFavorite();
  document.title=p.name+" | SALUZ";
  byId("product-loading").hidden=true;
  byId("product-panel").hidden=false;
