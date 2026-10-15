@@ -157,6 +157,22 @@ async function recordEvent(request,env) {
   return output({ok:true},201);
 }
 async function login(request,env) {
+  // Requer chave distinta da service_role para nunca armazenar IP/e-mail identificáveis.
+  if(!env.LOGIN_RATE_SECRET || String(env.LOGIN_RATE_SECRET).length<32)
+    return error("Proteção de acesso aguardando configuração",503);
+  const clientIp=request.headers.get("cf-connecting-ip")||"unknown";
+  const encoder=new TextEncoder();
+  const key=await crypto.subtle.importKey("raw",encoder.encode(env.LOGIN_RATE_SECRET),
+    {name:"HMAC",hash:"SHA-256"},false,["sign"]);
+  const fingerprint=await crypto.subtle.sign("HMAC",key,encoder.encode(
+    "saluz-login-v1|"+clientIp.toLowerCase().slice(0,128)));
+  const hash=[...new Uint8Array(fingerprint)].map(n=>n.toString(16).padStart(2,"0")).join("");
+  const withinLimit=await sb(env,"/rest/v1/rpc/saluz_check_login_limit",{
+    method:"POST",data:{p_hash:hash,p_max:8,p_window_seconds:900}
+  });
+  if(withinLimit!==true)
+    return output({error:"Muitas tentativas. Aguarde 15 minutos antes de entrar."},429,{"retry-after":"900"});
+
   const b=await bodyJson(request);
   const email=safeText(b.email,160), password=String(b.password||"");
   if (!email || !password || password.length>200) return error("Credenciais inválidas",401);
@@ -275,11 +291,20 @@ export async function onRequest({request,env}) {
       const category=new URL(request.url).searchParams.get("category");
       if(category && !allowedCategories.has(category))return error("Categoria inválida",400);
       const filter=category?"&category=eq."+encodeURIComponent(category):"";
-      const products=await sb(env,"/rest/v1/saluz_products?is_active=eq.true"+filter+"&select="+columns+"&order=created_at.desc&limit=300");
-      return output({products,configured:true});
+      const q=new URL(request.url).searchParams;
+      const rawPage=q.get("page")||"1",rawLimit=q.get("limit")||"24";
+      if(!/^[1-9][0-9]{0,4}$/.test(rawPage)||!/^[1-9][0-9]{0,2}$/.test(rawLimit))
+        return error("Paginação inválida",400);
+      const page=Number(rawPage),limit=Number(rawLimit);
+      if(page>10000||limit>48)return error("Paginação inválida",400);
+      const offset=(page-1)*limit;
+      const products=await sb(env,"/rest/v1/saluz_products?is_active=eq.true"+filter+
+        "&select="+columns+"&order=created_at.desc,id.desc&limit="+(limit+1)+"&offset="+offset);
+      return output({products:products.slice(0,limit),configured:true,page,limit,has_more:products.length>limit});
     }
     if (route[0]==="events" && request.method==="POST") return await recordEvent(request,env);
-    if (route[0]==="checkout" && request.method==="POST") return await createOrder(request,env);
+    if (route[0]==="checkout" && request.method==="POST")
+      return error("Pedidos desativados até existir reserva atômica de estoque e aprovação da SALUZ.",503);
     if (route[0]==="auth" && route[1]==="login" && request.method==="POST") return await login(request,env);
     if (route[0]==="auth" && route[1]==="logout" && request.method==="POST")
       return output({ok:true},200,{"set-cookie":COOKIE+"=; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=0"});
