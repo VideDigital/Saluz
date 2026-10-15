@@ -170,6 +170,7 @@ async function loadStore(){
   $("checkout-status").textContent=checkoutEnabled?"Solicitação sem pagamento online. A SALUZ entrará em contato para confirmar valores, frete e forma de pagamento.":"O cadastro de pedidos está desativado até concluirmos a infraestrutura, segurança e políticas da loja.";
   $("checkout-submit").disabled=!checkoutEnabled;
   renderFilters();renderProducts();renderBag();saveBag();
+  const target=products.find(p=>p.id===urlParams.get("produto"));if(target)showProductDetails(target,false);
 }
 function close(dialog){if(dialog.open)dialog.close();}
 $("year").textContent=new Date().getFullYear();
