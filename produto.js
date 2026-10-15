@@ -37,19 +37,36 @@ function gallery(){
  image(main,product.name+" — "+(v?.color||""));
  const root=byId("product-gallery-thumbs");root.replaceChildren();
  const photos=[];const seen=new Set();
- for(const url of [product.image_url,...variations().map(v=>v.image_url)]){
-  if(validImage(url)&&!seen.has(url)){seen.add(url);photos.push(url);}
+ const candidates=[
+   {url:product.image_url,variant:null},
+   ...variations().map(v=>({url:v.image_url,variant:v}))
+ ];
+ for(const item of candidates){
+   if(validImage(item.url)&&!seen.has(item.url)){
+     seen.add(item.url);photos.push(item);
+   }
  }
  root.hidden=photos.length<2;
- for(const url of photos){
-  const b=node("button",url===main?"active":"");
-  b.type="button";b.setAttribute("aria-label","Ver outra foto de "+product.name);
-  const img=node("img");img.src=url;img.alt="";img.loading="lazy";b.append(img);
-  b.onclick=()=>{
-   image(url,product.name);
-   [...root.children].forEach(x=>x.classList.toggle("active",x===b));
-  };
-  root.append(b);
+ for(const photo of photos){
+   const b=node("button",photo.url===main?"active":"");
+   b.type="button";
+   b.setAttribute("aria-label",photo.variant?
+      "Selecionar foto da cor "+(photo.variant.color||"única")+", tamanho "+(photo.variant.size||"único"):
+      "Ver imagem principal do produto");
+   const img=node("img");img.src=photo.url;img.alt="";img.loading="lazy";b.append(img);
+   b.onclick=()=>{
+     if(photo.variant){
+       byId("sku-color").value=photo.variant.color||"Única";
+       sizesForColor();
+       byId("sku-size").value=photo.variant.size||"Único";
+       quantity=1;
+       updateSelection();
+     }else{
+       image(photo.url,product.name);
+       [...root.children].forEach(x=>x.classList.toggle("active",x===b));
+     }
+   };
+   root.append(b);
  }
 }
 function updateSelection(){
@@ -110,18 +127,60 @@ function showDesignPreview(){
   byId("product-share").hidden=true;
   byId("product-feedback").textContent="Esta é somente uma prévia do layout. Nenhum produto real está cadastrado nesta página.";
 }
+async function loadRelated(current){
+ const wrap=byId("related-section"),grid=byId("related-grid");
+ if(!wrap||!grid||!current?.category)return;
+ try{
+  const res=await fetch("/api/products?category="+encodeURIComponent(current.category),{cache:"no-store"});
+  if(!res.ok)return;
+  const response=await res.json();
+  const items=(Array.isArray(response.products)?response.products:[])
+    .filter(p=>p.id!==current.id).slice(0,4);
+  if(!items.length)return;
+  grid.replaceChildren();
+  const categorySlug=slug[current.category];
+  byId("related-category").href=categorySlug?"./colecao-"+categorySlug+".html":"./colecoes.html";
+  for(const p of items){
+   const article=node("article","product-related-card");
+   const link=node("a","product-related-image");
+   link.href="./produto.html?id="+encodeURIComponent(p.id);
+   link.setAttribute("aria-label","Abrir "+p.name);
+   const photo=(p.variants||[]).find(v=>Number(v.stock)>0&&validImage(v.image_url))?.image_url||
+     p.image_url||(p.variants||[]).find(v=>validImage(v.image_url))?.image_url;
+   if(validImage(photo)){
+     const img=node("img");img.src=photo;img.alt=p.name;img.loading="lazy";link.append(img);
+   }else link.append(node("span","product-placeholder","✦"));
+   const copy=node("div","product-related-card-copy");
+   copy.append(node("span","product-related-category",p.category),
+       node("h3","",p.name),
+       node("strong","product-related-price",format(p.price_cents)));
+   const action=node("a","product-related-action","Ver opções ↗");action.href=link.href;
+   copy.append(action);article.append(link,copy);grid.append(article);
+  }
+  wrap.hidden=false;
+ }catch{
+  // Recomendações opcionais: nunca bloquear a página principal.
+ }
+}
 async function load(){
  const params=new URLSearchParams(location.search);
  if(params.get("preview")==="1"){showDesignPreview();return;}
  const id=params.get("id");
  if(!id||!uuid.test(id)){byId("product-loading").textContent="Produto não encontrado.";return;}
  try{
-  const res=await fetch("/api/products",{cache:"no-store"});
+  const res=await fetch("/api/products/"+encodeURIComponent(id),{cache:"no-store"});
+  if(res.status===404){
+    byId("product-loading").textContent="Este produto não está disponível no catálogo.";
+    return;
+  }
   if(!res.ok)throw new Error("Catálogo indisponível na prévia.");
   const payload=await res.json();
-  const match=(Array.isArray(payload.products)?payload.products:[]).find(p=>p.id===id);
-  if(!match){byId("product-loading").textContent="Este produto não está disponível no catálogo.";return;}
-  render(match);
+  if(!payload.product){
+    byId("product-loading").textContent="Este produto não está disponível no catálogo.";
+    return;
+  }
+  render(payload.product);
+  await loadRelated(payload.product);
  }catch{
   byId("product-loading").textContent="O catálogo será exibido após a conexão da loja. Explore as coleções enquanto isso.";
  }
