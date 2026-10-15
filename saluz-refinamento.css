@@ -329,3 +329,11 @@ body:has(.dashboard) .pill{color:var(--coffee);background:#ede0d6}
  .empty-collection{padding:44px 17px;min-height:310px}
  .empty-collection .empty-copy{font-size:13px}
 }
+
+/* Complete official category architecture: eight launch families */
+@media(min-width:981px){.collection-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.visual-bag:before{width:55%;height:44%;left:22%;top:31%;background:linear-gradient(150deg,#f3e8de,#d2b6a5);border-radius:9px 9px 17px 17px;transform:rotate(8deg);box-shadow:10px 15px 22px #51443b1f}
+.visual-bag:after{width:28%;height:18%;left:36%;top:22%;border:6px solid #bc9f8a;border-bottom:0;border-radius:18px 18px 0 0;transform:rotate(8deg)}
+.visual-accessories:before{width:39%;height:39%;left:30%;top:29%;border:8px solid #bd9c84;border-radius:50%;box-shadow:10px 14px 25px #51443b1b,inset 0 0 0 13px #f3e6db}
+.visual-accessories:after{width:15%;height:15%;left:43%;top:22%;border:3px solid #e9d3c2;border-radius:50%;background:#bd9c84}
+@media(min-width:721px) and (max-width:980px){.mobile-nav{inset:111px 0 0}}
