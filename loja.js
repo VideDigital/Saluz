@@ -87,6 +87,7 @@ function productCard(p){
     };
     b.append(add);
   }else{
+    image.append(node("span","product-status","Indisponível"));
     const noStock=node("button","","Indisponível");noStock.disabled=true;b.append(noStock);
   }
   const more=node("button","","Ver detalhes");more.type="button";more.className="view-details";more.onclick=()=>showProductDetails(p);b.append(more);
@@ -94,7 +95,11 @@ function productCard(p){
 }
 function renderProducts(){
   const query=$("search").value.trim().toLocaleLowerCase("pt-BR");
-  const chosen=products.filter(p=>(activeCategory==="all"||p.category===activeCategory)&&(p.name+" "+p.category+" "+p.description).toLocaleLowerCase("pt-BR").includes(query));
+  const chosen=products.filter(p=>(activeCategory==="all"||p.category===activeCategory)&&(p.name+" "+p.category+" "+p.description+" "+(p.variants||[]).map(v=>v.color+" "+v.size).join(" ")).toLocaleLowerCase("pt-BR").includes(query));
+  const sort=$("sort").value;
+  if(sort==="price-asc")chosen.sort((a,b)=>a.price_cents-b.price_cents);
+  if(sort==="price-desc")chosen.sort((a,b)=>b.price_cents-a.price_cents);
+  if(sort==="az")chosen.sort((a,b)=>a.name.localeCompare(b.name,"pt-BR"));
   const list=$("products");
   list.replaceChildren(...chosen.map(productCard));
   if(!chosen.length){
