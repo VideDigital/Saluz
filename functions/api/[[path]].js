@@ -289,7 +289,7 @@ export async function onRequest({request,env}) {
     return error("Rota inexistente",404);
   } catch(e) {
     // Do not return credentials, customer data, stack traces or raw provider responses.
-    if (e.message && /inválid|incomplet|indisponível|excede|aceitar|Estoque|Muitas|variaç|Nome|Imagem|Um produto|Telefone|Informe|Sacola|Pedido|Endereç|Cadastre|Preencha|repetidas|Selecione|Adicione/.test(e.message))
+    if (e.message && /inválid|incomplet|indisponível|excede|aceitar|Estoque|Muitas|variaç|Nome|Imagem|Um produto|Telefone|Informe|Sacola|Pedido|Endereç|Cadastre|Preencha|repetidas|Selecione|Adicione|duplicada/.test(e.message))
       return error(e.message,400);
     return error("Não foi possível concluir a operação. Tente novamente.",500);
   }
