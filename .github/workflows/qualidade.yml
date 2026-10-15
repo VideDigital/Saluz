@@ -1,0 +1,23 @@
+name: SALUZ | Verificações de qualidade
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+concurrency:
+  group: saluz-qa-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  smoke:
+    name: Integridade das páginas e API
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Testes sem credenciais reais
+        run: node --test tests/smoke.test.mjs
