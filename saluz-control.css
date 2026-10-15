@@ -1,0 +1,69 @@
+/* SALUZ Control · identidade de produto administrativo independente da vitrine */
+:root{--coffee:#172338;--sand:#b9c7d8;--paper:#fff;--cream:#f3f6fb;--line:#e1e7f0;--muted:#64748b;--admin-accent:#335cff;--admin-text:#172338;--admin-navy:#101c30}
+body{background:var(--cream);color:var(--admin-text);font-family:"DM Sans",system-ui,sans-serif}
+h1,h2,.panel-intro h2,.panel-section-header h3,.product-form h2,.chart-title h2,.product-list-header h2{font-family:"DM Sans",system-ui,sans-serif!important;font-weight:750!important;letter-spacing:-.035em}
+.eyebrow{letter-spacing:.12em;color:#64748b}
+.dashboard{grid-template-columns:254px minmax(0,1fr);background:var(--cream)}
+.sidebar{background:var(--admin-navy);color:#d5dfef;border-right:1px solid #22334f;padding:28px 15px;gap:28px;box-shadow:8px 0 28px #14233a08}
+.sidebar-logo{font-size:22px;font-weight:800;letter-spacing:-.035em;padding:6px 15px 19px;border-bottom:1px solid #2b3951}
+.sidebar-logo span{color:#7c9aff}
+.sidebar-logo small{font-size:10px;letter-spacing:.15em;color:#92a7c7;font-weight:650}
+.tabs{gap:5px}
+.tabs button{justify-content:space-between;border:1px solid transparent;border-radius:9px;min-height:47px;padding:12px 14px;color:#afc0d8;font-size:13px;font-weight:650;transition:background .18s,border-color .18s,color .18s}
+.tabs button:hover{background:#1b2d49;color:#fff}
+.tabs button.selected{background:#294dba!important;color:#fff!important;border-color:#4568d5!important;box-shadow:0 6px 15px #09142935}
+.tabs button span{opacity:.5}
+.sidebar-bottom{border-top:1px solid #2b3951;padding:19px 15px 5px;color:#d5dfef}
+.sidebar-bottom a,.sidebar-bottom button{color:#d5dfef;font-weight:600}
+.workspace{max-width:none;padding:30px clamp(22px,3.1vw,55px) 65px}
+.workspace-head{border-bottom:1px solid var(--line);padding-bottom:20px;align-items:center}
+.workspace-head .eyebrow{color:#64748b}
+.workspace-head h1{font-size:clamp(26px,3vw,36px);line-height:1.2;margin:7px 0 0}
+.workspace-head #admin-notice{display:inline-flex;background:#e8efff;color:#3251a1;padding:9px 13px;border-radius:99px;font-weight:700}
+.panel-intro{margin:27px 0 19px}
+.panel-intro h2{font-size:clamp(22px,2.6vw,29px);margin:8px 0}
+.panel-intro p{color:var(--muted)}
+.management-notice{background:#fff9e9;border:1px solid #f3dfaa;border-left:4px solid #dba63a;border-radius:10px;color:#765c28;font-size:12px}
+.management-kpi,.panel-surface,.order-card,.product-list,.product-form,.stat,.reports-chart{background:#fff;border:1px solid var(--line);border-radius:13px;box-shadow:0 3px 14px #162a4a06}
+.management-kpi{padding:22px;gap:10px;min-height:147px}
+.management-kpi small{font-size:12px;font-weight:650;color:#66758c}
+.management-kpi strong,.stat strong{font-family:"DM Sans",system-ui,sans-serif;font-size:clamp(23px,2.5vw,32px);font-weight:800;letter-spacing:-.04em;color:#15253c}
+.management-kpi span{font-size:11px}
+.panel-section-header h3{font-size:19px}
+.panel-surface{padding:24px}
+.panel-data-row strong,.fee-profile-row strong,.fee-comparison-row strong{font-size:13px}
+.panel-data-row small,.fee-profile-row small,.fee-comparison-row small{font-size:12px}
+.panel-data-row{padding:17px 0}
+.primary,.login button[type=submit],.order-footer button{background:var(--admin-accent);border:1px solid var(--admin-accent);border-radius:9px;color:#fff;font-weight:700;justify-content:center;gap:12px;min-height:44px;transition:filter .15s}
+.primary:hover,.login button[type=submit]:hover,.order-footer button:hover{filter:brightness(.91)}
+.outline,.product-row button{background:#fff;border:1px solid #d5deeb;color:#28415f;border-radius:8px;font-weight:650;transition:background .15s}
+.outline:hover,.product-row button:hover{background:#eef3ff}
+input,select,textarea{border:1px solid #d5deeb;border-radius:9px;color:#192b44;background:#fff;min-height:44px}
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible{outline:2px solid #5275f5;outline-offset:2px}
+label{color:#3d4e66}
+.pill,.product-badge{border-radius:99px;background:#e9efff;color:#2c4c9a;border-color:#d1dfff}
+.product-badge.warning{background:#fff3e5;color:#965a16;border-color:#f2d4ae}
+.product-badge.public{background:#e8f7ee;color:#24734a;border-color:#bfe8ce}
+.variant-row,.publish-check,.product-preview{background:#f7f9fd;border:1px solid #e0e7f2;border-radius:9px;color:#283c56}
+.product-list-header h2,.product-tools label,.publish-check-head strong,.publish-check-note,.product-form-footer a,.admin-pagination p{color:#233954}
+.product-tools{border-color:var(--line)}
+.product-tools input,.product-tools select{color:#1e3350}
+.product-list-image,.preview-photo{background:#eef3fb;border-color:#dbe4f0;color:#7b93b8;border-radius:9px}
+.product-row-info small{color:#64748b}
+.publish-check-list li{border-color:#e0e7f2}
+.publish-check-head span{background:#e8efff;color:#3153a4;border-radius:7px}
+.publish-check-head span.complete{background:#e8f7ee;color:#24734a}
+.bar{background:#4b6fff;border-radius:6px 6px 0 0}
+.fee-best-value{font-family:"DM Sans",sans-serif;font-weight:800;color:#153d83;letter-spacing:-.045em}
+.fee-comparison-row:first-of-type{border-top:1px solid var(--line)}
+.login{background:radial-gradient(circle at 18% 14%,#dfe9ff 0,transparent 32%),linear-gradient(140deg,#f4f7fc,#e9eef8)}
+.login-brand{color:#1c2b45;font-weight:850;letter-spacing:-.04em}
+.login-brand span{color:#4168ee}
+.login-card{border-radius:17px;border:1px solid #dce5f1;box-shadow:0 22px 70px #20345418;padding:40px}
+.login-card h1{font-size:35px;line-height:1.2}
+.login-card p{color:#61738b}
+.login form{gap:18px}
+.login .message{line-height:1.6}
+@media(max-width:1000px){.dashboard{grid-template-columns:214px minmax(0,1fr)}}
+@media(max-width:680px){.dashboard{display:block}.sidebar{position:relative;height:auto;min-height:0;gap:13px;padding:16px 14px 10px;box-shadow:none}.sidebar-logo{font-size:20px;padding:2px 3px 12px}.sidebar-logo small{margin-left:0;display:block;margin-top:6px}.tabs{flex-direction:row;flex-wrap:nowrap;overflow-x:auto;gap:6px;padding-bottom:7px}.tabs button{flex:0 0 auto;min-height:42px;padding:9px 12px;white-space:nowrap;font-size:12px}.sidebar-bottom{padding:9px 3px 3px;display:flex!important;justify-content:space-between;flex-direction:row}.workspace{padding:20px 14px 48px}.workspace-head h1{font-size:28px}.workspace-head #admin-notice{display:none}.panel-surface{padding:16px}.login-card{padding:29px 22px}.login-card h1{font-size:30px}}
+@media(prefers-reduced-motion:reduce){.tabs button,.primary,.outline{transition:none}}
