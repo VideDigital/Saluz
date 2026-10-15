@@ -1,7 +1,10 @@
 /* SALUZ Loja · no payment provider connected · no customer data stored in browser */
 const $ = id => document.getElementById(id);
 const money = cents => (Number(cents||0)/100).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
-let products=[],bag=[],activeCategory="all",available=false,checkoutEnabled=false;
+const knownCategories=["Nécessaires","Porta-joias","Organizadores de maquiagem","Organizadores de bolsa","Acessórios de viagem","Autocuidado","Acessórios femininos","Kits e presentes"];
+const urlParams=new URLSearchParams(location.search);
+const requestedCategory=urlParams.get("categoria")||"all";
+let products=[],bag=[],activeCategory=knownCategories.includes(requestedCategory)?requestedCategory:"all",available=false,checkoutEnabled=false;
 try { bag=JSON.parse(localStorage.getItem("saluz-bag-v1")||"[]"); if (!Array.isArray(bag)) bag=[]; } catch {bag=[]}
 const emit=(type,label="")=>{
   if(localStorage.getItem("saluz-analytics")!=="accepted")return;
@@ -30,7 +33,7 @@ function node(tag,cls,text){const e=document.createElement(tag);if(cls)e.classNa
 function variantsFor(p){return Array.isArray(p.variants)?p.variants.filter(v=>Number(v.stock)>0):[];}
 function renderFilters(){
   const root=$("filters");root.replaceChildren();
-  const categories=["all",...new Set(products.map(p=>p.category).filter(Boolean))];
+  const categories=["all",...new Set([...knownCategories,...products.map(p=>p.category).filter(Boolean)])];
   categories.forEach(cat=>{
     const button=node("button","filter"+(cat===activeCategory?" active":""),cat==="all"?"Todos":cat);
     button.type="button";button.onclick=()=>{activeCategory=cat;renderFilters();renderProducts();};root.append(button);
@@ -80,8 +83,8 @@ function renderProducts(){
   const chosen=products.filter(p=>(activeCategory==="all"||p.category===activeCategory)&&(p.name+" "+p.category+" "+p.description).toLocaleLowerCase("pt-BR").includes(query));
   $("products").replaceChildren(...chosen.map(productCard));
   $("catalog-status").textContent=available
-    ? (chosen.length?chosen.length+" produto(s) encontrado(s)":"Nenhum produto disponível com esses filtros.")
-    : "O catálogo está sendo configurado. Nenhuma compra está disponível nesta demonstração.";
+    ? (chosen.length ? chosen.length+" produto(s) encontrado(s)" : "Ainda não há produtos disponíveis nesta categoria.")
+    : (activeCategory!=="all" ? "A coleção "+activeCategory+" está em preparação. Os produtos serão exibidos quando o catálogo for ativado." : "O catálogo da SALUZ está em preparação. Os produtos reais aparecerão nesta vitrine.");
 }
 function findItem(i){
   const product=products.find(p=>p.id===i.id);
@@ -121,6 +124,7 @@ async function loadStore(){
 }
 function close(dialog){if(dialog.open)dialog.close();}
 $("year").textContent=new Date().getFullYear();
+$("search").value=urlParams.get("q")||"";
 $("search").addEventListener("input",renderProducts);
 $("cart-open").onclick=()=>{renderBag();$("cart-dialog").showModal();};
 $("cart-close").onclick=()=>close($("cart-dialog"));
