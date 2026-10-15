@@ -205,15 +205,39 @@ if(location.hash==="#sacola"){addEventListener("load",()=>{$("cart-dialog").show
 analyticsConsent();if(localStorage.getItem("saluz-analytics")==="accepted")emit("page_view");
 loadStore();
 
-function showProductDetails(p){
+function detailVariant(){
+ if(!detailProduct)return null;
+ return (detailProduct.variants||[]).find(v=>(v.color||"Única")===$("details-color").value&&(v.size||"Único")===$("details-size").value)||null;
+}
+function fillDetailSizes(){
+ const old=$("details-size").value,select=$("details-size");select.replaceChildren();
+ const sizes=[...new Set((detailProduct?.variants||[]).filter(v=>(v.color||"Única")===$("details-color").value).map(v=>v.size||"Único"))];
+ for(const size of sizes){const op=node("option","",size);op.value=size;select.append(op);}
+ if(sizes.includes(old))select.value=old;
+}
+function showProductDetails(p,updateLink=true){
+ detailProduct=p;detailCount=1;
  $("details-category").textContent=p.category||"SALUZ";
  $("details-title").textContent=p.name;
- $("details-description").textContent=p.description||"Descrição a definir.";
+ $("details-description").textContent=p.description||"Detalhes disponíveis com a equipe SALUZ.";
  $("details-price").textContent=money(p.price_cents);
- const first=variantsFor(p)[0];
- const image=$("details-image");image.replaceChildren();
- if(first?.image_url||p.image_url){const img=document.createElement("img");img.alt="Imagem de "+p.name;img.src=first?.image_url||p.image_url;image.append(img);}
- else image.textContent="✦";
- $("product-dialog").showModal();emit("product_view",p.name);
+ $("details-feedback").textContent="";
+ const variants=Array.isArray(p.variants)?p.variants:[];
+ $("details-color").replaceChildren();
+ for(const color of [...new Set(variants.map(v=>v.color||"Única"))]){
+  const op=node("option","",color);op.value=color;$("details-color").append(op);
+ }
+ const first=variants.find(v=>maxQuantity(v)>0)||variants[0];
+ if(first)$("details-color").value=first.color||"Única";
+ fillDetailSizes();if(first)$("details-size").value=first.size||"Único";
+ $("detail-options").hidden=!variants.length;
+ renderDetailSelection();
+ if(!$("product-dialog").open)$("product-dialog").showModal();
+ if(updateLink){const u=new URL(location.href);u.searchParams.set("produto",p.id);history.replaceState(null,"",u);}
+ emit("product_view",p.name);
 }
 $("details-close").onclick=()=>close($("product-dialog"));
+$("product-dialog").addEventListener("close",()=>{
+ detailProduct=null;const u=new URL(location.href);
+ if(u.searchParams.has("produto")){u.searchParams.delete("produto");history.replaceState(null,"",u);}
+});
