@@ -1,0 +1,28 @@
+/* SALUZ — Home editorial com produtos reais, mobile-first e legível */
+.home-commerce{max-width:1440px;margin:0 auto;padding:70px 32px;color:#51443B}
+.home-commerce-heading{display:flex;align-items:end;justify-content:space-between;gap:30px;margin-bottom:24px}
+.home-commerce-heading h2{font:400 clamp(36px,4vw,58px)/1.14 "DM Serif Display",Georgia,serif;letter-spacing:-.025em;color:#51443B;margin:9px 0 11px}
+.home-commerce-heading p:not(.eyebrow){font:400 17px/1.65 "DM Sans",sans-serif;color:#51443B;margin:0}
+.home-commerce-see{flex-shrink:0;font:700 15px/1.5 "DM Sans",sans-serif;color:#51443B;text-decoration:underline;text-underline-offset:5px;padding-bottom:8px}
+.home-commerce-status{font:500 14px/1.55 "DM Sans",sans-serif;color:#51443B}
+.home-commerce-status[hidden],.home-commerce-empty[hidden]{display:none}
+.home-commerce-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:19px}
+.home-product{position:relative;display:flex;flex-direction:column;min-width:0;border:1px solid #dfd0c5;background:#fffdfb}
+.home-product-image{display:grid;place-items:center;background:#f0e5dc;aspect-ratio:4/4.9;overflow:hidden}
+.home-product-image img{width:100%;height:100%;object-fit:cover;transition:transform .25s ease}
+.home-product:hover .home-product-image img{transform:scale(1.035)}
+.home-product-placeholder{font:400 70px Georgia,serif;color:#b49b87}
+.home-product-copy{padding:19px;display:flex;flex-direction:column;align-items:start;flex:1;gap:8px}
+.home-product-category{font:700 13px/1.45 "DM Sans",sans-serif;color:#51443B}
+.home-product-copy h3{font:600 17px/1.45 "DM Sans",sans-serif;color:#51443B;margin:0}
+.home-product-price{font:700 19px/1.4 "DM Sans",sans-serif;color:#51443B}
+.home-product-link{font:700 14px/1.5 "DM Sans",sans-serif;color:#51443B;text-decoration:underline;text-underline-offset:4px;margin-top:auto;padding-top:11px}
+.home-commerce-empty{background:linear-gradient(130deg,#f5eae1,#ebd9cd);display:flex;align-items:center;gap:40px;padding:42px 52px;border:1px solid #e3d4c7}
+.home-commerce-spark{font:400 90px Georgia,serif;color:#ae9078}
+.home-commerce-empty h3{font:400 clamp(28px,3vw,38px)/1.2 "DM Serif Display",Georgia,serif;color:#51443B;margin:0 0 11px}
+.home-commerce-empty p{font:400 16px/1.7 "DM Sans",sans-serif;color:#51443B;margin:0 0 14px}
+.home-commerce-empty a{font:700 15px/1.5 "DM Sans",sans-serif;text-decoration:underline;text-underline-offset:4px;color:#51443B}
+.home-new{padding-top:50px;padding-bottom:90px}
+@media(max-width:980px){.home-commerce-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.home-commerce{padding:48px 25px}}
+@media(max-width:600px){.home-commerce{padding:43px 17px}.home-commerce-heading{flex-direction:column;align-items:start;gap:12px}.home-commerce-heading h2{font-size:37px}.home-commerce-heading p:not(.eyebrow){font-size:16px}.home-commerce-grid{gap:11px}.home-product-copy{padding:12px}.home-product-copy h3{font-size:15px}.home-product-price{font-size:17px}.home-product-category{font-size:12px}.home-product-link{font-size:13px}.home-commerce-empty{padding:28px 20px;gap:15px}.home-commerce-spark{font-size:47px}.home-commerce-empty h3{font-size:29px}.home-commerce-empty p{font-size:15px}}
+@media(prefers-reduced-motion:reduce){.home-product-image img{transition:none}}
