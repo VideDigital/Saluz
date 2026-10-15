@@ -38,7 +38,7 @@ $("login-form").addEventListener("submit",async e=>{
  try{
   await api("auth/login",{method:"POST",body:JSON.stringify({email:fd.get("email"),password:fd.get("password")})});
   e.currentTarget.reset();showDashboard();
- }catch(err){showLogin(err.message.includes("Painel em configuração")?err.message:"Não foi possível entrar. Confirme o e-mail, a senha e a autorização administrativa.");}
+ }catch(err){const detail=String(err.message||"");const safe=detail.includes("Muitas tentativas")?"Muitas tentativas de acesso. Aguarde 15 minutos.":detail.includes("Painel em configuração")?"O serviço de autenticação está temporariamente indisponível.":detail.includes("Credenciais inválidas")?"E-mail ou senha não conferem. Use a senha da conta SALUZ cadastrada no Supabase, não a senha do Gmail ou Cloudflare.":detail.includes("Acesso não autorizado")?"Esta conta não tem autorização administrativa.": "Não foi possível entrar. Confira as credenciais ou tente novamente mais tarde.";showLogin(safe);}
 });
 $("logout").onclick=async()=>{try{await api("auth/logout",{method:"POST",body:"{}"});}catch{}showLogin("Sessão encerrada.");};
 function changeTab(name){
