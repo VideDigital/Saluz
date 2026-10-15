@@ -56,8 +56,32 @@ function renderFilters(){
     button.type="button";button.onclick=()=>{activeCategory=cat;renderFilters();renderProducts();};root.append(button);
   });
 }
+function syncFavoriteButtons(){
+  document.querySelectorAll("[data-favorite-product]").forEach(button=>{
+    const selected=window.SaluzFavorites.has(button.dataset.favoriteProduct);
+    button.textContent=selected?"♥":"♡";
+    button.classList.toggle("is-favorite",selected);
+    button.setAttribute("aria-pressed",String(selected));
+    button.setAttribute("aria-label",(selected?"Remover dos favoritos: ":"Salvar nos favoritos: ")+(button.dataset.productName||"produto"));
+  });
+}
+window.addEventListener("saluz:favorites",syncFavoriteButtons);
+window.addEventListener("storage",event=>{
+  if(event.key==="saluz-favorites-v1"||event.key===null)syncFavoriteButtons();
+});
 function productCard(p){
   const card=node("article","product");
+  const favorite=node("button","product-heart");
+  favorite.type="button";
+  favorite.dataset.favoriteProduct=p.id;
+  favorite.dataset.productName=p.name;
+  favorite.setAttribute("title","Salvar ou remover dos favoritos");
+  favorite.onclick=()=>{
+    const result=window.SaluzFavorites.toggle(p.id);
+    if(!result.ok){$("catalog-status").textContent=result.message;return;}
+    syncFavoriteButtons();
+  };
+  card.append(favorite);
   const image=node("div","product-image"+(p.image_url?"":" placeholder"));
   if(p.image_url){const img=node("img");img.src=p.image_url;img.loading="lazy";img.alt="Produto "+p.name;img.onerror=()=>{img.remove();image.classList.add("placeholder");};image.append(img);}
   const picture=node("a","product-image-button");picture.href="./produto.html?id="+encodeURIComponent(p.id);picture.setAttribute("aria-label","Abrir página do produto "+p.name);picture.append(image);card.append(picture);
@@ -99,7 +123,13 @@ function productCard(p){
   more.href="./produto.html?id="+encodeURIComponent(p.id);
   more.setAttribute("aria-label","Abrir página de "+p.name);
   b.append(more);
-  card.append(b);return card;
+  card.append(b);
+  const selected=window.SaluzFavorites.has(p.id);
+  favorite.textContent=selected?"♥":"♡";
+  favorite.classList.toggle("is-favorite",selected);
+  favorite.setAttribute("aria-pressed",String(selected));
+  favorite.setAttribute("aria-label",(selected?"Remover dos favoritos: ":"Salvar nos favoritos: ")+p.name);
+  return card;
 }
 function renderProducts(){
   const query=$("search").value.trim().toLocaleLowerCase("pt-BR");
