@@ -180,6 +180,7 @@ $("cart-open").onclick=()=>{renderBag();$("cart-dialog").showModal();};
 $("cart-close").onclick=()=>close($("cart-dialog"));
 $("mobile-cart-open").onclick=()=>$("cart-open").click();
 $("menu-toggle").onclick=()=>{const open=$("menu-toggle").getAttribute("aria-expanded")==="true";$("menu-toggle").setAttribute("aria-expanded",String(!open));$("loja-nav").classList.toggle("is-open",!open);};
+for(const link of $("loja-nav").querySelectorAll("a"))link.onclick=()=>{$("loja-nav").classList.remove("is-open");$("menu-toggle").setAttribute("aria-expanded","false");};
 $("checkout-close").onclick=()=>close($("checkout-dialog"));
 $("checkout-open").onclick=()=>{
   if(!$("checkout-open").disabled){
