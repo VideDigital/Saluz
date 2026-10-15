@@ -155,6 +155,41 @@ test('Home não repete um produto destacado no bloco de novidades',async()=>{
    assert.deepEqual(data.newest.map(p=>p.id),[second.id]);
  }finally{globalThis.fetch=old;}
 });
+test('catálogo público faz paginação sem expor produtos ocultos',async()=>{
+ const previous=globalThis.fetch;let last='';
+ globalThis.fetch=async url=>{
+  last=String(url);
+  return Response.json([{id:exampleId},{id:'00000000-0000-4000-8000-000000000002'},{id:'00000000-0000-4000-8000-000000000003'}]);
+ };
+ try{
+  const response=await handler('/api/products?page=2&limit=2');
+  assert.equal(response.status,200);
+  const json=await response.json();
+  assert.equal(json.products.length,2);
+  assert.equal(json.has_more,true);
+  assert.equal(json.page,2);
+  assert.ok(last.includes('is_active=eq.true'));
+  assert.ok(last.includes('offset=2'));
+ }finally{globalThis.fetch=previous;}
+});
+test('paginação não aceita tamanho exagerado ou páginas inválidas',async()=>{
+ assert.equal((await handler('/api/products?limit=300')).status,400);
+ assert.equal((await handler('/api/products?page=abc')).status,400);
+ assert.equal((await handler('/api/products?page=0')).status,400);
+});
+test('login sem segredo adicional de limitação permanece bloqueado',async()=>{
+ const response=await handler('/api/auth/login',{
+  method:'POST',headers:{'content-type':'application/json'},
+  body:JSON.stringify({email:'admin@example.invalid',password:'invalid'})
+ });
+ assert.equal(response.status,503);
+});
+test('checkout continua bloqueado mesmo se variável for ativada por engano',async()=>{
+ const response=await handler('/api/checkout',{
+  method:'POST',headers:{'content-type':'application/json'},body:'{}'
+ },{...env,CHECKOUT_ENABLED:'true'});
+ assert.equal(response.status,503);
+});
 test('sem sessão administrativa, rotas de gestão são negadas',async()=>{
  const res=await handler('/api/admin/products');
  assert.equal(res.status,401);
