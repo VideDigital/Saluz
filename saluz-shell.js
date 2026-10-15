@@ -88,9 +88,21 @@
   }
 
   document.querySelectorAll("[data-commerce-year]").forEach(el=>el.textContent=String(new Date().getFullYear()));
-  try{
-    const bag=JSON.parse(localStorage.getItem("saluz-bag-v1")||"[]");
-    const quantity=Array.isArray(bag)?bag.reduce((total,item)=>total+Math.max(0,Number(item.quantity)||0),0):0;
-    document.querySelectorAll("[data-bag-count]").forEach(el=>el.textContent=String(quantity));
-  }catch{}
+  const refreshBagCount=()=>{
+    let count=0;
+    if(window.SaluzBag){
+      count=window.SaluzBag.count(window.SaluzBag.read());
+    }else{
+      try{
+        const bag=JSON.parse(localStorage.getItem("saluz-bag-v1")||"[]");
+        count=Array.isArray(bag)?
+          bag.reduce((total,item)=>total+Math.max(0,Math.min(10,Number(item.quantity)||0)),0):0;
+      }catch{}
+    }
+    document.querySelectorAll("[data-bag-count]").forEach(el=>el.textContent=String(count));
+  };
+  refreshBagCount();
+  window.addEventListener("storage",event=>{
+    if(event.key==="saluz-bag-v1"||event.key===null)refreshBagCount();
+  });
 })();
