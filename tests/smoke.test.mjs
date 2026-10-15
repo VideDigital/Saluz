@@ -38,8 +38,8 @@ test('busca mobile presente em todas as páginas públicas',()=>{
  const pages=readdirSync(root).filter(name=>name.endsWith('.html')&&name!=='admin.html');
  for(const page of pages){
    const html=file(page);
-   assert.match(html,/class="commerce-mobile-search"/,page);
-   assert.match(html,/loja\\.html\\?busca=1#produtos/,page);
+   assert.ok(html.includes('class="commerce-mobile-search"'),page);
+   assert.ok(html.includes('loja.html?busca=1#produtos'),page);
  }
 });
 test('painel informa critérios e ações de publicação antes de habilitar a loja',()=>{
@@ -47,8 +47,8 @@ test('painel informa critérios e ações de publicação antes de habilitar a l
  for(const id of ['publish-check-list','publish-check-status','cancel-edit','save-product','visit-product'])
    assert.ok(html.includes('id="'+id+'"'),'Painel sem '+id);
  const script=file('admin.js');
- assert.match(script,/function publishingChecklist\\(/);
- assert.match(script,/button\\.disabled=true/);
+ assert.ok(script.includes('function publishingChecklist('));
+ assert.ok(script.includes('button.disabled=true'));
 });
 test('backend exige configuração sem expor segredos ou pedidos',async()=>{
  const catalog=await handler('/api/products',undefined,{});
