@@ -11,12 +11,19 @@ Atualização: 15/10/2026. **Não é autorização para liberar pedidos, pagamen
 - Painel autenticado: cadastro/edição e visibilidade dos produtos, estoque por variação, fotos e relatórios.
 - Painel: busca, filtro (visível/oculto/sem estoque), resumo de catálogo e prévia do cadastro.
 - Back-end: validação de cor/tamanho, prevenção de duplicatas de variação no pedido, limite de envio de fotos.
+- Página de produto: fotos vinculadas à combinação de cor/tamanho, consulta específica por UUID, produtos relacionados da mesma coleção (somente produtos ativos).
+- Vitrine e páginas de coleção: links para páginas individuais, consulta de categoria filtrada no servidor e limite de catálogo elevado para 300 itens por requisição.
+- Testes automatizados no GitHub Actions (arquivo `tests/smoke.test.mjs`) verificam páginas, rotas protegidas, configuração, checkout desativado e consulta de categoria.
+- **Limitação conhecida:** catálogos com mais de 300 itens exigirão paginação para garantir acesso integral a todos os produtos. Não considerar essa escala homologada.
+
 
 ## Testes estáticos realizados
 
 - JavaScript da loja, painel, página de produto e API: parse de sintaxe sem erros.
 - Todas as páginas HTML do diretório raiz: sem arquivos relativos faltando nem IDs repetidos na checagem efetuada.
 - CSS do layout: chaves balanceadas na checagem efetuada.
+- Testes automatizados de integração simulada da API, sem credenciais reais: execução de 15/10/2026 confirmada como sucesso no GitHub Actions.
+- Isso **não substitui** testes funcionais no navegador, em Cloudflare Pages ou com o Supabase real.
 - Não testamos autenticação, gravação no banco, upload de fotos nem publicação final de páginas na Cloudflare após estas mudanças.
 
 ## Testes funcionais obrigatórios — pendentes
