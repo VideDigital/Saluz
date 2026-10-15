@@ -9,34 +9,36 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="./loja.css"><script src="./loja.js" defer></script>
+<link rel="stylesheet" href="./loja.css">
+<link rel="stylesheet" href="./saluz-refinamento.css">
+<script src="./loja.js" defer></script>
 </head>
 <body>
 <a class="skip" href="#produtos">Ir para produtos</a>
-<div class="saluz-top"><span>✦ Beleza nos detalhes</span><span>Atendimento: dias úteis, 8h às 19h</span></div>
+<div class="saluz-top"><span>✦ Beleza nos detalhes</span><span>Sua rotina, seus detalhes</span><span>Atendimento: dias úteis, 8h às 19h</span></div>
 <header class="nav">
   <a href="./index.html" class="logo" aria-label="SALUZ início">SALUZ <span>✦</span></a>
-  <nav aria-label="Principal"><a href="./index.html">Início</a><a href="#produtos">Coleções</a><a href="#atendimento">Atendimento</a></nav>
+  <nav aria-label="Principal"><a href="./index.html">Início</a><a href="#colecoes">Categorias</a><a href="#produtos">Produtos</a><a href="#atendimento">Atendimento</a></nav>
   <button class="cart-toggle" type="button" id="cart-open" aria-label="Abrir sacola">Minha sacola <span class="count" id="cart-count">0</span></button>
 </header>
 <main>
   <section class="lead"><div class="lead-inner">
-    <span class="eyebrow">SALUZ / COLEÇÕES</span>
-    <h1>Beleza para os <em>seus detalhes.</em></h1>
-    <p>Peças pensadas para acompanhar cada rotina. Escolha seus favoritos e monte sua sacola.</p>
+    <span class="eyebrow">SALUZ / A SUA LOJA</span>
+    <h1>Para cada rotina,<br><em>um novo detalhe.</em></h1>
+    <p>Organização, acessórios e presentes para encontrar o que combina com você. Explore as coleções e monte sua sacola.</p>
     <a class="btn-dark" href="#produtos">Explorar coleções <span aria-hidden="true">↗</span></a>
   </div><div class="lead-art" aria-hidden="true"><div class="art-ring"></div><span>✦</span><small>saluz · beleza nos detalhes</small></div></section>
-  <section class="benefits" aria-label="Informações"><span>✦ Curadoria com intenção</span><span>✦ Sua sacola, suas escolhas</span><span>✦ Atendimento em horário comercial</span></section>
+  <section class="benefits" aria-label="Informações"><span>✦ Escolhas para o seu dia</span><span>✦ Monte sua sacola</span><span>✦ Atendimento de segunda a sexta</span></section>
   <section id="produtos" class="products-section">
-    <div class="section-head"><div><span class="eyebrow">SALUZ / PRODUTOS</span><h2>Encontre seus favoritos</h2><p>Escolha sua categoria e descubra os produtos disponíveis.</p></div>
+    <div class="section-head"><div><span class="eyebrow">SALUZ / PRODUTOS</span><h2>Explore a coleção</h2><p>Use os filtros e a busca para descobrir os produtos cadastrados.</p></div>
       <label class="search"><span>Buscar</span><input type="search" id="search" placeholder="Nome do produto..." autocomplete="off"></label></div>
     <div class="filters" id="filters"><button type="button" class="filter active" data-category="all">Todos</button></div>
-    <p class="notice" id="catalog-status" role="status">Carregando catálogo...</p>
+    <div class="catalog-meta"><p class="notice" id="catalog-status" role="status">Carregando catálogo...</p><span>Itens cadastrados pela SALUZ</span></div>
     <div class="products" id="products" aria-live="polite"></div>
   </section>
   <section id="atendimento" class="contact"><div><span class="eyebrow">NÓS NOS IMPORTAMOS</span><h2>Alguma dúvida?</h2><p>Fale com a equipe SALUZ. Atendimento de segunda a sexta, das 8h às 19h.</p></div><a href="mailto:anny.csalustiano@gmail.com" id="email-link">anny.csalustiano@gmail.com ↗</a></section>
 </main>
-<footer><span class="logo">SALUZ ✦</span><p>Beleza nos detalhes.</p><span>© <span id="year"></span> SALUZ · Em desenvolvimento</span><a href="./admin.html">Área administrativa</a></footer>
+<footer><div class="footer-identity"><span class="logo">SALUZ ✦</span><p>Beleza nos detalhes.</p></div><div><strong>Explorar</strong><a href="./index.html">Início</a><a href="#colecoes">Categorias</a><a href="#produtos">Produtos</a></div><div><strong>Atendimento</strong><a href="mailto:anny.csalustiano@gmail.com">anny.csalustiano@gmail.com</a><span>Dias úteis, das 8h às 19h</span></div><div><strong>Informações</strong><a href="./privacidade.html">Privacidade</a><a href="./admin.html">Área administrativa</a><span>© <span id="year"></span> SALUZ</span></div></footer>
 <dialog id="cart-dialog" class="cart-dialog" aria-labelledby="cart-title">
   <div class="cart-header"><div><span class="eyebrow">SALUZ</span><h2 id="cart-title">Minha sacola</h2></div><button type="button" class="close" id="cart-close" aria-label="Fechar">×</button></div>
   <div id="cart-items" class="cart-items"></div>
