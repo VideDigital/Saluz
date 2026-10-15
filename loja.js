@@ -22,7 +22,7 @@ function analyticsConsent(){
   const row=document.createElement("div");row.className="analytics-actions";
   for(const [label,value] of [["Não aceitar","declined"],["Aceitar métricas","accepted"]]){
     const button=document.createElement("button");button.type="button";button.textContent=label;
-    button.style.cssText="border:1px solid #51443b;background:"+(value==="accepted"?"#51443b":"transparent")+";color:"+(value==="accepted"?"white":"#51443b")+";padding:9px 12px;cursor:pointer";
+    button.className="analytics-choice"+(value==="accepted"?" primary":"");
     button.onclick=()=>{localStorage.setItem("saluz-analytics",value);notice.remove();if(value==="accepted")emit("page_view");};
     row.append(button);
   }
