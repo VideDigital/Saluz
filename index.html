@@ -16,9 +16,11 @@
 <link rel="stylesheet" href="./saluz-shell.css">
 <link rel="stylesheet" href="./favoritos.css">
 <link rel="stylesheet" href="./saluz-paginas.css">
+  <link rel="stylesheet" href="./home-vitrine.css">
   <script src="./favoritos.js" defer></script>
 <script src="./saluz-shell.js" defer></script>
 <script defer src="./script.js"></script>
+  <script defer src="./home-vitrine.js"></script>
   <script defer src="./analytics-home.js"></script>
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
 </head>
@@ -115,73 +117,34 @@
       </div>
     </section>
 
-    <section class="product-section" id="novidades">
-      <div class="section-title">
-        <div>
-          <p class="eyebrow">DESTAQUES DA CURADORIA</p>
-          <h2>Escolhas para cada momento.</h2>
-        </div>
-        <p class="section-note">
-          Conheça as categorias em preparação e acompanhe os próximos produtos da SALUZ.
-        </p>
+    <section class="home-commerce" id="destaques" aria-labelledby="featured-title">
+      <div class="home-commerce-heading">
+        <div><p class="eyebrow">ESCOLHAS SALUZ</p><h2 id="featured-title">Produtos em destaque.</h2>
+        <p>Peças selecionadas pela SALUZ para você descobrir.</p></div>
+        <a href="./loja.html#produtos" class="home-commerce-see">Explorar toda a loja ↗</a>
       </div>
-
-      <div class="product-grid">
-        <article class="product-card">
-          <div class="product-image tone-one">
-            <span class="tag">EM PREPARAÇÃO</span>
-            <div class="product-shape shape-case"></div>
-          </div>
-          <div class="product-info">
-            <div>
-              <span class="product-type">ORGANIZAÇÃO</span>
-              <h3>Nécessaires</h3>
-            </div>
-            <a class="product-go" href="./colecao-necessaires.html">Ver categoria ↗</a>
-          </div>
-        </article>
-
-        <article class="product-card">
-          <div class="product-image tone-two">
-            <span class="tag">EM PREPARAÇÃO</span>
-            <div class="product-shape shape-jewel"></div>
-          </div>
-          <div class="product-info">
-            <div>
-              <span class="product-type">ORGANIZAÇÃO</span>
-              <h3>Porta-joias</h3>
-            </div>
-            <a class="product-go" href="./colecao-porta-joias.html">Ver categoria ↗</a>
-          </div>
-        </article>
-
-        <article class="product-card">
-          <div class="product-image tone-three">
-            <span class="tag">EM PREPARAÇÃO</span>
-            <div class="product-shape shape-travel"></div>
-          </div>
-          <div class="product-info">
-            <div>
-              <span class="product-type">VIAGEM</span>
-              <h3>Acessórios de viagem</h3>
-            </div>
-            <a class="product-go" href="./colecao-acessorios-viagem.html">Ver categoria ↗</a>
-          </div>
-        </article>
-
-        <article class="product-card">
-          <div class="product-image tone-four">
-            <span class="tag">EM PREPARAÇÃO</span>
-            <div class="product-shape shape-gift">✦</div>
-          </div>
-          <div class="product-info">
-            <div>
-              <span class="product-type">PRESENTES</span>
-              <h3>Kits e presentes</h3>
-            </div>
-            <a class="product-go" href="./colecao-kits-presentes.html">Ver categoria ↗</a>
-          </div>
-        </article>
+      <p id="featured-status" class="home-commerce-status" role="status">Preparando a vitrine...</p>
+      <div id="featured-products" class="home-commerce-grid"></div>
+      <div id="featured-empty" class="home-commerce-empty" hidden>
+        <span class="home-commerce-spark" aria-hidden="true">✦</span>
+        <div><h3>A nossa seleção está sendo preparada.</h3>
+        <p>Enquanto isso, descubra as coleções de organização, autocuidado e presentes.</p>
+        <a href="./colecoes.html">Explorar coleções ↗</a></div>
+      </div>
+    </section>
+    <section class="home-commerce home-new" id="novidades" aria-labelledby="new-title">
+      <div class="home-commerce-heading">
+        <div><p class="eyebrow">ACABARAM DE CHEGAR</p><h2 id="new-title">Novidades na loja.</h2>
+        <p>Confira os produtos publicados mais recentemente pela SALUZ.</p></div>
+        <a href="./loja.html#produtos" class="home-commerce-see">Ver todos os produtos ↗</a>
+      </div>
+      <p id="new-status" class="home-commerce-status" role="status">Buscando novidades...</p>
+      <div id="new-products" class="home-commerce-grid"></div>
+      <div id="new-empty" class="home-commerce-empty" hidden>
+        <span class="home-commerce-spark" aria-hidden="true">✧</span>
+        <div><h3>Novidades a caminho.</h3>
+        <p>As novidades aparecerão aqui automaticamente quando forem publicadas.</p>
+        <a href="./colecoes.html">Conheça as coleções ↗</a></div>
       </div>
     </section>
 
