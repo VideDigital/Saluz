@@ -3,7 +3,7 @@ const $=id=>document.getElementById(id);
 const fmt=n=>(Number(n||0)/100).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
 const text=(tag,value,cls)=>{const n=document.createElement(tag);n.textContent=value===undefined?"":String(value);if(cls)n.className=cls;return n;};
 const displayDate=s=>new Date(s).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"});
-let catalog=[],orders=[],currentTab="orders";
+let catalog=[],orders=[],currentTab="overview";
 let adminPage=0,adminHasMore=false,adminLoading=false;
 const statusNames={
  solicitacao_recebida:"Solicitação recebida",contatado:"Cliente contatado",
@@ -24,7 +24,7 @@ function showLogin(msg){
 }
 function showDashboard(){
  $("login-screen").classList.add("hidden");$("dashboard").classList.remove("hidden");
- changeTab("orders");
+ changeTab("overview");
 }
 async function checkSession(){
  try{
@@ -46,11 +46,14 @@ $("logout").onclick=async()=>{try{await api("auth/logout",{method:"POST",body:"{
 function changeTab(name){
  currentTab=name;
  for(const b of document.querySelectorAll("[data-tab]"))b.classList.toggle("selected",b.dataset.tab===name);
- for(const name2 of ["orders","products","reports"])$("tab-"+name2).classList.toggle("hidden",name!==name2);
- $("section-title").textContent={orders:"Pedidos",products:"Produtos",reports:"Relatórios"}[name];
+ for(const name2 of ["overview","orders","customers","products","finance","reports"])$("tab-"+name2).classList.toggle("hidden",name!==name2);
+ $("section-title").textContent={overview:"Visão geral",orders:"Pedidos",customers:"Clientes",products:"Produtos",finance:"Financeiro",reports:"Relatórios"}[name];
  message("");
+ if(name==="overview")window.SaluzAdminExtras?.loadOverview();
  if(name==="orders")loadOrders();
+ if(name==="customers")window.SaluzAdminExtras?.loadCustomers();
  if(name==="products")loadProducts();
+ if(name==="finance")window.SaluzAdminExtras?.openFinance();
  if(name==="reports")loadReports();
 }
 for(const b of document.querySelectorAll("[data-tab]"))b.onclick=()=>changeTab(b.dataset.tab);

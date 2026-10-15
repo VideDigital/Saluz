@@ -10,7 +10,9 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="./admin.css">
 <link rel="stylesheet" href="./saluz-refinamento.css">
+<link rel="stylesheet" href="./saluz-admin-improvements.css">
 <script src="./admin.js" defer></script>
+<script src="./saluz-admin-extras.js" defer></script>
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
 </head>
 <body>
@@ -34,18 +36,33 @@
   <aside class="sidebar">
     <div class="sidebar-logo">SALUZ <span>✦</span><small>ADMINISTRAÇÃO</small></div>
     <nav class="tabs" aria-label="Navegação administrativa">
-      <button class="selected" type="button" data-tab="orders">Pedidos <span>↗</span></button>
+      <button class="selected" type="button" data-tab="overview">Visão geral <span>↗</span></button>
+      <button type="button" data-tab="orders">Pedidos <span>↗</span></button>
+      <button type="button" data-tab="customers">Clientes <span>↗</span></button>
       <button type="button" data-tab="products">Produtos <span>↗</span></button>
+      <button type="button" data-tab="finance">Financeiro <span>↗</span></button>
       <button type="button" data-tab="reports">Relatórios <span>↗</span></button>
     </nav>
     <div class="sidebar-bottom"><a href="./loja.html" target="_blank" rel="noopener">Ver loja ↗</a><button id="logout" type="button">Sair</button></div>
   </aside>
   <div class="workspace">
-    <header class="workspace-head"><div><span class="eyebrow">BELEZA NOS DETALHES</span><h1 id="section-title">Pedidos</h1></div><span id="admin-notice">Área de gestão</span></header>
+    <header class="workspace-head"><div><span class="eyebrow">BELEZA NOS DETALHES</span><h1 id="section-title">Visão geral</h1></div><span id="admin-notice">Área de gestão</span></header>
     <p id="action-message" class="action-message" role="status"></p>
-    <section id="tab-orders" class="tab">
+    <section id="tab-overview" class="tab">
+      <div class="panel-intro"><div><span class="eyebrow">RESUMO DA OPERAÇÃO</span><h2>Bem-vinda ao painel SALUZ</h2><p>Acompanhe pedidos registrados e as próximas ações da loja em um só lugar.</p></div><button type="button" class="outline" id="overview-refresh">Atualizar dados</button></div>
+      <div class="management-notice" role="note"><strong>Ambiente de preparação.</strong> O checkout online ainda está desativado. Pedidos marcados como pagos exigem confirmação manual; não representam faturamento conciliado.</div>
+      <div id="overview-kpis" class="overview-kpis" aria-live="polite"><p class="muted">Carregando indicadores...</p></div>
+      <div class="panel-surface"><div class="panel-section-header"><h3>Pedidos recentes</h3><button type="button" id="overview-open-orders" class="outline">Ver pedidos ↗</button></div><div id="overview-recent">Carregando...</div></div>
+    </section>
+    <section id="tab-orders" class="tab hidden">
       <div class="tab-toolbar"><p>Solicitações recebidas no checkout. Um pedido recebido <strong>não significa que foi pago</strong>.</p><button type="button" id="refresh-orders" class="outline">Atualizar pedidos</button></div>
       <div id="orders" class="order-grid"><p>Carregando pedidos...</p></div>
+    </section>
+    <section id="tab-customers" class="tab hidden">
+      <div class="panel-intro"><div><span class="eyebrow">RELACIONAMENTO</span><h2>Clientes da loja</h2><p>Dados de contato associados aos pedidos registrados. Não é uma base independente de CRM.</p></div><button type="button" class="outline" id="customers-refresh">Atualizar clientes</button></div>
+      <div class="management-notice" role="note">Exibição derivada dos <strong>150 pedidos mais recentes</strong>. Informações pessoais devem ser usadas somente para atendimento e gestão legítima da loja.</div>
+      <div class="panel-filter"><label for="customer-search">Buscar por nome, e-mail ou telefone<input type="search" id="customer-search" placeholder="Pesquisar cliente..." autocomplete="off"></label></div>
+      <div class="panel-surface" id="customers-list" aria-live="polite"><p class="muted">Carregando clientes...</p></div>
     </section>
     <section id="tab-products" class="tab hidden">
       <div class="tab-toolbar"><p>Cadastre itens reais, defina preço e variações e controle quais aparecem na loja.</p><button type="button" id="new-product" class="outline">+ Novo produto</button></div>
@@ -120,6 +137,36 @@
           </div>
         </form>
       </div>
+    </section>
+    <section id="tab-finance" class="tab hidden">
+      <div class="panel-intro"><div><span class="eyebrow">SIMULADOR DE TAXAS</span><h2>Compare o valor líquido de cada venda</h2><p>Cadastre qualquer provedor e personalize taxas de Pix, crédito, débito e outros meios.</p></div></div>
+      <div class="management-notice" role="note"><strong>Simulação independente.</strong> Nenhum pagamento é realizado por esta ferramenta. Confira as taxas no contrato do provedor. Os perfis são salvos somente neste navegador, não na conta SALUZ ou no Supabase.</div>
+      <div class="finance-layout">
+        <form id="fee-form" class="panel-surface fee-form">
+          <div class="panel-section-header"><h3 id="fee-form-title">Cadastrar uma taxa</h3><button type="button" class="outline" id="fee-cancel" hidden>Cancelar edição</button></div>
+          <input type="hidden" id="fee-id">
+          <label for="fee-name">Provedor / nome da condição<input id="fee-name" maxlength="80" placeholder="Ex.: Mercado Pago" required></label>
+          <div class="finance-form-grid">
+            <label for="fee-method">Meio de pagamento<select id="fee-method"><option>Crédito</option><option>Débito</option><option>Pix</option><option>Boleto</option><option>Outro</option></select></label>
+            <label for="fee-installments">Parcelas<input type="number" id="fee-installments" min="1" max="24" step="1" value="1" required></label>
+            <label for="fee-receipt">Recebimento em dias<input type="number" id="fee-receipt" min="0" max="365" step="1" value="30" required></label>
+            <label for="fee-percent">Taxa percentual (%)<input type="number" id="fee-percent" min="0" max="100" step="0.001" placeholder="Ex.: 4,49" required></label>
+            <label for="fee-fixed">Taxa fixa por venda (R$)<input type="number" id="fee-fixed" min="0" max="100000" step="0.01" value="0" required></label>
+          </div>
+          <button type="submit" class="primary" id="fee-save">Salvar condição <span>↗</span></button>
+          <p id="fee-feedback" class="hint" role="status"></p>
+        </form>
+        <section class="panel-surface" aria-labelledby="fee-compare-title">
+          <div class="panel-section-header"><h3 id="fee-compare-title">Simular uma venda</h3></div>
+          <label for="fee-amount">Valor da venda (R$)<input type="number" id="fee-amount" value="100" min="0" max="1000000" step="0.01"></label>
+          <div id="fee-results" class="fee-results" aria-live="polite"><p class="muted">Cadastre sua primeira taxa para comparar.</p></div>
+          <p class="hint">Estimativa: valor da venda − taxa percentual − taxa fixa. Parcelamento e antecipação só são considerados se estiverem incluídos na taxa cadastrada. Não inclui frete, impostos, estornos ou despesas operacionais.</p>
+        </section>
+      </div>
+      <section class="panel-surface fee-saved" aria-labelledby="fee-saved-title">
+        <div class="panel-section-header"><h3 id="fee-saved-title">Condições cadastradas</h3><span id="fee-count" class="muted"></span></div>
+        <div id="fee-table" class="fee-list" aria-live="polite"><p class="muted">Ainda não há taxas cadastradas.</p></div>
+      </section>
     </section>
     <section id="tab-reports" class="tab hidden">
       <div class="tab-toolbar"><p>Visitas e cliques registrados apenas após o consentimento do visitante.</p>

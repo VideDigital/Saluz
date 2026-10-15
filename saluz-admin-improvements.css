@@ -1,0 +1,49 @@
+/* SALUZ gestão · navegação responsiva e painéis de operação */
+.dashboard{grid-template-columns:252px minmax(0,1fr)}
+.sidebar{gap:34px;position:sticky;top:0;height:100dvh;min-height:640px;overflow:auto}
+.sidebar-logo{font-weight:500;white-space:nowrap}
+.tabs button{border-radius:7px;transition:background .15s,color .15s;font-weight:600;align-items:center;gap:12px}
+.tabs button span{font-size:12px;opacity:.6}
+.workspace{padding:36px clamp(24px,3vw,58px) 70px}
+.workspace-head{padding-bottom:20px}
+.workspace-head h1{font-size:40px}
+.tab-toolbar,.panel-section-header{flex-wrap:wrap}
+.panel-intro{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:26px 0 22px}
+.panel-intro h2{font:400 clamp(27px,3vw,35px) "DM Serif Display",Georgia,serif;margin:9px 0 5px}
+.panel-intro p{line-height:1.65;margin:0;color:var(--muted);max-width:650px}
+.management-notice{border:1px solid #e3d4c4;background:#fffaf3;padding:16px 20px;color:#665449;font-size:12px;line-height:1.7;border-radius:9px;margin-bottom:20px}
+.overview-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:18px 0}
+.management-kpi,.panel-surface{background:var(--paper);border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 28px rgba(50,37,28,.025)}
+.management-kpi{padding:21px;display:flex;flex-direction:column;gap:11px;min-height:142px}
+.management-kpi small,.management-kpi span{font-size:11px;color:var(--muted);line-height:1.5}
+.management-kpi strong{font:400 clamp(21px,2vw,30px) "DM Serif Display",Georgia,serif;overflow-wrap:anywhere}
+.panel-surface{padding:24px;margin:20px 0}
+.panel-section-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px}
+.panel-section-header h3{font:400 26px "DM Serif Display",Georgia,serif;margin:0}
+.panel-data-row{display:flex;align-items:center;justify-content:space-between;gap:18px;border-top:1px solid var(--line);padding:15px 0}
+.panel-data-row:first-child{border-top:0}
+.panel-data-row>div{min-width:0}
+.panel-data-row strong,.fee-profile-row strong,.fee-comparison-row strong{display:block;font-size:13px;overflow-wrap:anywhere;line-height:1.5}
+.panel-data-row small,.fee-profile-row small,.fee-comparison-row small{display:block;font-size:11px;color:var(--muted);margin-top:5px;overflow-wrap:anywhere;line-height:1.5}
+.panel-data-right{text-align:right;flex-shrink:0}
+.panel-empty{font-size:13px;padding:20px 0;color:var(--muted);line-height:1.6}
+.panel-filter{max-width:460px}
+.finance-layout{display:grid;grid-template-columns:minmax(280px,1fr) minmax(280px,1fr);gap:18px;align-items:start}
+.finance-layout>.panel-surface{margin:0;min-width:0}
+.fee-form{display:flex;flex-direction:column;gap:17px}
+.finance-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.fee-results{margin-top:20px}
+.fee-best-value{display:block;font:400 clamp(30px,3vw,43px) "DM Serif Display",Georgia,serif;margin-top:9px}
+.fee-comparison-row,.fee-profile-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:15px 0;border-top:1px solid var(--line)}
+.fee-comparison-row>div,.fee-profile-row>div{min-width:0}
+.fee-saved{margin-top:20px}
+.fee-row-actions{display:flex;gap:8px;flex-wrap:wrap}
+.fee-row-actions button{padding:8px 11px;font-size:12px}
+.danger-outline{border-color:#a7605a!important;color:#9b4e45!important}
+.panel-surface label{margin-bottom:8px}
+.order-card,.product-list,.product-form,.reports-chart,.stat{border-radius:10px}
+.order-grid{grid-template-columns:minmax(0,1fr)}
+.order-card{box-shadow:0 8px 25px rgba(50,37,28,.025)}
+@media(max-width:1120px){.overview-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.finance-layout{grid-template-columns:1fr}}
+@media(max-width:680px){.dashboard{display:block}.sidebar{position:relative;height:auto;min-height:0;padding:17px 16px 12px;overflow:visible;gap:14px}.sidebar-logo{font-size:20px}.sidebar-logo small{display:block;margin:6px 0 0;font-size:9px}.tabs{display:flex;flex-direction:row;flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;gap:7px;padding-bottom:6px;scrollbar-width:thin}.tabs button{flex:0 0 auto;white-space:nowrap;padding:11px 13px;font-size:12px}.tabs button span{display:none}.sidebar-bottom{display:flex;flex-direction:row;align-items:center;justify-content:space-between;font-size:11px;padding-top:3px}.workspace{padding:20px 14px 45px}.workspace-head h1{font-size:34px}.panel-intro{flex-direction:column;align-items:flex-start}.overview-kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.management-kpi{padding:15px;min-height:128px}.management-kpi strong{font-size:24px}.panel-surface{padding:16px}.panel-data-row,.fee-profile-row{align-items:flex-start}.panel-data-row.customer-item,.fee-profile-row{flex-direction:column}.panel-data-right{text-align:left}.finance-form-grid{grid-template-columns:1fr 1fr;gap:10px}.login-card{max-width:100%}.order-footer select{width:100%}}
+@media(max-width:380px){.finance-form-grid{grid-template-columns:1fr}.overview-kpis{grid-template-columns:1fr 1fr}.management-kpi strong{font-size:21px}}
