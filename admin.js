@@ -18,31 +18,91 @@ async function api(path,opts={}){
  return b;
 }
 function message(t){$("action-message").textContent=t||"";}
+let authRequestId=0;
+let loginSubmitting=false;
 function showLogin(msg){
- $("dashboard").classList.add("hidden");$("login-screen").classList.remove("hidden");
+ $("dashboard").classList.add("hidden");
+ $("login-screen").classList.remove("hidden");
  $("login-message").textContent=msg||"Acesse com sua conta autorizada.";
 }
 function showDashboard(){
- $("login-screen").classList.add("hidden");$("dashboard").classList.remove("hidden");
- changeTab("overview");
+ $("login-screen").classList.add("hidden");
+ $("dashboard").classList.remove("hidden");
+ // A conta já foi autenticada. Um erro de renderização jamais pode ser
+ // confundido com senha inválida e devolver o usuário à tela de login.
+ try { changeTab("overview"); }
+ catch (err) {
+   console.error("SALUZ: erro ao iniciar o painel",err);
+   $("section-title").textContent="Visão geral";
+   message("Seu acesso foi confirmado, mas houve uma falha ao carregar o painel. Atualize esta página.");
+ }
 }
 async function checkSession(){
- try{
-   const r=await api("auth/me");
-   if(r.admin)showDashboard();else showLogin("Entre com a conta administrativa da SALUZ.");
- }catch{showLogin("Painel aguardando conexão ao Supabase e à Cloudflare Pages.");}
+ const requestId=++authRequestId;
+ try {
+   const result=await api("auth/me");
+   if(requestId!==authRequestId || loginSubmitting)return;
+   if(result.admin===true)showDashboard();
+   else showLogin("Entre com sua conta administrativa da SALUZ.");
+ }catch(err){
+   if(requestId!==authRequestId || loginSubmitting)return;
+   showLogin("Não foi possível verificar a sessão. Confira sua conexão e tente entrar.");
+ }
 }
-$("login-form").addEventListener("submit",async e=>{
- e.preventDefault();const fd=new FormData(e.currentTarget);
+function loginErrorMessage(error,stage){
+ const detail=String(error?.message||"");
+ if(detail.includes("Muitas tentativas"))return "Muitas tentativas de acesso. Aguarde 15 minutos antes de tentar novamente.";
+ if(detail.includes("Credenciais inválidas"))return "E-mail ou senha incorretos para a conta administrativa SALUZ.";
+ if(detail.includes("Acesso negado")||detail.includes("Acesso não autorizado"))return "Conta autenticada, mas sem permissão administrativa na SALUZ.";
+ if(detail.includes("Painel em configuração")||detail.includes("Proteção de acesso aguardando configuração"))return "O serviço de acesso não está configurado ou está temporariamente indisponível.";
+ if(detail.includes("Sessão não confirmada")||stage==="session")return "A senha foi aceita, mas a sessão não foi confirmada no navegador. Tente atualizar a página. Se persistir, abra diretamente no Chrome.";
+ if(stage==="login")return "Não foi possível concluir o login. Verifique sua conexão e tente novamente.";
+ return "Ocorreu um erro ao abrir o painel. Atualize a página para tentar novamente.";
+}
+$("login-form").addEventListener("submit",async event=>{
+ event.preventDefault();
+ if(loginSubmitting)return;
+ loginSubmitting=true;
+ const requestId=++authRequestId;
+ const form=event.currentTarget;
+ const submit=form.querySelector('button[type="submit"]');
+ const fd=new FormData(form);
+ let stage="login";
+ submit.disabled=true;
+ form.setAttribute("aria-busy","true");
  $("login-message").textContent="Validando acesso...";
- try{
-  await api("auth/login",{method:"POST",body:JSON.stringify({email:String(fd.get("email")||"").trim(),password:fd.get("password")})});
-  const session=await api("auth/me");
-  if(session.admin!==true)throw new Error("Sessão não confirmada");
-  e.currentTarget.reset();showDashboard();
- }catch(err){const detail=String(err.message||"");const safe=detail.includes("Muitas tentativas")?"Muitas tentativas de acesso. Aguarde 15 minutos.":detail.includes("Painel em configuração")?"O serviço de autenticação está temporariamente indisponível.":detail.includes("Credenciais inválidas")?"E-mail ou senha não conferem. Use a senha da conta SALUZ cadastrada no Supabase, não a senha do Gmail ou Cloudflare.":detail.includes("Acesso não autorizado")?"Esta conta não tem autorização administrativa.":detail.includes("Sessão não confirmada")?"A senha foi aceita, mas o navegador não confirmou a sessão. Abra o link diretamente no Chrome e tente novamente.":detail.includes("Acesso negado")?"E-mail autenticado, mas sem autorização administrativa.": "Não foi possível entrar. Confira as credenciais ou tente novamente mais tarde.";showLogin(safe);}
+ try {
+   await api("auth/login",{method:"POST",body:JSON.stringify({
+     email:String(fd.get("email")||"").trim().toLowerCase(),
+     password:String(fd.get("password")||"")
+   })});
+   if(requestId!==authRequestId)return;
+   stage="session";
+   $("login-message").textContent="Credenciais aceitas. Confirmando sessão...";
+   const session=await api("auth/me");
+   if(requestId!==authRequestId)return;
+   if(session.admin!==true)throw new Error("Sessão não confirmada");
+   stage="dashboard";
+   form.reset();
+   showDashboard();
+ }catch(err){
+   if(requestId===authRequestId){
+     console.error("SALUZ: falha na etapa de autenticação",stage,err);
+     showLogin(loginErrorMessage(err,stage));
+   }
+ }finally{
+   if(requestId===authRequestId)loginSubmitting=false;
+   submit.disabled=false;
+   form.removeAttribute("aria-busy");
+ }
 });
-$("logout").onclick=async()=>{try{await api("auth/logout",{method:"POST",body:"{}"});}catch{}showLogin("Sessão encerrada.");};
+$("logout").onclick=async()=>{
+ const requestId=++authRequestId;
+ try { await api("auth/logout",{method:"POST",body:"{}"}); }
+ catch (err) { console.warn("SALUZ: não foi possível concluir o logout remoto",err); }
+ if(requestId!==authRequestId)return;
+ showLogin("Sessão encerrada. Entre novamente com sua senha.");
+};
 function changeTab(name){
  currentTab=name;
  for(const b of document.querySelectorAll("[data-tab]"))b.classList.toggle("selected",b.dataset.tab===name);
