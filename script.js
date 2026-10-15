@@ -60,11 +60,10 @@ function renderSearchResults(query = "") {
 
   if (!matches.length) {
     searchResults.innerHTML =
-      '<div class="search-empty"><strong>Nenhuma coleção correspondente.</strong><span>Você também pode procurar pelo nome de um produto no catálogo completo.</span></div>';
-    return;
+      '<div class="search-empty"><strong>Nenhuma coleção correspondente.</strong><span>Vamos procurar também no catálogo de produtos.</span></div>';
   }
 
-  searchResults.innerHTML = matches
+  if (matches.length) searchResults.innerHTML = matches
     .map(item => `
       <a class="search-result" href="${item.href}">
         <span>
