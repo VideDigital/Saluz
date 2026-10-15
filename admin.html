@@ -92,6 +92,14 @@
           <label class="switch"><input type="checkbox" name="is_active"> Produto ativo na loja</label>
           <label class="switch"><input type="checkbox" name="is_featured"> Destacar na página inicial (aparece somente quando ativo)</label>
           <p class="hint">Para publicar, cadastre ao menos uma foto e uma variação com cor e tamanho. Produtos ocultos não aparecem na loja; estoque zerado impede adicionar à sacola.</p>
+          <div class="publish-check" aria-labelledby="publish-check-title">
+            <div class="publish-check-head">
+              <strong id="publish-check-title">Conferência antes de publicar</strong>
+              <span id="publish-check-status" role="status">Verificando...</span>
+            </div>
+            <ul id="publish-check-list" class="publish-check-list"></ul>
+            <p class="publish-check-note">Você pode salvar um rascunho oculto e completar as informações depois.</p>
+          </div>
           <div class="product-preview" id="product-preview" aria-live="polite">
             <span class="eyebrow">PRÉVIA DO CADASTRO</span>
             <div class="preview-content">
@@ -104,7 +112,11 @@
               </div>
             </div>
           </div>
-          <button type="submit" class="primary">Salvar produto</button>
+          <div class="product-form-footer">
+            <button id="save-product" type="submit" class="primary">Salvar produto</button>
+            <button id="cancel-edit" type="button" class="outline" hidden>Cancelar edição</button>
+            <a id="visit-product" href="./loja.html#produtos" target="_blank" rel="noopener" hidden>Ver produto na loja ↗</a>
+          </div>
         </form>
       </div>
     </section>
