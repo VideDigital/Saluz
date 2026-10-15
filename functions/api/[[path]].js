@@ -91,7 +91,7 @@ function validateProduct(raw) {
     if (seen.has(key)) throw new Error("Variação duplicada");
     seen.add(key);
   }
-  return {name,description,category,image_url,price_cents,variants:normalized,is_active:raw.is_active===true,updated_at:new Date().toISOString()};
+  return {name,description,category,image_url,price_cents,variants:normalized,is_active:raw.is_active===true,is_featured:raw.is_featured===true,updated_at:new Date().toISOString()};
 }
 function validateOrder(b) {
   const name=safeText(b.name,120), email=safeText(b.email,160).toLowerCase();
@@ -239,6 +239,11 @@ export async function onRequest({request,env}) {
       return output({configured:true,checkout_enabled:String(env.CHECKOUT_ENABLED)==="true"});
     if (route[0]==="products" && request.method==="GET") {
       const columns="id,name,description,category,image_url,price_cents,variants";
+      if(route[1]==="home" && route.length===2){
+        const featured=await sb(env,"/rest/v1/saluz_products?is_active=eq.true&is_featured=eq.true&select="+columns+"&order=created_at.desc&limit=8");
+        const newest=await sb(env,"/rest/v1/saluz_products?is_active=eq.true&select="+columns+"&order=created_at.desc&limit=8");
+        return output({featured,newest,configured:true});
+      }
       // Favoritos: consultar somente IDs válidos e produtos publicados, sem depender do limite da vitrine.
       if(route[1]==="favorites" && route.length===2){
         const rawIds=new URL(request.url).searchParams.get("ids")||"";
