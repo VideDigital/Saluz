@@ -238,7 +238,20 @@ export async function onRequest({request,env}) {
     if (route[0]==="status" && request.method==="GET")
       return output({configured:true,checkout_enabled:String(env.CHECKOUT_ENABLED)==="true"});
     if (route[0]==="products" && request.method==="GET") {
-      const products=await sb(env,"/rest/v1/saluz_products?is_active=eq.true&select=id,name,description,category,image_url,price_cents,variants&order=created_at.desc&limit=100");
+      const columns="id,name,description,category,image_url,price_cents,variants";
+      // Página individual: nunca expor produtos ocultos ou IDs inválidos.
+      if(route[1]){
+        if(!uuid.test(route[1])||route.length!==2)return error("Produto inválido",404);
+        const matches=await sb(env,"/rest/v1/saluz_products?id=eq."+route[1]+"&is_active=eq.true&select="+columns+"&limit=1");
+        return matches.length?output({product:matches[0],configured:true}):error("Produto não encontrado",404);
+      }
+      // O filtro é aplicado no servidor e não apenas no navegador.
+      const allowedCategories=new Set(["Nécessaires","Porta-joias","Organizadores de maquiagem",
+        "Organizadores de bolsa","Acessórios de viagem","Autocuidado","Acessórios femininos","Kits e presentes"]);
+      const category=new URL(request.url).searchParams.get("category");
+      if(category && !allowedCategories.has(category))return error("Categoria inválida",400);
+      const filter=category?"&category=eq."+encodeURIComponent(category):"";
+      const products=await sb(env,"/rest/v1/saluz_products?is_active=eq.true"+filter+"&select="+columns+"&order=created_at.desc&limit=300");
       return output({products,configured:true});
     }
     if (route[0]==="events" && request.method==="POST") return await recordEvent(request,env);
