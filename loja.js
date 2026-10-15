@@ -5,7 +5,7 @@ const knownCategories=["Nécessaires","Porta-joias","Organizadores de maquiagem"
 const urlParams=new URLSearchParams(location.search);
 const requestedCategory=urlParams.get("categoria")||"all";
 let products=[],bag=[],activeCategory=knownCategories.includes(requestedCategory)?requestedCategory:"all",available=false,checkoutEnabled=false,detailProduct=null,detailCount=1;
-try { bag=JSON.parse(localStorage.getItem("saluz-bag-v1")||"[]"); if (!Array.isArray(bag)) bag=[]; } catch {bag=[]}
+bag=window.SaluzBag.read();
 const emit=(type,label="")=>{
   if(localStorage.getItem("saluz-analytics")!=="accepted")return;
   let id=sessionStorage.getItem("saluz-session");
@@ -28,18 +28,23 @@ function analyticsConsent(){
   }
   notice.append(row);document.body.append(notice);
 }
-function saveBag(){localStorage.setItem("saluz-bag-v1",JSON.stringify(bag));const total=bag.reduce((sum,i)=>sum+Math.max(0,Number(i.quantity)||0),0);$("cart-count").textContent=total;$("mobile-cart-count").textContent=total;}
+function saveBag(){
+ const saved=window.SaluzBag.save(bag);
+ if(!saved.ok)$("cart-feedback").textContent=saved.message;
+ bag=saved.items;
+ const total=window.SaluzBag.count(bag);
+ $("cart-count").textContent=total;
+ $("mobile-cart-count").textContent=total;
+ document.querySelectorAll("[data-bag-count]").forEach(e=>e.textContent=total);
+ return saved.ok;
+}
 function variationImage(p,v){return v?.image_url||p?.image_url||"";}
 function maxQuantity(v){return Math.min(10,Math.max(0,Number(v?.stock)||0));}
 function addToBag(p,v,quantity=1){
- if(!p||!v||maxQuantity(v)===0)return {ok:false,message:"Variação indisponível."};
- const key=p.id+"|"+(v.color||"")+"|"+(v.size||"");
- const current=bag.find(i=>i.key===key);
- const next=(current?Number(current.quantity):0)+quantity;
- if(!Number.isInteger(next)||next<1||next>maxQuantity(v))return {ok:false,message:"Quantidade indisponível para esta variação."};
- if(current)current.quantity=next;
- else bag.push({key,id:p.id,color:v.color||"",size:v.size||"",quantity:next});
- saveBag();renderBag();emit("add_to_cart",p.name);return {ok:true};
+ const result=window.SaluzBag.add(p,v,quantity);
+ if(!result.ok)return result;
+ bag=result.items;saveBag();renderBag();emit("add_to_cart",p.name);
+ return {ok:true};
 }
 function node(tag,cls,text){const e=document.createElement(tag);if(cls)e.className=cls;if(text!==undefined)e.textContent=String(text);return e;}
 function variantsFor(p){return Array.isArray(p.variants)?p.variants.filter(v=>Number(v.stock)>0):[];}
@@ -125,11 +130,9 @@ function findItem(i){
 function changeBagQuantity(index,delta){
  const line=bag[index],current=line?findItem(line):null;
  if(!current)return;
- const value=Number(line.quantity)+delta;
- if(value<=0){bag.splice(index,1);}
- else if(value>maxQuantity(current.variation)){$("cart-feedback").textContent="Quantidade maior que o estoque disponível.";return;}
- else line.quantity=value;
- saveBag();renderBag();
+ const result=window.SaluzBag.change(index,delta,current.variation);
+ if(!result.ok){$("cart-feedback").textContent=result.message;return;}
+ bag=result.items;saveBag();renderBag();
 }
 function renderBag(){
  const root=$("cart-items");root.replaceChildren();let total=0,unavailable=false;
@@ -152,7 +155,11 @@ function renderBag(){
    total+=p.price_cents*line.quantity;
   }
   side.append(node("strong","",found?money(p.price_cents*line.quantity):"—"));
-  const remove=node("button","remove","Remover");remove.type="button";remove.onclick=()=>{bag.splice(index,1);saveBag();renderBag();};
+  const remove=node("button","remove","Remover");remove.type="button";remove.onclick=()=>{
+    const result=window.SaluzBag.remove(index);
+    if(!result.ok){$("cart-feedback").textContent=result.message;return;}
+    bag=result.items;saveBag();renderBag();
+  };
   side.append(remove);row.append(thumb,info,side);root.append(row);
  });
  if(!bag.length)root.append(node("p","notice","Sua sacola está vazia. Explore as coleções para começar."));
