@@ -239,6 +239,16 @@ export async function onRequest({request,env}) {
       return output({configured:true,checkout_enabled:String(env.CHECKOUT_ENABLED)==="true"});
     if (route[0]==="products" && request.method==="GET") {
       const columns="id,name,description,category,image_url,price_cents,variants";
+      // Favoritos: consultar somente IDs válidos e produtos publicados, sem depender do limite da vitrine.
+      if(route[1]==="favorites" && route.length===2){
+        const rawIds=new URL(request.url).searchParams.get("ids")||"";
+        const ids=rawIds?rawIds.split(","):[];
+        if(ids.length>60 || ids.some(id=>!uuid.test(id)) || new Set(ids).size!==ids.length)
+          return error("Lista de favoritos inválida",400);
+        if(!ids.length)return output({products:[],configured:true});
+        const products=await sb(env,"/rest/v1/saluz_products?id=in.("+ids.join(",")+")&is_active=eq.true&select="+columns+"&limit=60");
+        return output({products,configured:true});
+      }
       // Página individual: nunca expor produtos ocultos ou IDs inválidos.
       if(route[1]){
         if(!uuid.test(route[1])||route.length!==2)return error("Produto inválido",404);
