@@ -111,7 +111,7 @@ function closeSearch() {
   if (searchInput) searchInput.value = "";
 }
 
-searchTrigger?.addEventListener("click", openSearch);
+searchTrigger?.addEventListener("click", event => { event.preventDefault(); openSearch(); });
 searchClose?.addEventListener("click", closeSearch);
 searchInput?.addEventListener("input", event => renderSearchResults(event.target.value));
 
