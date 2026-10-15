@@ -47,7 +47,7 @@ function sizesForColor(){
 function image(url,alt){
  const root=byId("product-photo");root.replaceChildren();
  if(validImage(url)){
-  const img=node("img");img.src=url;img.alt=alt;
+  const img=node("img");img.src=url;img.alt=alt;img.decoding="async";
   img.onerror=()=>{root.replaceChildren(node("span","product-placeholder","✦"));};root.append(img);
  }else root.append(node("span","product-placeholder","✦"));
 }
@@ -72,7 +72,7 @@ function gallery(){
    b.setAttribute("aria-label",photo.variant?
       "Selecionar foto da cor "+(photo.variant.color||"única")+", tamanho "+(photo.variant.size||"único"):
       "Ver imagem principal do produto");
-   const img=node("img");img.src=photo.url;img.alt="";img.loading="lazy";b.append(img);
+   const img=node("img");img.src=photo.url;img.alt="";img.loading="lazy";img.decoding="async";b.append(img);
    b.onclick=()=>{
      if(photo.variant){
        byId("sku-color").value=photo.variant.color||"Única";
@@ -103,6 +103,13 @@ function render(p){
  product=p;
  syncProductFavorite();
  document.title=p.name+" | SALUZ";
+ const meta=document.querySelector('meta[name="description"]');
+ if(meta)meta.setAttribute("content",String(p.description||("Conheça "+p.name+" na SALUZ.")).trim().slice(0,155));
+ const canonical=document.querySelector('link[rel="canonical"]');
+ if(canonical&&location.hostname==="usesaluz.com.br"){
+   canonical.href="https://usesaluz.com.br/produto.html?id="+encodeURIComponent(p.id);
+ }
+
  byId("product-loading").hidden=true;
  byId("product-panel").hidden=false;
  byId("product-title").textContent=p.name;
