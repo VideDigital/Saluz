@@ -25,17 +25,17 @@ mobileNav?.querySelectorAll("a").forEach(link => {
 });
 
 const searchIndex = [
-  { title: "Nécessaires", type: "Categoria", keywords: "necessaire nécessaires bolsa organização organizacao maquiagem", href: "#novidades" },
-  { title: "Porta-joias", type: "Categoria", keywords: "porta joias joias organização organizacao acessórios acessorios", href: "#novidades" },
-  { title: "Organização de maquiagem", type: "Categoria", keywords: "maquiagem organizador organização organizacao beleza", href: "#novidades" },
-  { title: "Viagem", type: "Categoria", keywords: "viagem mala organizadores necessaire acessórios acessorios", href: "#categorias" },
-  { title: "Autocuidado", type: "Categoria", keywords: "autocuidado rotina cuidado espelho pente escova", href: "#categorias" },
-  { title: "Presentes", type: "Categoria", keywords: "presente presentes para ela kits gift", href: "#presentes" },
-  { title: "Kit Nova Rotina", type: "Kit", keywords: "kit nova rotina autocuidado organização organizacao", href: "#kits" },
-  { title: "Kit Organização", type: "Kit", keywords: "kit organização organizacao bolsa maquiagem", href: "#kits" },
-  { title: "Presente para Ela", type: "Kit", keywords: "kit presente para ela feminino", href: "#kits" },
-  { title: "Organizar minha bolsa", type: "Momento", keywords: "bolsa organizar organização organizacao", href: "#momentos" },
-  { title: "Preparar uma viagem", type: "Momento", keywords: "viagem mala preparar organizador", href: "#momentos" }
+  { title: "Nécessaires", type: "Categoria", keywords: "necessaire nécessaires bolsa organização organizacao maquiagem", href: "./loja.html?categoria=N%C3%A9cessaires#produtos" },
+  { title: "Porta-joias", type: "Categoria", keywords: "porta joias joias organização organizacao acessórios acessorios", href: "./loja.html?categoria=Porta-joias#produtos" },
+  { title: "Organização de maquiagem", type: "Categoria", keywords: "maquiagem organizador organização organizacao beleza", href: "./loja.html?categoria=Organizadores%20de%20maquiagem#produtos" },
+  { title: "Viagem", type: "Categoria", keywords: "viagem mala organizadores necessaire acessórios acessorios", href: "./loja.html?categoria=Acess%C3%B3rios%20de%20viagem#produtos" },
+  { title: "Autocuidado", type: "Categoria", keywords: "autocuidado rotina cuidado espelho pente escova", href: "./loja.html?categoria=Autocuidado#produtos" },
+  { title: "Presentes", type: "Categoria", keywords: "presente presentes para ela kits gift", href: "./loja.html?categoria=Kits%20e%20presentes#produtos" },
+  { title: "Kit Nova Rotina", type: "Kit", keywords: "kit nova rotina autocuidado organização organizacao", href: "./loja.html?categoria=Kits%20e%20presentes#produtos" },
+  { title: "Kit Organização", type: "Kit", keywords: "kit organização organizacao bolsa maquiagem", href: "./loja.html?categoria=Kits%20e%20presentes#produtos" },
+  { title: "Presente para Ela", type: "Kit", keywords: "kit presente para ela feminino", href: "./loja.html?categoria=Kits%20e%20presentes#produtos" },
+  { title: "Organizar minha bolsa", type: "Momento", keywords: "bolsa organizar organização organizacao", href: "./loja.html?categoria=Organizadores%20de%20bolsa#produtos" },
+  { title: "Preparar uma viagem", type: "Momento", keywords: "viagem mala preparar organizador", href: "./loja.html?categoria=Acess%C3%B3rios%20de%20viagem#produtos" }
 ];
 
 function normalizeText(value = "") {
@@ -129,3 +129,5 @@ document.querySelectorAll('a[href="#"]').forEach(link => {
   link.addEventListener("click", event => event.preventDefault());
 });
 // The official bag is on the new storefront; no faux checkout on this prototype.
+
+searchInput?.addEventListener("keydown", event => { if(event.key==='Enter'){const query=event.target.value.trim();if(query)window.location.href='./loja.html?q='+encodeURIComponent(query)+'#produtos';} });
