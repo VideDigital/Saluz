@@ -363,32 +363,32 @@ body:has(.dashboard) .pill{color:var(--coffee);background:#ede0d6}
   --reading-border:rgba(81,68,59,.28);
 }
 body{font-size:16px;line-height:1.6}
-:where(.eyebrow,.product-category,.product-type,.product-status){
+:is(.eyebrow,.product-category,.product-type,.product-status){
   color:var(--reading-text);
   font-size:13px;
   font-weight:700;
   letter-spacing:.08em;
   opacity:1;
 }
-:where(.topbar,.saluz-top){
+:is(.topbar,.saluz-top){
   font-size:13px!important;
   line-height:1.45;
   letter-spacing:.035em;
   font-weight:600;
 }
-:where(.category-nav a,.header-actions button,.bag,.nav nav a){
+:is(.category-nav a,.header-actions button,.bag,.nav nav a){
   color:var(--reading-text);
   font-size:15px;
   font-weight:600;
 }
-:where(.hero-content>p:not(.eyebrow),.section-note,.promo-gift p,.lead p,
+:is(.hero-content>p:not(.eyebrow),.section-note,.promo-gift p,.lead p,
        .section-head p,.contact p,.empty-collection .empty-copy){
   color:var(--reading-text);
   opacity:1;
   font-size:16px;
   line-height:1.72;
 }
-:where(.section-title p,.collection-tile small,.category-card small,
+:is(.section-title p,.collection-tile small,.category-card small,
        .product-info .product-status,.product-type,.trust-strip small,
        .catalog-meta .notice,.detail-points span){
   color:var(--reading-secondary);
@@ -396,90 +396,90 @@ body{font-size:16px;line-height:1.6}
   font-size:14px;
   line-height:1.55;
 }
-:where(.category-card strong,.collection-tile strong,.product-info h3){
+:is(.category-card strong,.collection-tile strong,.product-info h3){
   color:var(--reading-text);
   font-size:16px;
   font-weight:600;
   line-height:1.5;
 }
-:where(.button,.btn-dark,.text-link,.product-go,.empty-link,.product button,.filter){
+:is(.button,.btn-dark,.text-link,.product-go,.empty-link,.product button,.filter){
   font-size:14px;
   font-weight:600;
   letter-spacing:.015em;
   line-height:1.5;
 }
-:where(.button,.btn-dark,.filter,.product button){
+:is(.button,.btn-dark,.filter,.product button){
   min-height:45px;
 }
-:where(.search,.catalog-sort,.detail-options label,.form-grid label){
+:is(.search,.catalog-sort,.detail-options label,.form-grid label){
   color:var(--reading-text);
   font-size:14px;
   font-weight:600;
 }
-:where(.search input,.catalog-sort select,.product select,.detail-options select,
+:is(.search input,.catalog-sort select,.product select,.detail-options select,
        .form-grid input,.form-grid select,.form-grid textarea){
   color:var(--reading-text);
   font-size:14px;
   min-height:46px;
   border-color:var(--reading-border);
 }
-:where(input,textarea)::placeholder{color:#6c5c51;opacity:1}
-:where(.search-hint,.notice,.small,.hint,.dialog-kicker,.detail-help,
+:is(input,textarea)::placeholder{color:#6c5c51;opacity:1}
+:is(.search-hint,.notice,.small,.hint,.dialog-kicker,.detail-help,
        .detail-stock,.detail-feedback,.cart-feedback,.checkout-alert){
   color:var(--reading-text);
   opacity:1;
   font-size:14px;
   line-height:1.65;
 }
-:where(.product .product-category){font-size:13px}
-:where(.products .product h3){font-size:17px;line-height:1.4}
-:where(.products .product .price,.detail-price){font-size:18px;font-weight:700}
-:where(.product-body button,.product .view-details){font-size:14px}
-:where(.product-status,.product .product-status){font-weight:700}
-:where(.benefits span){font-size:14px;line-height:1.5}
-:where(.filters .filter){font-size:14px}
-:where(.cart-toggle,.menu-toggle,.mobile-shop-nav a,.mobile-shop-nav button){
+:is(.product .product-category){font-size:13px}
+:is(.products .product h3){font-size:17px;line-height:1.4}
+:is(.products .product .price,.detail-price){font-size:18px;font-weight:700}
+:is(.product-body button,.product .view-details){font-size:14px}
+:is(.product-status,.product .product-status){font-weight:700}
+:is(.benefits span){font-size:14px;line-height:1.5}
+:is(.filters .filter){font-size:14px}
+:is(.cart-toggle,.menu-toggle,.mobile-shop-nav a,.mobile-shop-nav button){
   color:var(--reading-text);
   font-size:14px;
   font-weight:700;
 }
-:where(.cart-line-info strong,.cart-side strong){font-size:15px}
-:where(.cart-variant,.cart-line .small,.cart-line button){font-size:13px;color:var(--reading-secondary)}
-:where(.detail-content>p,.detail-help){font-size:14px;line-height:1.7}
-:where(.detail-share){font-size:14px}
-:where(.form-grid label,.consent,.checkout-dialog .small){font-size:14px;line-height:1.65}
-:where(.consent a,.contact a,.footer-columns a,.footer-bottom a,.site-footer a){
+:is(.cart-line-info strong,.cart-side strong){font-size:15px}
+:is(.cart-variant,.cart-line .small,.cart-line button){font-size:13px;color:var(--reading-secondary)}
+:is(.detail-content>p,.detail-help){font-size:14px;line-height:1.7}
+:is(.detail-share){font-size:14px}
+:is(.form-grid label,.consent,.checkout-dialog .small){font-size:14px;line-height:1.65}
+:is(.consent a,.contact a,.footer-columns a,.footer-bottom a,.site-footer a){
   color:var(--reading-text);
   font-weight:600;
 }
-:where(.site-footer .footer-columns div,.site-footer .footer-bottom,.site-footer small,
+:is(.site-footer .footer-columns div,.site-footer .footer-bottom,.site-footer small,
        body:has(.collections) footer>div a,body:has(.collections) footer>div span:not(.logo)){
   color:var(--reading-text);
   font-size:14px;
   line-height:1.6;
   opacity:1;
 }
-:where(.product-image.placeholder:after){color:#866d5a}
-:where(.analytics-banner){font-size:14px;line-height:1.55}
-:where(.analytics-choice){font-size:14px;font-weight:600;min-height:44px}
+:is(.product-image.placeholder:after){color:#866d5a}
+:is(.analytics-banner){font-size:14px;line-height:1.55}
+:is(.analytics-choice){font-size:14px;font-weight:600;min-height:44px}
 /* Admin: manter os textos da barra lateral claros sobre o cafe escuro. */
 body:has(.dashboard) .login-card p{color:var(--reading-text);font-size:16px;line-height:1.7}
 body:has(.dashboard) .login-card .eyebrow{font-size:13px}
 body:has(.dashboard) .login-card label,
 body:has(.dashboard) .product-form label,
 body:has(.dashboard) .tab-toolbar label{color:var(--reading-text);font-size:14px;font-weight:600}
-body:has(.dashboard) :where(.login-card input,.product-form input,.product-form textarea,
+body:has(.dashboard) :is(.login-card input,.product-form input,.product-form textarea,
                                 .product-form select,.workspace select){
   color:var(--reading-text);font-size:15px;min-height:47px;border-color:var(--reading-border);
 }
-body:has(.dashboard) :where(.tab-toolbar p,.hint,.muted,.action-message,.login .message,
+body:has(.dashboard) :is(.tab-toolbar p,.hint,.muted,.action-message,.login .message,
                                 .product-row small,.workspace-head #admin-notice,
                                 .variant-editor>.tab-toolbar p){
   color:var(--reading-text);font-size:14px;line-height:1.65;opacity:1;
 }
-body:has(.dashboard) :where(.outline,.primary,.login button[type=submit],
+body:has(.dashboard) :is(.outline,.primary,.login button[type=submit],
                                 .product-row button,.tabs button){font-size:14px;font-weight:600;min-height:44px}
-body:has(.dashboard) :where(.order-details p,.sidebar-bottom,.stats p){font-size:14px;line-height:1.6}
+body:has(.dashboard) :is(.order-details p,.sidebar-bottom,.stats p){font-size:14px;line-height:1.6}
 body:has(.dashboard) .sidebar .sidebar-logo small{font-size:12px;color:#fff;opacity:1}
 body:has(.dashboard) .sidebar .tabs button{color:#f8f3ef}
 body:has(.dashboard) .sidebar .tabs button.selected{color:#fff}
@@ -487,19 +487,19 @@ body:has(.dashboard) .sidebar .sidebar-bottom{color:#fff}
 body:has(.dashboard) .sidebar .sidebar-bottom a{color:#fff}
 @media(max-width:720px){
   body{font-size:15px;line-height:1.6}
-  :where(.hero-content>p:not(.eyebrow),.section-note,.lead p,.section-head p,.contact p){
+  :is(.hero-content>p:not(.eyebrow),.section-note,.lead p,.section-head p,.contact p){
     font-size:15px;opacity:1;
   }
-  :where(.topbar,.saluz-top){font-size:12px!important}
-  :where(.eyebrow,.product-type,.product-category,.product-status){font-size:12px}
-  :where(.category-card strong,.collection-tile strong,.product-info h3){font-size:15px}
-  :where(.category-card small,.collection-tile small,.trust-strip small){font-size:13px;opacity:1}
-  :where(.products .product h3){font-size:16px}
-  :where(.products .product .price,.detail-price){font-size:17px}
+  :is(.topbar,.saluz-top){font-size:12px!important}
+  :is(.eyebrow,.product-type,.product-category,.product-status){font-size:12px}
+  :is(.category-card strong,.collection-tile strong,.product-info h3){font-size:15px}
+  :is(.category-card small,.collection-tile small,.trust-strip small){font-size:13px;opacity:1}
+  :is(.products .product h3){font-size:16px}
+  :is(.products .product .price,.detail-price){font-size:17px}
   .product-body button{font-size:13px!important;line-height:1.4}
-  :where(.nav .cart-toggle,.nav .menu-toggle){font-size:13px}
-  :where(.mobile-shop-nav a,.mobile-shop-nav button){font-size:13px}
-  :where(.small,.hint,.notice,.detail-help,.detail-stock,.catalog-meta .notice){font-size:13px;opacity:1}
+  :is(.nav .cart-toggle,.nav .menu-toggle){font-size:13px}
+  :is(.mobile-shop-nav a,.mobile-shop-nav button){font-size:13px}
+  :is(.small,.hint,.notice,.detail-help,.detail-stock,.catalog-meta .notice){font-size:13px;opacity:1}
   body:has(.dashboard) .login-card p{font-size:15px}
-  body:has(.dashboard) :where(.tab-toolbar p,.hint,.muted,.action-message){font-size:13px}
+  body:has(.dashboard) :is(.tab-toolbar p,.hint,.muted,.action-message){font-size:13px}
 }
