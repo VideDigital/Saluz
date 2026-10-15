@@ -301,3 +301,31 @@ body:has(.dashboard) .pill{color:var(--coffee);background:#ede0d6}
  .category-grid,.collection-grid{gap:14px 9px}
 }
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important}}
+
+
+/* Category illustrations — intentionally abstract until authentic SALUZ photos arrive */
+.collection-visual{position:relative;overflow:hidden;font-size:0}
+.collection-visual:before,.collection-visual:after{content:"";position:absolute;display:block}
+.visual-case:before{width:58%;height:37%;background:linear-gradient(145deg,#f4e9df,#d4bda8);border-radius:36% 36% 15% 15% / 28% 28% 14% 14%;top:36%;left:21%;box-shadow:8px 18px 20px rgba(81,68,59,.12),inset 0 -7px 14px rgba(81,68,59,.06)}
+.visual-case:after{width:52%;height:1px;top:44%;left:24%;background:rgba(81,68,59,.4)}
+.visual-jewelry:before{width:56%;height:34%;border-radius:24px 24px 15px 15px;background:#f1e1d4;left:22%;top:36%;box-shadow:6px 19px 22px rgba(81,68,59,.12),inset 0 0 0 1px #c8a991}
+.visual-jewelry:after{width:18%;aspect-ratio:1;border:3px solid #bd9a7e;border-radius:100%;left:42%;top:30%;background:transparent;box-shadow:0 2px 8px #0001}
+.visual-beauty:before{width:25%;height:55%;border-radius:12px 12px 6px 6px;left:29%;top:24%;background:linear-gradient(100deg,#dcc5b0,#f7e7d9);box-shadow:25px 13px 0 -6px #c4a894,12px 12px 18px #0001}
+.visual-beauty:after{width:17%;height:5%;border-radius:3px 3px 0 0;left:33%;top:20%;background:#b89a83}
+.visual-travel:before{width:54%;height:50%;left:23%;top:27%;background:linear-gradient(120deg,#debeaa,#f2dfd1);border:1px solid rgba(81,68,59,.18);border-radius:18px 18px 9px 9px;transform:rotate(-7deg);box-shadow:13px 16px 20px #51443b20}
+.visual-travel:after{width:20%;height:14%;left:40%;top:17%;border:6px solid #b99a83;border-bottom:0;border-radius:10px 10px 0 0;transform:rotate(-7deg)}
+.visual-care:before{width:43%;aspect-ratio:1;left:28%;top:15%;border:7px solid #b59781;border-radius:50%;background:linear-gradient(135deg,#fff7ef,#d7c7bd);box-shadow:10px 17px 25px #51443b1a}
+.visual-care:after{width:12%;height:28%;left:43.5%;top:55%;background:#b59781;border-radius:0 0 11px 11px}
+.visual-gifts:before{width:54%;height:43%;left:23%;top:34%;background:linear-gradient(135deg,#f1e0d4,#d1b6a2);box-shadow:11px 15px 18px #51443b24}
+.visual-gifts:after{width:10%;height:55%;left:45%;top:24%;background:#b9957e;box-shadow:-35px -4px 0 -28px #b9957e,35px -4px 0 -28px #b9957e}
+.empty-collection{grid-column:1/-1;padding:62px clamp(20px,6vw,95px);background:linear-gradient(120deg,#f8f3ee,#eee2d7);min-height:330px;display:flex;flex-direction:column;align-items:center;text-align:center;justify-content:center}
+.empty-mark{font-family:Georgia,serif;color:var(--coffee);font-size:33px;line-height:1;opacity:.65;margin-bottom:18px}
+.empty-collection .eyebrow{margin:0 0 12px;font-size:10px}
+.empty-collection h3{font:400 clamp(29px,3.7vw,43px)/1.14 var(--serif);margin:0;color:var(--coffee);max-width:560px}
+.empty-collection .empty-copy{color:var(--coffee);opacity:.8;font-size:14px;line-height:1.8;max-width:470px;margin:14px auto 23px}
+.empty-link{font-size:12px;font-weight:700;border-bottom:1px solid var(--coffee);padding-bottom:5px;color:var(--coffee)}
+.empty-link:hover{opacity:.64}
+@media(max-width:720px){
+ .empty-collection{padding:44px 17px;min-height:310px}
+ .empty-collection .empty-copy{font-size:13px}
+}
