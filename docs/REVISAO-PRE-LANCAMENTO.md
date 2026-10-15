@@ -12,8 +12,10 @@ Atualização: 15/10/2026. **Não é autorização para liberar pedidos, pagamen
 - Painel: busca, filtro (visível/oculto/sem estoque), resumo de catálogo e prévia do cadastro.
 - Back-end: validação de cor/tamanho, prevenção de duplicatas de variação no pedido, limite de envio de fotos.
 - Página de produto: fotos vinculadas à combinação de cor/tamanho, consulta específica por UUID, produtos relacionados da mesma coleção (somente produtos ativos).
+- Sacola unificada em `sacola.js` entre vitrine e produto, com validação de UUID, limite por SKU, saneamento de dados locais e sincronização de contagem entre abas.
+- Testes automatizados de sacola em `tests/sacola.test.mjs`: adição, agrupamento de variações, estoque, remoção, dados locais adulterados, indisponibilidade de armazenamento e ausência de dados pessoais.
 - Vitrine e páginas de coleção: links para páginas individuais, consulta de categoria filtrada no servidor e limite de catálogo elevado para 300 itens por requisição.
-- Testes automatizados no GitHub Actions (arquivo `tests/smoke.test.mjs`) verificam páginas, rotas protegidas, configuração, checkout desativado e consulta de categoria.
+- Testes automatizados no GitHub Actions (arquivos `tests/smoke.test.mjs` e `tests/sacola.test.mjs`) verificam páginas, rotas protegidas, configuração, checkout desativado e consulta de categoria.
 - **Limitação conhecida:** catálogos com mais de 300 itens exigirão paginação para garantir acesso integral a todos os produtos. Não considerar essa escala homologada.
 
 
