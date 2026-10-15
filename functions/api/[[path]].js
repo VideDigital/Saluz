@@ -30,7 +30,7 @@ async function sb(env, path, { method="GET", data, service=true, extraHeaders={}
 }
 async function bodyJson(request) {
   const raw = await request.text();
-  if (raw.length > 16000) throw new Error("body too long");
+  if (raw.length > 64000) throw new Error("body too long");
   return JSON.parse(raw);
 }
 function safeText(value, max) {
@@ -77,9 +77,11 @@ function validateProduct(raw) {
   if (image_url && !/^https:\/\//.test(image_url)) throw new Error("Imagem precisa ter URL HTTPS");
   const variants=Array.isArray(raw.variants) ? raw.variants : [];
   if (variants.length>50) throw new Error("Muitas variações");
+  if (raw.is_active===true && variants.length===0) throw new Error("Cadastre ao menos uma variação antes de exibir o produto");
   const normalized=variants.map(v=>{
     const color=safeText(v.color,40), size=safeText(v.size,30);
     const stock=Number(v.stock);
+    if (!color || !size) throw new Error("Preencha cor e tamanho em todas as variações");
     if (!Number.isInteger(stock)||stock<0||stock>100000) throw new Error("Estoque inválido");
     const image_url=safeText(v.image_url,650); if(image_url && !/^https:\/\//.test(image_url)) throw new Error("Foto inválida"); return {color,size,stock,image_url};
   });
@@ -113,6 +115,14 @@ function validateOrder(b) {
 async function createOrder(request,env) {
   if (String(env.CHECKOUT_ENABLED)!=="true") return error("Cadastro de pedidos indisponível até a configuração segura da loja.",503);
   const b=validateOrder(await bodyJson(request));
+  // A mesma variação pode ser enviada em linhas distintas: rejeitar duplicatas,
+  // evitando que cada linha passe individualmente na checagem de estoque.
+  const uniqueLines=new Set();
+  for(const line of b.items){
+    const key=JSON.stringify([line.id,line.color,line.size]);
+    if(uniqueLines.has(key))throw new Error("Sacola com variações repetidas. Atualize a sacola e tente novamente.");
+    uniqueLines.add(key);
+  }
   const ids=[...new Set(b.items.map(i=>i.id))];
   const products=await sb(env,"/rest/v1/saluz_products?id=in.("+ids.join(",")+")&is_active=eq.true&select=id,name,price_cents,variants");
   const byId=new Map(products.map(p=>[p.id,p]));
@@ -176,8 +186,10 @@ async function adminAction(request,env,parts) {
   if(parts[1]==="upload" && request.method==="POST"){
     const mime=request.headers.get("content-type")||"";
     if(!["image/jpeg","image/png","image/webp"].includes(mime)) return error("Use JPG, PNG ou WebP",400);
+    const declaredLength=Number(request.headers.get("content-length")||0);
+    if(declaredLength>5*1024*1024)return error("Imagem deve ter até 5 MB",413);
     const bytes=await request.arrayBuffer();
-    if(!bytes.byteLength || bytes.byteLength>5*1024*1024) return error("Imagem deve ter até 5 MB",400);
+    if(!bytes.byteLength || bytes.byteLength>5*1024*1024) return error("Imagem deve ter até 5 MB",413);
     const signature=new Uint8Array(bytes.slice(0,12));
     const jpg=signature[0]===255&&signature[1]===216&&signature[2]===255;
     const png=signature.slice(0,8).join(",")==="137,80,78,71,13,10,26,10";
@@ -243,7 +255,7 @@ export async function onRequest({request,env}) {
     return error("Rota inexistente",404);
   } catch(e) {
     // Do not return credentials, customer data, stack traces or raw provider responses.
-    if (e.message && /inválid|incomplet|indisponível|excede|aceitar|Estoque|Muitas|variaç|Nome|Imagem|Um produto|Telefone|Informe|Sacola|Pedido|Endereç/.test(e.message))
+    if (e.message && /inválid|incomplet|indisponível|excede|aceitar|Estoque|Muitas|variaç|Nome|Imagem|Um produto|Telefone|Informe|Sacola|Pedido|Endereç|Cadastre|Preencha|repetidas/.test(e.message))
       return error(e.message,400);
     return error("Não foi possível concluir a operação. Tente novamente.",500);
   }
