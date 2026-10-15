@@ -215,6 +215,39 @@ function fillDetailSizes(){
  for(const size of sizes){const op=node("option","",size);op.value=size;select.append(op);}
  if(sizes.includes(old))select.value=old;
 }
+function renderDetailSelection(){
+ const p=detailProduct,v=detailVariant();if(!p)return;
+ const max=maxQuantity(v);detailCount=Math.max(1,Math.min(detailCount,max||1));
+ $("details-quantity").textContent=detailCount;
+ $("details-minus").disabled=detailCount<=1;
+ $("details-plus").disabled=detailCount>=max;
+ $("details-stock").textContent=max===0?"Esta combinação está indisponível.":max<=3?"Últimas unidades disponíveis nesta variação.":"Disponível para adicionar à sacola.";
+ $("details-add").disabled=max===0;
+ const image=$("details-image");image.replaceChildren();
+ const url=variationImage(p,v);
+ if(url){const img=node("img");img.src=url;img.alt=p.name+(v?.color?" na cor "+v.color:"");img.onerror=()=>{img.remove();image.textContent="✦";};image.append(img);}
+ else image.textContent="✦";
+ const thumbnails=$("details-thumbs");thumbnails.replaceChildren();
+ const photos=[];const seen=new Set();
+ if(p.image_url){photos.push({url:p.image_url,variant:null});seen.add(p.image_url);}
+ for(const item of p.variants||[])if(item.image_url&&!seen.has(item.image_url)){seen.add(item.image_url);photos.push({url:item.image_url,variant:item});}
+ thumbnails.hidden=photos.length<2;
+ for(const photo of photos){
+  const btn=node("button",photo.url===url?"selected":"");
+  btn.type="button";btn.setAttribute("aria-label","Ver foto de "+(photo.variant?.color||p.name));
+  const thumb=node("img");thumb.src=photo.url;thumb.alt="";thumb.loading="lazy";btn.append(thumb);
+  btn.onclick=()=>{
+   if(photo.variant){
+    $("details-color").value=photo.variant.color||"Única";fillDetailSizes();
+    $("details-size").value=photo.variant.size||"Único";detailCount=1;renderDetailSelection();
+   }else{
+    image.replaceChildren();const big=node("img");big.src=photo.url;big.alt=p.name;image.append(big);
+    for(const other of thumbnails.children)other.classList.remove("selected");btn.classList.add("selected");
+   }
+  };
+  thumbnails.append(btn);
+ }
+}
 function showProductDetails(p,updateLink=true){
  detailProduct=p;detailCount=1;
  $("details-category").textContent=p.category||"SALUZ";
