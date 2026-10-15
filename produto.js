@@ -13,11 +13,8 @@ const max=v=>Math.min(10,Math.max(0,Number(v?.stock)||0));
 const validImage=url=>typeof url==="string"&&/^https:\/\//i.test(url);
 const note=(text)=>byId("product-feedback").textContent=text;
 function updateBagCount(){
- try{
-  const b=JSON.parse(localStorage.getItem("saluz-bag-v1")||"[]");
-  const count=Array.isArray(b)?b.reduce((s,x)=>s+Math.max(0,Number(x.quantity)||0),0):0;
-  document.querySelectorAll("[data-bag-count]").forEach(e=>e.textContent=count);
- }catch{}
+ const count=window.SaluzBag.count(window.SaluzBag.read());
+ document.querySelectorAll("[data-bag-count]").forEach(e=>e.textContent=count);
 }
 function sizesForColor(){
  const select=byId("sku-size"),previous=select.value;select.replaceChildren();
@@ -192,14 +189,8 @@ byId("sku-plus").onclick=()=>{quantity=Math.min(max(selected()),quantity+1);upda
 byId("sku-add").onclick=()=>{
  if(!product)return;
  const v=selected();if(!v||max(v)===0){note("Escolha uma combinação disponível.");return;}
- let bag=[];
- try{const parsed=JSON.parse(localStorage.getItem("saluz-bag-v1")||"[]");if(Array.isArray(parsed))bag=parsed;}catch{}
- const key=product.id+"|"+(v.color||"")+"|"+(v.size||"");
- const existing=bag.find(i=>i.key===key);
- const proposed=(existing?Number(existing.quantity)||0:0)+quantity;
- if(proposed>max(v)){note("Esta quantidade ultrapassa o estoque disponível.");return;}
- if(existing)existing.quantity=proposed;else bag.push({key,id:product.id,color:v.color||"",size:v.size||"",quantity});
- localStorage.setItem("saluz-bag-v1",JSON.stringify(bag));
+ const result=window.SaluzBag.add(product,v,quantity);
+ if(!result.ok){note(result.message);return;}
  updateBagCount();note("Produto adicionado à sacola. Pedidos ainda estão em preparação.");
  byId("sku-open-bag").hidden=false;
 };
