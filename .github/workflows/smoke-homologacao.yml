@@ -61,7 +61,7 @@ jobs:
 
           code,text=get("/home-vitrine.js")
           print("Script vitrine HTTP:",code)
-          assert code==200 and "featured-products" in text
+          assert code==200 and "/api/products/home" in text
           print("Arquivos atuais da Home disponíveis.")
 
           print("Homologação pública aprovada, sem dados privados.")
