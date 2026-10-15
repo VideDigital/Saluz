@@ -86,6 +86,27 @@ test('consulta individual retorna somente o produto autorizado',async()=>{
   assert.equal(data.product.id,exampleId);
  }finally{globalThis.fetch=original;}
 });
+test('favoritos consultam apenas produtos ativos pelos IDs informados',async()=>{
+ const previous=globalThis.fetch;let seen='';
+ globalThis.fetch=async url=>{
+  seen=String(url);
+  return Response.json([{id:exampleId,name:'Produto de teste',price_cents:0,variants:[]}]);
+ };
+ try{
+  const result=await handler('/api/products/favorites?ids='+exampleId);
+  assert.equal(result.status,200);
+  assert.equal((await result.json()).products.length,1);
+  assert.ok(seen.includes('is_active=eq.true'));
+  assert.ok(seen.includes('id=in.('));
+ }finally{globalThis.fetch=previous;}
+});
+test('favoritos recusam IDs inválidos sem acessar o banco',async()=>{
+ const response=await handler('/api/products/favorites?ids=valor-invalido');
+ assert.equal(response.status,400);
+ const empty=await handler('/api/products/favorites');
+ assert.equal(empty.status,200);
+ assert.deepEqual((await empty.json()).products,[]);
+});
 test('sem sessão administrativa, rotas de gestão são negadas',async()=>{
  const res=await handler('/api/admin/products');
  assert.equal(res.status,401);
