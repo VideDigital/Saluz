@@ -3,6 +3,11 @@
 Atualização: 15/10/2026. **Não é autorização para liberar pedidos, pagamentos ou domínio oficial.**
 
 ## Escopo implementado no código
+- Home inteligente: `home-vitrine.js` exibe até 8 produtos em destaque, escolhidos no painel, e até 8 novidades reais por data de cadastro. Ambos os blocos mostram apenas produtos ativos; se a API estiver indisponível, exibem estado de preparação sem produtos fictícios.
+- Painel da Anny: `is_featured` por produto, filtro de destaques, indicação na prévia e botão rápido para destacar/remover.
+- Banco: migração `supabase/migrations/20261015_saluz_featured.sql` aplicada exclusivamente ao projeto SALUZ, São Paulo. Valor padrão `false` e índices parciais para itens públicos.
+- API `GET /api/products/home`: consulta produtos ativos, destaques e novidades, sem aceitar seleção administrativa pública.
+
 
 - Site institucional/comercial multipágina, menu responsivo e categorias.
 - Página individual por produto (`produto.html?id=UUID`) e prévia visual sem produtos reais (`produto.html?preview=1`).
