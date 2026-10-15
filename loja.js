@@ -173,15 +173,16 @@ async function loadStore(){
   const target=products.find(p=>p.id===urlParams.get("produto"));if(target)showProductDetails(target,false);
 }
 function close(dialog){if(dialog.open)dialog.close();}
-$("year").textContent=new Date().getFullYear();
+if($("year"))$("year").textContent=new Date().getFullYear();
 $("search").value=urlParams.get("q")||"";
 $("search").addEventListener("input",renderProducts);
 $("sort").addEventListener("change",renderProducts);
 $("cart-open").onclick=()=>{renderBag();$("cart-dialog").showModal();};
 $("cart-close").onclick=()=>close($("cart-dialog"));
+if(location.hash==="#sacola"){history.replaceState(null,"",location.pathname+location.search);$("cart-open").click();}
 $("mobile-cart-open").onclick=()=>$("cart-open").click();
-$("menu-toggle").onclick=()=>{const open=$("menu-toggle").getAttribute("aria-expanded")==="true";$("menu-toggle").setAttribute("aria-expanded",String(!open));$("loja-nav").classList.toggle("is-open",!open);};
-for(const link of $("loja-nav").querySelectorAll("a"))link.onclick=()=>{$("loja-nav").classList.remove("is-open");$("menu-toggle").setAttribute("aria-expanded","false");};
+
+
 $("checkout-close").onclick=()=>close($("checkout-dialog"));
 $("checkout-open").onclick=()=>{
   if(!$("checkout-open").disabled){
