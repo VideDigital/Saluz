@@ -45,4 +45,4 @@ jobs:
           print("Arquivos publicáveis preparados. Functions serão descobertas pelo Wrangler na raiz.")
           PY
       - name: Implantar apenas no Pages SALUZ da Anny
-        run: npx --yes wrangler@4 pages deploy saluz-public --project-name saluz-loja --branch branch
+        run: npx --yes wrangler@4 pages deploy saluz-public --project-name saluz-loja --branch main
