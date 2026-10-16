@@ -340,6 +340,7 @@
       <nav class="studio-nav" aria-label="O que deseja alterar?">
         <button type="button" data-studio-section="principal" class="selected">✦ Início</button>
         
+        <button type="button" data-studio-section="homeblocks">◈ Seções da Home</button>
         <button type="button" data-studio-section="vitrine">▣ Vitrine</button>
         <button type="button" data-studio-section="contato">✉ Contato e links</button>
       </nav>
@@ -357,7 +358,58 @@
             </select></label></div>
             <div class="studio-photo-field"><label>Foto principal do site<input name="hero_image_url" type="url" maxlength="500" placeholder="Cole um link HTTPS ou envie uma foto"></label><label class="studio-upload-label">Enviar foto <input type="file" data-studio-upload="hero_image_url" accept="image/jpeg,image/png,image/webp"><small>JPG, PNG ou WebP • até 5 MB</small></label></div>
           </section>
-          <section class="studio-card studio-panel" data-studio-panel="vitrine" hidden>
+          <section class="studio-card studio-panel" data-studio-panel="homeblocks" hidden>
+<div class="studio-card-head"><span class="studio-number">02</span><div>
+<h3>Seções da página inicial</h3><p>Os dois cartões promocionais e os três kits que já fazem parte do site podem ser atualizados aqui.</p>
+</div></div>
+<details class="studio-block-details" open><summary>◈ Cartão “Pequenos rituais” <span>Editar textos, foto e links</span></summary>
+<div class="studio-block-inside">
+<label>Texto pequeno<input name="moment_label" maxlength="42" placeholder="COMPRE PELO MOMENTO"></label>
+<label>Título<input name="moment_title" maxlength="100" placeholder="Pequenos rituais. Grandes diferenças."></label>
+<div class="studio-photo-field">
+<label>Imagem do fundo<input name="moment_image_url" type="url" maxlength="500" placeholder="https://... ou envie uma foto"></label>
+<label class="studio-upload-label">Enviar foto <input type="file" data-studio-upload="moment_image_url" accept="image/jpeg,image/png,image/webp">
+<small>Opcional. Sem foto, mantém o visual original.</small></label></div>
+<h4>Quatro atalhos do cartão</h4><p class="studio-block-help">Os links sempre apontam para páginas e categorias já existentes.</p>
+<div class="studio-pair"><label>Texto do link 1<input name="moment_link1_title" maxlength="48" placeholder="Organizar minha bolsa"></label>
+<label>Destino do link 1<select name="moment_link1_href" data-saluz-link-choice></select></label></div>
+<div class="studio-pair"><label>Texto do link 2<input name="moment_link2_title" maxlength="48" placeholder="Preparar uma viagem"></label>
+<label>Destino do link 2<select name="moment_link2_href" data-saluz-link-choice></select></label></div>
+<div class="studio-pair"><label>Texto do link 3<input name="moment_link3_title" maxlength="48" placeholder="Organizar minha maquiagem"></label>
+<label>Destino do link 3<select name="moment_link3_href" data-saluz-link-choice></select></label></div>
+<div class="studio-pair"><label>Texto do link 4<input name="moment_link4_title" maxlength="48" placeholder="Melhorar minha rotina"></label>
+<label>Destino do link 4<select name="moment_link4_href" data-saluz-link-choice></select></label></div>
+</div></details>
+<details class="studio-block-details"><summary>✦ Cartão “Presentear também é cuidar” <span>Editar texto, foto e botão</span></summary>
+<div class="studio-block-inside">
+<label>Texto pequeno<input name="gift_label" maxlength="42" placeholder="PRESENTES SALUZ"></label>
+<label>Título<input name="gift_title" maxlength="100" placeholder="Presentear também é cuidar."></label>
+<label>Descrição<textarea name="gift_description" maxlength="200" rows="2"></textarea></label>
+<div class="studio-photo-field"><label>Imagem do cartão<input name="gift_image_url" type="url" maxlength="500" placeholder="https://... ou envie uma foto"></label>
+<label class="studio-upload-label">Enviar foto <input type="file" data-studio-upload="gift_image_url" accept="image/jpeg,image/png,image/webp"><small>Opcional. Sem foto, mantém o visual original.</small></label></div>
+<div class="studio-pair">
+<label>Texto do botão<input name="gift_button" maxlength="48" placeholder="Descobrir presentes"></label>
+<label>Destino do botão<select name="gift_link" data-saluz-link-choice="gift"></select></label>
+</div>
+</div></details>
+<details class="studio-block-details"><summary>▣ Kits e curadorias <span>Personalizar os 3 cartões</span></summary>
+<div class="studio-block-inside"><label>Título da seção<input name="kits_title" maxlength="100" placeholder="Escolhas prontas para momentos reais."></label>
+<div class="studio-kit-card"><h4>Kit 1 — Nova Rotina</h4>
+<label>Nome do kit<input name="kit1_title" maxlength="64" placeholder="Nova Rotina"></label>
+<label>Descrição<textarea name="kit1_description" maxlength="180" rows="2"></textarea></label>
+<label>Botão leva para<select name="kit1_link" data-saluz-link-choice></select></label></div>
+<div class="studio-kit-card"><h4>Kit 2 — Organização</h4>
+<label>Nome do kit<input name="kit2_title" maxlength="64" placeholder="Organização"></label>
+<label>Descrição<textarea name="kit2_description" maxlength="180" rows="2"></textarea></label>
+<label>Botão leva para<select name="kit2_link" data-saluz-link-choice></select></label></div>
+<div class="studio-kit-card"><h4>Kit 3 — Presente para Ela</h4>
+<label>Nome do kit<input name="kit3_title" maxlength="64" placeholder="Presente para Ela"></label>
+<label>Descrição<textarea name="kit3_description" maxlength="180" rows="2"></textarea></label>
+<label>Botão leva para<select name="kit3_link" data-saluz-link-choice></select></label></div>
+</div></details>
+<p class="studio-tip">Estes campos alteram apenas os cartões existentes. Para adicionar banners novos ou gerenciar descontos, abra <strong>Campanhas e ofertas</strong> no menu.</p>
+</section>
+<section class="studio-card studio-panel" data-studio-panel="vitrine" hidden>
             <div class="studio-card-head"><span class="studio-number">03</span><div><h3>Títulos da vitrine</h3><p>Personalize as chamadas dos produtos em destaque e novidades.</p></div></div>
             <label>Título dos destaques<input name="featured_title" maxlength="80"></label>
             <label>Frase dos destaques<input name="featured_description" maxlength="180"></label>
