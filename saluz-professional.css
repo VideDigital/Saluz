@@ -22,7 +22,7 @@ a{color:#5143a4}
 .eyebrow,.professional-kicker{font-family:"DM Sans",sans-serif!important;letter-spacing:.1em!important;font-size:11px!important;font-weight:800!important;color:#5b508e!important}
 .hidden{display:none!important}
 .dashboard{display:grid!important;grid-template-columns:254px minmax(0,1fr)!important;background:#f4f6fb!important;min-height:100vh}
-.sidebar{position:sticky;top:0;align-self:start;height:100vh;min-height:660px;z-index:15;display:flex!important;flex-direction:column!important;gap:27px!important;background:#fff!important;color:#323b52!important;border-right:1px solid #e2e6ee!important;padding:25px 16px 18px!important;box-shadow:none!important}
+.sidebar{position:sticky;top:0;align-self:start;height:100vh;min-height:0;overflow-y:auto;z-index:15;display:flex!important;flex-direction:column!important;gap:27px!important;background:#fff!important;color:#323b52!important;border-right:1px solid #e2e6ee!important;padding:25px 16px 18px!important;box-shadow:none!important}
 .sidebar-top{padding:0 6px!important;min-height:60px;display:flex;align-items:center}
 .sidebar-logo{display:flex!important;align-items:center!important;gap:13px!important;border:0!important;padding:5px 4px!important;margin:0!important;min-width:0;letter-spacing:0!important;color:#222a42!important;font:800 23px/1.1 "DM Sans",sans-serif!important}
 .sidebar-logo .admin-brand-mark{display:grid!important;place-items:center!important;flex-shrink:0;width:45px;height:45px;border-radius:14px;background:#6556b8!important;color:#fff!important;font:400 30px/1 "DM Serif Display",Georgia,serif!important;box-shadow:0 7px 15px #6556b824}

@@ -100,6 +100,7 @@
     const tab=event.detail?.tab;
     el("section-description").textContent=descriptions[tab]||"Gerencie a sua loja em um só lugar.";
     if(tab==="overview")loadHealth();
+    else healthCache=null;
     if(tab==="products")el("product-export-csv")?.removeAttribute("aria-busy");
   });
   const kpiConfigs=[
@@ -114,6 +115,7 @@
     if(tab==="products"){
       const input=el("product-search"),mode=el("product-filter");
       if(searchText){input.value=searchText;input.dispatchEvent(new Event("input",{bubbles:true}));}
+      else if(filter&&input.value){input.value="";input.dispatchEvent(new Event("input",{bubbles:true}));}
       if(filter){mode.value=filter;mode.dispatchEvent(new Event("change",{bubbles:true}));}
     }
   }
