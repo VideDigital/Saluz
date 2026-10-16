@@ -108,8 +108,8 @@ function changeTab(name){
  currentTab=name;
  for(const b of document.querySelectorAll("[data-tab]"))b.classList.toggle("selected",b.dataset.tab===name);
  window.dispatchEvent(new CustomEvent("saluz:tabchange",{detail:{tab:name}}));
- for(const name2 of ["overview","orders","customers","products","finance","reports"])$("tab-"+name2).classList.toggle("hidden",name!==name2);
- $("section-title").textContent={overview:"Visão geral",orders:"Pedidos",customers:"Clientes",products:"Produtos",finance:"Financeiro",reports:"Relatórios"}[name];
+ for(const name2 of ["overview","orders","customers","products","finance","reports","studio"])$("tab-"+name2).classList.toggle("hidden",name!==name2);
+ $("section-title").textContent={overview:"Visão geral",orders:"Pedidos",customers:"Clientes",products:"Produtos",finance:"Financeiro",reports:"Relatórios",studio:"Personalizar loja"}[name];
  message("");
  if(name==="overview")window.SaluzAdminExtras?.loadOverview();
  if(name==="orders")loadOrders();
@@ -117,6 +117,7 @@ function changeTab(name){
  if(name==="products")loadProducts();
  if(name==="finance")window.SaluzAdminExtras?.openFinance();
  if(name==="reports")loadReports();
+ if(name==="studio")window.SaluzStudio?.open();
 }
 for(const b of document.querySelectorAll("[data-tab]"))b.onclick=()=>changeTab(b.dataset.tab);
 function line(parent,label,value){
