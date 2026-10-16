@@ -31,6 +31,7 @@ jobs:
           node --check admin.js
           node --check saluz-studio.js
           node --check saluz-campaigns.js
+          node --check saluz-professional.js
           node --check saluz-site-content.js
           node --check saluz-mobile.js
           node --test tests/*.test.mjs
@@ -61,6 +62,7 @@ jobs:
             'saluz-product-dialog.css', 'saluz-admin-extras.js',
             'saluz-mobile.js', 'saluz-studio.js', 'saluz-studio.css', 'saluz-simple.css',
             'saluz-campaigns.js', 'saluz-campaigns.css',
+            'saluz-professional.js', 'saluz-professional.css',
             'favicon.svg', '_headers'
           ]
           out = Path('saluz-admin-public')
