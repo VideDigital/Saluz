@@ -84,7 +84,8 @@ test("Navegador: arquivos Javascript modificados têm sintaxe valida",()=>{
 test("Painel: nao oferece criacao de paginas, mas oferece fotos e links",async()=>{
  const html=await readFile(new URL("admin.html",root),"utf8");
  assert.match(html,/data-studio-upload="hero_image_url"/);
- assert.match(html,/data-studio-upload="promo_image_url"/);
+ assert.match(html,/data-market-upload="image_url"/);
+ assert.match(html,/data-market-upload="mobile_image_url"/);
  assert.match(html,/data-studio-section="contato"/);
  assert.match(html,/name="original_price"/);
  assert.doesNotMatch(html,/criar nova página|adicionar página/i);
