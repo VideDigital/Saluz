@@ -115,6 +115,13 @@ function render(p){
  byId("product-title").textContent=p.name;
  byId("product-category").textContent=p.category;
  byId("product-price").textContent=format(p.price_cents);
+  document.querySelectorAll(".saluz-offer-on-product").forEach(node=>node.remove());
+  if(Number(p.original_price_cents)>p.price_cents){
+    const priceNode=byId("product-price");
+    const old=node("span","saluz-price-old saluz-offer-on-product",format(p.original_price_cents));
+    const badge=node("span","saluz-sale-label saluz-offer-on-product","Oferta");
+    priceNode.before(old,badge);
+  }
  byId("product-description").textContent=p.description||"Para informações adicionais sobre este produto, fale com a equipe SALUZ.";
  byId("breadcrumb-product").textContent=p.name;
  const categoryLink=byId("breadcrumb-category");
@@ -181,6 +188,8 @@ async function loadRelated(current){
    copy.append(node("span","product-related-category",p.category),
        node("h3","",p.name),
        node("strong","product-related-price",format(p.price_cents)));
+    if(Number(p.original_price_cents)>p.price_cents)
+      copy.append(node("span","saluz-price-old",format(p.original_price_cents)),node("span","saluz-sale-label","Oferta"));
    const action=node("a","product-related-action","Ver opções ↗");action.href=link.href;
    copy.append(action);article.append(link,copy);grid.append(article);
   }

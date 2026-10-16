@@ -45,7 +45,10 @@ async function loadNext(){
   const variant=(Array.isArray(p.variants)?p.variants:[]).find(v=>Number(v.stock)>0)||p.variants?.[0];
   const image=variant?.image_url||p.image_url;
   if(image){const img=el("img");img.src=image;img.alt=p.name;img.loading="lazy";img.decoding="async";link.append(img);}else link.append(el("span","category-product-placeholder","✦"));
-  const title=el("h2","",p.name);copy.append(el("span","category-product-category",p.category),title,el("strong","category-product-price",brl(p.price_cents)));
+  const title=el("h2","",p.name);copy.append(el("span","category-product-category",p.category),title);
+   if(Number(p.original_price_cents)>p.price_cents)
+     copy.append(el("span","saluz-price-old",brl(p.original_price_cents)),el("span","saluz-sale-label","Oferta"));
+   copy.append(el("strong","category-product-price",brl(p.price_cents)));
   const buy=el("a","category-product-link","Ver produto e opções ↗");buy.href=link.href;copy.append(buy);
   const heart=el("button","product-heart");
   heart.type="button";heart.dataset.favoriteProduct=p.id;heart.dataset.productName=p.name;
