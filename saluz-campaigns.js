@@ -60,11 +60,11 @@
   }
   function dataDifferent(){
     const stored=Array.isArray(doc?.draft?.banners)?doc.draft.banners:[];
-    return JSON.stringify(banners)!==JSON.stringify(stored) ||
+    return JSON.stringify(banners.map(clean))!==JSON.stringify(stored.map(clean)) ||
       (doc?.draft?.promo_enabled==="yes" && !Array.isArray(doc?.draft?.banners));
   }
   function publishedDifferent(){
-    return JSON.stringify(doc?.draft?.banners||[])!==JSON.stringify(doc?.published?.banners||[]) ||
+    return JSON.stringify((doc?.draft?.banners||[]).map(clean))!==JSON.stringify((doc?.published?.banners||[]).map(clean)) ||
       doc?.draft?.promo_enabled!==doc?.published?.promo_enabled;
   }
   function state(){
