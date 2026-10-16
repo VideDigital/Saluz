@@ -30,6 +30,8 @@ jobs:
         run: |
           node --check admin.js
           node --check saluz-studio.js
+          node --check saluz-campaigns.js
+          node --check saluz-site-content.js
           node --check functions/api/\[\[path\]\].js
           node --test tests/*.test.mjs
       - name: Preparar loja publica
@@ -60,6 +62,7 @@ jobs:
           'saluz-admin-improvements.css','saluz-control.css','saluz-mobile.css',
           'saluz-dashboard-pro.css','saluz-clean.css','saluz-product-dialog.css',
           'saluz-admin-extras.js','saluz-mobile.js','saluz-studio.js','saluz-studio.css','saluz-simple.css',
+          'saluz-campaigns.js','saluz-campaigns.css',
           'favicon.svg','_headers']
           public=Path('saluz-admin-public')
           public.mkdir(exist_ok=True)
