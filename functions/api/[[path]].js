@@ -193,7 +193,15 @@ async function login(request,env) {
 }
 const siteContentFields={top_bar:110,hero_title:90,hero_description:310,hero_button:48,hero_image_url:500,hero_link:95,
   featured_title:80,new_title:80,featured_description:180,new_description:180,business_hours:100,contact_email:180,store_notice:170,
-  promo_enabled:3,promo_title:90,promo_description:220,promo_button:48,promo_link:95,promo_image_url:500,whatsapp_number:15,instagram_url:180};
+  promo_enabled:3,promo_title:90,promo_description:220,promo_button:48,promo_link:95,promo_image_url:500,whatsapp_number:15,instagram_url:180,
+  moment_label:42,moment_title:100,moment_image_url:500,
+  moment_link1_title:48,moment_link1_href:95,moment_link2_title:48,moment_link2_href:95,
+  moment_link3_title:48,moment_link3_href:95,moment_link4_title:48,moment_link4_href:95,
+  gift_label:42,gift_title:100,gift_description:200,gift_image_url:500,gift_button:48,gift_link:95,
+  kits_title:100,
+  kit1_title:64,kit1_description:180,kit1_link:95,
+  kit2_title:64,kit2_description:180,kit2_link:95,
+  kit3_title:64,kit3_description:180,kit3_link:95};
 const allowedStoreLinks=new Set(["./loja.html","./colecoes.html","./colecao-necessaires.html",
   "./colecao-porta-joias.html","./colecao-kits-presentes.html","./colecao-autocuidado.html","./atendimento.html",
   "./colecao-organizadores-maquiagem.html","./colecao-organizadores-bolsa.html",
@@ -248,8 +256,8 @@ function validateSiteContent(raw){
   for(const [key,max] of Object.entries(siteContentFields)){
     const value=safeText(raw[key],max);
     if(/[<>]/.test(value))throw new Error("HTML não é permitido nos textos da loja");
-    if((key==="hero_image_url"||key==="promo_image_url")&&value&&!/^https:\/\/[^\s<>"']+$/i.test(value))throw new Error("Imagem deve usar URL HTTPS");
-    if(["hero_link","promo_link"].includes(key)&&value&&!allowedStoreLinks.has(value))throw new Error("O link deve apontar para uma página existente da SALUZ");
+    if((["hero_image_url","promo_image_url","moment_image_url","gift_image_url"].includes(key))&&value&&!/^https:\/\/[^\s<>"']+$/i.test(value))throw new Error("Imagem deve usar URL HTTPS");
+    if(["hero_link","promo_link","moment_link1_href","moment_link2_href","moment_link3_href","moment_link4_href","gift_link","kit1_link","kit2_link","kit3_link"].includes(key)&&value&&!allowedStoreLinks.has(value)&&!(key==="gift_link"&&value==="#kits"))throw new Error("O link deve apontar para uma página existente da SALUZ");
     if(key==="promo_enabled"&&value&&!["yes","no"].includes(value))throw new Error("Opção de banner inválida");
     if(key==="whatsapp_number"&&value&&!/^\d{10,13}$/.test(value.replace(/\D/g,"")))throw new Error("WhatsApp deve ter DDD e número válidos");
     if(key==="instagram_url"&&value&&!/^https:\/\/(?:www\.)?instagram\.com\/[a-zA-Z0-9_.]{1,30}\/?$/.test(value))throw new Error("Informe um link de perfil do Instagram válido");
