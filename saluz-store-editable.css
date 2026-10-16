@@ -13,3 +13,49 @@
 .saluz-sale-label{display:inline-flex;align-items:center;background:#f6e5e5;border-radius:999px;padding:3px 9px;margin:2px 6px 2px 0;color:#8f4a55;font:700 11px/1.4 "DM Sans",sans-serif;letter-spacing:.01em;text-decoration:none}
 .saluz-offer-on-product{margin-top:7px;margin-bottom:6px}
 @media(max-width:720px){.saluz-editable-banner{grid-template-columns:1fr;width:calc(100% - 30px)}.saluz-editable-banner-photo{min-height:180px;order:-1}.saluz-editable-banner-text{padding:28px}}
+
+
+/* Campanhas configuraveis pelo painel; paginas originais permanecem preservadas. */
+.saluz-campaign-banner{
+  position:relative;isolation:isolate;display:grid;grid-template-columns:1.05fr .95fr;
+  width:min(1260px,calc(100% - 48px));margin:clamp(25px,4vw,57px) auto;
+  min-height:260px;overflow:hidden;background:#f5e8e7;border:1px solid #e8d7d2;border-radius:15px;color:#47343d;
+}
+.saluz-campaign-copy{position:relative;z-index:2;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:15px;padding:clamp(27px,4.4vw,57px);min-width:0}
+.saluz-campaign-eyebrow{font:750 11px/1.4 "DM Sans",sans-serif;letter-spacing:.13em;color:#a16d77}
+.saluz-campaign-banner h2{margin:0;font:400 clamp(28px,3.1vw,46px)/1.11 "DM Serif Display",serif;letter-spacing:-.03em;max-width:19ch;overflow-wrap:anywhere}
+.saluz-campaign-banner p{margin:0;font:400 15px/1.6 "DM Sans",sans-serif;max-width:53ch;overflow-wrap:anywhere}
+.saluz-campaign-banner a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;border-radius:6px;padding:12px 20px;background:#58404a;color:#fff;font:700 14px/1.4 "DM Sans",sans-serif;text-decoration:none}
+.saluz-campaign-banner a:hover{background:#7b5565}
+.saluz-campaign-picture{display:block;width:100%;height:100%;min-height:240px;background:#d7bdb9;overflow:hidden}
+.saluz-campaign-picture img{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
+.saluz-campaign-compact{min-height:160px;grid-template-columns:1fr 30%;background:#eee1e1}
+.saluz-campaign-compact .saluz-campaign-copy{padding:clamp(24px,3vw,39px);gap:11px}
+.saluz-campaign-compact h2{font-size:clamp(23px,2.5vw,33px);max-width:none}
+.saluz-campaign-compact p{font-size:14px}
+.saluz-campaign-compact .saluz-campaign-picture{min-height:160px}
+.saluz-campaign-image{min-height:340px;grid-template-columns:1fr;background:#54404a;color:#fff}
+.saluz-campaign-image .saluz-campaign-copy{max-width:690px;min-height:340px;padding:clamp(31px,5vw,68px)}
+.saluz-campaign-image .saluz-campaign-picture{position:absolute;z-index:-1;inset:0;width:100%;height:100%;min-height:0}
+.saluz-campaign-image .saluz-campaign-picture:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,#25151fc2 0%,#25151f66 65%,#25151f15 100%)}
+.saluz-campaign-image h2{color:#fff;text-shadow:0 2px 12px #24131b65}
+.saluz-campaign-image p{color:#fff;max-width:60ch}
+.saluz-campaign-image .saluz-campaign-eyebrow{color:#f3d5db}
+.saluz-campaign-image a{background:#fff;color:#5c404b}
+.saluz-campaign-image a:hover{background:#fae8e9;color:#5c404b}
+.saluz-campaign-banner a:focus-visible{outline:3px solid #af7586;outline-offset:3px}
+@media(max-width:700px){
+ .saluz-campaign-banner{grid-template-columns:1fr;width:calc(100% - 30px);min-height:0}
+ .saluz-campaign-copy{padding:28px;gap:12px}
+ .saluz-campaign-banner h2{font-size:clamp(27px,8vw,39px)}
+ .saluz-campaign-banner p{font-size:14px}
+ .saluz-campaign-picture{height:210px;min-height:210px;grid-row:1}
+ .saluz-campaign-compact{grid-template-columns:1fr}
+ .saluz-campaign-compact .saluz-campaign-picture{height:150px;min-height:150px}
+ .saluz-campaign-image{min-height:340px}
+ .saluz-campaign-image .saluz-campaign-copy{min-height:340px;padding:30px}
+ .saluz-campaign-image .saluz-campaign-picture{grid-row:auto;height:100%;min-height:0}
+ .saluz-campaign-image .saluz-campaign-picture:after{background:linear-gradient(0deg,#25151fe0,#25151f3d)}
+}
+@media(prefers-reduced-motion:reduce){.saluz-campaign-banner *{scroll-behavior:auto!important}}
+.saluz-promo-moment-photo{color:#fff;background-position:center;background-size:cover}

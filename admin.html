@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow,noarchive">
-<title>SALUZ — Minha loja</title>
+<title>SALUZ — Gestão da loja</title>
 <meta name="theme-color" content="#101c30">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,6 +23,8 @@
 <link rel="stylesheet" href="./saluz-studio.css?v=1">
 <script src="./saluz-studio.js?v=2" defer></script>
 <link rel="stylesheet" href="./saluz-simple.css?v=2">
+<link rel="stylesheet" href="./saluz-campaigns.css?v=1">
+<script src="./saluz-campaigns.js?v=1" defer></script>
 </head>
 <body>
 <main>
@@ -47,7 +49,8 @@
     <nav class="tabs" id="admin-nav" aria-label="Seções da administração">
       <span class="nav-group-label">MINHA LOJA</span>
       <button class="selected" type="button" data-tab="overview"><span aria-hidden="true">⌂</span> Início</button>
-      <button type="button" data-tab="products"><span aria-hidden="true">▣</span> Produtos e ofertas</button>
+      <button type="button" data-tab="products"><span aria-hidden="true">▣</span> Produtos</button>
+      <button type="button" data-tab="campaigns"><span aria-hidden="true">◈</span> Campanhas e ofertas</button>
       <button type="button" data-tab="studio"><span aria-hidden="true">✦</span> Aparência e links</button>
       <span class="nav-group-label">ACOMPANHAMENTO</span>
       <button type="button" data-tab="orders"><span aria-hidden="true">▤</span> Pedidos</button>
@@ -65,7 +68,8 @@
       <div class="panel-intro easy-intro"><div><span class="eyebrow">BEM-VINDA À SALUZ</span><h2>O que você quer fazer hoje?</h2><p>Escolha uma tarefa abaixo. As informações mais detalhadas ficam guardadas no resumo.</p></div></div>
       <div class="management-notice" role="note"><strong>Loja em validação:</strong> o recebimento de pedidos online ainda não está liberado.</div>
       <div class="overview-shortcuts easy-shortcuts">
-<button type="button" data-quick-tab="products"><span aria-hidden="true">▣</span><strong>Produtos e ofertas</strong><small>Fotos, preços, estoque e descontos</small><b aria-hidden="true">→</b></button>
+<button type="button" data-quick-tab="products"><span aria-hidden="true">▣</span><strong>Meus produtos</strong><small>Fotos, preços e estoque</small><b aria-hidden="true">→</b></button>
+<button type="button" data-quick-tab="campaigns"><span aria-hidden="true">◈</span><strong>Campanhas e ofertas</strong><small>Banners, descontos e divulgações</small><b aria-hidden="true">→</b></button>
 <button type="button" data-quick-tab="studio"><span aria-hidden="true">✦</span><strong>Aparência da loja</strong><small>Banners, textos e links</small><b aria-hidden="true">→</b></button>
 <button type="button" data-quick-tab="orders"><span aria-hidden="true">▤</span><strong>Ver pedidos</strong><small>Acompanhar solicitações</small><b aria-hidden="true">→</b></button>
 <button type="button" data-quick-tab="reports"><span aria-hidden="true">▥</span><strong>Ver resultados</strong><small>Visitas e interesse na loja</small><b aria-hidden="true">→</b></button>
@@ -191,13 +195,152 @@
         <div id="fee-table" class="fee-list" aria-live="polite"><p class="muted">Ainda não há taxas cadastradas.</p></div>
       </section>
     </section>
+
+    <section id="tab-campaigns" class="tab hidden">
+      <div class="easy-page-title market-page-intro">
+        <div><span class="eyebrow">SUA CENTRAL DE DIVULGAÇÃO</span>
+          <h2>Campanhas e ofertas</h2>
+          <p>Organize os banners que aparecem na loja e os descontos dos produtos, sem precisar editar o site.</p></div>
+      </div>
+      <nav class="market-view-nav" aria-label="Gerenciamento de campanhas">
+        <button type="button" data-campaign-view="banners" class="selected" aria-pressed="true"><span aria-hidden="true">▧</span> Banners e imagens</button>
+        <button type="button" data-campaign-view="offers" aria-pressed="false"><span aria-hidden="true">%</span> Ofertas dos produtos</button>
+      </nav>
+      <section class="market-view" data-market-view="banners">
+        <div class="market-status-row">
+          <div><span class="market-status-pill" id="campaign-state">Carregando campanhas...</span>
+               <small id="campaign-last-publish">Alterações só ficam públicas após a publicação.</small></div>
+          <a href="https://usesaluz.com.br/" target="_blank" rel="noopener">Ver minha loja ↗</a>
+        </div>
+        <div class="market-guide" role="note"><strong>Como funciona:</strong>
+          Crie ou edite os banners, salve o rascunho e depois clique em <strong>Publicar na loja</strong>.
+          Você escolhe em qual área existente o banner vai aparecer.</div>
+        <div class="market-top-actions">
+          <h3>Meus banners <span id="campaign-count">0 de 24</span></h3>
+          <button type="button" id="campaign-new" class="primary">+ Criar banner</button>
+        </div>
+        <div class="market-layout">
+          <aside class="market-catalog">
+            <div class="market-catalog-heading"><strong>Lista de banners</strong><small>Clique em um banner para editar ou organizar</small></div>
+            <div id="campaign-list" class="market-list" aria-live="polite"></div>
+          </aside>
+          <div class="market-editor-area">
+            <form id="campaign-banner-form" class="market-editor-form">
+              <div class="market-form-head"><div><span class="eyebrow" id="campaign-editor-caption">CAMPANHA</span>
+                <h3 id="campaign-editor-title">Novo banner</h3>
+                <p>Preencha apenas o que quiser mostrar para suas clientes.</p></div>
+                <button type="button" id="campaign-editor-close" class="outline">Fechar editor</button></div>
+              <input type="hidden" name="id">
+              <div class="market-form-grid">
+                <label>Em qual área mostrar?
+                  <select name="placement" required>
+                    <optgroup label="Página inicial">
+                      <option value="home_after_hero">Início — logo abaixo da abertura</option>
+                      <option value="home_before_featured">Início — antes dos produtos em destaque</option>
+                      <option value="home_before_new">Início — antes das novidades</option>
+                      <option value="home_bottom">Início — ao final da página</option>
+                    </optgroup>
+                    <optgroup label="Página da loja">
+                      <option value="catalog_after_hero">Loja — logo após o topo</option>
+                      <option value="catalog_before_products">Loja — antes dos produtos</option>
+                      <option value="catalog_bottom">Loja — ao final do catálogo</option>
+                    </optgroup>
+                  </select>
+                </label>
+                <label>Estilo do banner
+                  <select name="style"><option value="editorial">Imagem + texto</option><option value="compact">Faixa compacta</option><option value="image">Foto em destaque</option></select>
+                </label>
+              </div>
+              <label>Frase pequena acima do título (opcional)
+                <input name="eyebrow" maxlength="42" placeholder="Ex.: ESCOLHAS ESPECIAIS"></label>
+              <label>Título da campanha <input name="title" maxlength="90" required placeholder="Ex.: Presentes para surpreender"></label>
+              <label>Descrição <textarea name="description" maxlength="230" rows="2" placeholder="Ex.: Uma seleção feita com carinho para presentear."></textarea></label>
+              <div class="market-form-grid">
+                <label>Texto do botão <input name="button_label" maxlength="48" placeholder="Ver produtos"></label>
+                <label>Para onde o botão leva?
+                  <select name="link">
+                    <option value="./loja.html">Todos os produtos</option>
+                    <option value="./colecoes.html">Todas as coleções</option>
+                    <option value="./colecao-necessaires.html">Nécessaires</option>
+                    <option value="./colecao-porta-joias.html">Porta-joias</option>
+                    <option value="./colecao-organizadores-maquiagem.html">Organizadores de maquiagem</option>
+                    <option value="./colecao-organizadores-bolsa.html">Organizadores de bolsa</option>
+                    <option value="./colecao-acessorios-viagem.html">Viagem</option>
+                    <option value="./colecao-acessorios-femininos.html">Acessórios femininos</option>
+                    <option value="./colecao-autocuidado.html">Autocuidado</option>
+                    <option value="./colecao-kits-presentes.html">Kits e presentes</option>
+                    <option value="./atendimento.html">Atendimento</option>
+                  </select>
+                </label>
+              </div>
+              <div class="market-images">
+                <label>Foto principal do banner (computador)
+                  <input type="url" name="image_url" maxlength="500" placeholder="https://... ou envie uma foto"></label>
+                <label class="market-upload">Enviar foto principal
+                  <input type="file" data-market-upload="image_url" accept="image/jpeg,image/png,image/webp">
+                  <small>JPG, PNG ou WebP, até 5 MB.</small></label>
+                <label>Foto para celular (opcional)
+                  <input type="url" name="mobile_image_url" maxlength="500" placeholder="https://... ou envie uma foto"></label>
+                <label class="market-upload">Enviar foto para celular
+                  <input type="file" data-market-upload="mobile_image_url" accept="image/jpeg,image/png,image/webp">
+                  <small>Se ficar vazio, usa a foto principal.</small></label>
+              </div>
+              <div class="market-preview" aria-live="polite">
+                <div class="market-preview-visual" id="campaign-preview-image"><span>✦</span></div>
+                <div><small id="campaign-preview-eyebrow">ESCOLHAS SALUZ</small><strong id="campaign-preview-title">Sua nova campanha</strong>
+                  <p id="campaign-preview-description">Visualize o texto e a imagem enquanto edita.</p><span id="campaign-preview-button">Ver produtos ↗</span></div>
+              </div>
+              <fieldset class="market-schedule">
+                <legend>Publicação e período</legend>
+                <label class="market-switch"><input name="active" type="checkbox" checked> Banner ativo após publicar</label>
+                <div class="market-form-grid">
+                  <label>Começar em (opcional) <input name="starts_at" type="datetime-local"></label>
+                  <label>Terminar em (opcional) <input name="ends_at" type="datetime-local"></label>
+                </div>
+                <p>Se deixar as datas vazias, o banner ficará ativo até você desligá-lo.</p>
+              </fieldset>
+              <div class="market-editor-actions">
+                <button type="submit" class="primary" id="campaign-apply">Guardar na lista</button>
+                <button type="button" class="outline" id="campaign-copy">Duplicar</button>
+                <button type="button" class="market-delete" id="campaign-delete">Excluir banner</button>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="market-publish-bar">
+          <div><strong>Publicação da campanha</strong>
+            <small>Guardar na lista não muda o site. Primeiro salve o rascunho; depois publique.</small></div>
+          <div class="market-publish-actions">
+            <button type="button" id="campaign-discard" class="outline">Descartar rascunho</button>
+            <button type="button" id="campaign-save" class="outline">Salvar rascunho</button>
+            <button type="button" id="campaign-publish" class="primary">Publicar na loja ↗</button>
+          </div>
+        </div>
+        <p class="market-feedback" id="campaign-feedback" role="status" aria-live="polite"></p>
+      </section>
+      <section class="market-view" data-market-view="offers" hidden>
+        <div class="market-offers-head"><div><h3>Ofertas dos produtos</h3>
+          <p>Defina o preço anterior e o valor promocional. Os descontos aparecem nas vitrines e na página do produto.</p></div>
+          <button type="button" id="offers-refresh" class="outline">Atualizar produtos</button></div>
+        <div class="market-filters"><label>Buscar produto
+          <input id="offers-search" type="search" autocomplete="off" placeholder="Nome ou categoria"></label>
+          <label>Mostrar <select id="offers-filter"><option value="all">Todos os produtos</option>
+            <option value="offers">Somente em oferta</option><option value="available">Visíveis na loja</option>
+            <option value="hidden">Ocultos</option></select></label></div>
+        <div id="offers-summary" class="market-offers-summary">Carregando catálogo...</div>
+        <div id="offers-list" class="market-offers-list" aria-live="polite"></div>
+        <button type="button" id="offers-load-more" class="outline" hidden>Carregar mais produtos</button>
+        <p id="offers-feedback" class="market-feedback" role="status" aria-live="polite"></p>
+      </section>
+    </section>
     <section id="tab-studio" class="tab hidden">
       <div class="easy-page-title"><div><span class="eyebrow">EDITAR MINHA LOJA</span><h2>Deixe a loja do seu jeito</h2><p>Troque fotos, mensagens e links das áreas que já existem no site.</p></div></div>
       <div class="studio-summary"><span class="studio-badge" id="studio-state">Carregando...</span><span id="studio-version"></span><a class="studio-site-link" href="https://usesaluz.com.br/" target="_blank" rel="noopener">Abrir loja ↗</a></div>
       <div class="studio-steps"><span><b>1</b> Escolha a área</span><span><b>2</b> Faça a alteração</span><span><b>3</b> Salve e publique</span></div>
       <nav class="studio-nav" aria-label="O que deseja alterar?">
         <button type="button" data-studio-section="principal" class="selected">✦ Início</button>
-        <button type="button" data-studio-section="ofertas">◈ Banners e ofertas</button>
+        
+        <button type="button" data-studio-section="homeblocks">◈ Seções da Home</button>
         <button type="button" data-studio-section="vitrine">▣ Vitrine</button>
         <button type="button" data-studio-section="contato">✉ Contato e links</button>
       </nav>
@@ -215,20 +358,58 @@
             </select></label></div>
             <div class="studio-photo-field"><label>Foto principal do site<input name="hero_image_url" type="url" maxlength="500" placeholder="Cole um link HTTPS ou envie uma foto"></label><label class="studio-upload-label">Enviar foto <input type="file" data-studio-upload="hero_image_url" accept="image/jpeg,image/png,image/webp"><small>JPG, PNG ou WebP • até 5 MB</small></label></div>
           </section>
-          <section class="studio-card studio-panel" data-studio-panel="ofertas" hidden>
-            <div class="studio-card-head"><span class="studio-number">02</span><div><h3>Banner de divulgação</h3><p>Mostre uma coleção, novidade ou campanha na página inicial.</p></div></div>
-            <label>Mostrar banner na loja?<select name="promo_enabled"><option value="no">Não, deixar oculto</option><option value="yes">Sim, mostrar banner</option></select></label>
-            <label>Título do banner<input name="promo_title" maxlength="90" placeholder="Novidades para sua rotina"></label>
-            <label>Descrição curta<textarea name="promo_description" maxlength="220" rows="2" placeholder="Descubra nossa seleção especial."></textarea></label>
-            <div class="studio-pair"><label>Texto do botão<input name="promo_button" maxlength="48" placeholder="Ver coleção"></label><label>Destino do botão<select name="promo_link">
-              <option value="./loja.html">Todos os produtos</option><option value="./colecoes.html">Coleções</option><option value="./colecao-kits-presentes.html">Kits e presentes</option>
-              <option value="./colecao-necessaires.html">Nécessaires</option><option value="./colecao-porta-joias.html">Porta-joias</option><option value="./colecao-autocuidado.html">Autocuidado</option>
-              <option value="./atendimento.html">Atendimento</option>
-            </select></label></div>
-            <div class="studio-photo-field"><label>Foto do banner<input name="promo_image_url" type="url" maxlength="500" placeholder="Cole um link HTTPS ou envie uma foto"></label><label class="studio-upload-label">Enviar foto <input type="file" data-studio-upload="promo_image_url" accept="image/jpeg,image/png,image/webp"><small>Use uma foto horizontal com boa resolução.</small></label></div>
-            <p class="studio-tip">Para criar um desconto em um produto, use a aba <strong>Produtos e ofertas</strong>. Aqui você controla apenas o banner.</p>
-          </section>
-          <section class="studio-card studio-panel" data-studio-panel="vitrine" hidden>
+          <section class="studio-card studio-panel" data-studio-panel="homeblocks" hidden>
+<div class="studio-card-head"><span class="studio-number">02</span><div>
+<h3>Seções da página inicial</h3><p>Os dois cartões promocionais e os três kits que já fazem parte do site podem ser atualizados aqui.</p>
+</div></div>
+<details class="studio-block-details" open><summary>◈ Cartão “Pequenos rituais” <span>Editar textos, foto e links</span></summary>
+<div class="studio-block-inside">
+<label>Texto pequeno<input name="moment_label" maxlength="42" placeholder="COMPRE PELO MOMENTO"></label>
+<label>Título<input name="moment_title" maxlength="100" placeholder="Pequenos rituais. Grandes diferenças."></label>
+<div class="studio-photo-field">
+<label>Imagem do fundo<input name="moment_image_url" type="url" maxlength="500" placeholder="https://... ou envie uma foto"></label>
+<label class="studio-upload-label">Enviar foto <input type="file" data-studio-upload="moment_image_url" accept="image/jpeg,image/png,image/webp">
+<small>Opcional. Sem foto, mantém o visual original.</small></label></div>
+<h4>Quatro atalhos do cartão</h4><p class="studio-block-help">Os links sempre apontam para páginas e categorias já existentes.</p>
+<div class="studio-pair"><label>Texto do link 1<input name="moment_link1_title" maxlength="48" placeholder="Organizar minha bolsa"></label>
+<label>Destino do link 1<select name="moment_link1_href" data-saluz-link-choice></select></label></div>
+<div class="studio-pair"><label>Texto do link 2<input name="moment_link2_title" maxlength="48" placeholder="Preparar uma viagem"></label>
+<label>Destino do link 2<select name="moment_link2_href" data-saluz-link-choice></select></label></div>
+<div class="studio-pair"><label>Texto do link 3<input name="moment_link3_title" maxlength="48" placeholder="Organizar minha maquiagem"></label>
+<label>Destino do link 3<select name="moment_link3_href" data-saluz-link-choice></select></label></div>
+<div class="studio-pair"><label>Texto do link 4<input name="moment_link4_title" maxlength="48" placeholder="Melhorar minha rotina"></label>
+<label>Destino do link 4<select name="moment_link4_href" data-saluz-link-choice></select></label></div>
+</div></details>
+<details class="studio-block-details"><summary>✦ Cartão “Presentear também é cuidar” <span>Editar texto, foto e botão</span></summary>
+<div class="studio-block-inside">
+<label>Texto pequeno<input name="gift_label" maxlength="42" placeholder="PRESENTES SALUZ"></label>
+<label>Título<input name="gift_title" maxlength="100" placeholder="Presentear também é cuidar."></label>
+<label>Descrição<textarea name="gift_description" maxlength="200" rows="2"></textarea></label>
+<div class="studio-photo-field"><label>Imagem do cartão<input name="gift_image_url" type="url" maxlength="500" placeholder="https://... ou envie uma foto"></label>
+<label class="studio-upload-label">Enviar foto <input type="file" data-studio-upload="gift_image_url" accept="image/jpeg,image/png,image/webp"><small>Opcional. Sem foto, mantém o visual original.</small></label></div>
+<div class="studio-pair">
+<label>Texto do botão<input name="gift_button" maxlength="48" placeholder="Descobrir presentes"></label>
+<label>Destino do botão<select name="gift_link" data-saluz-link-choice="gift"></select></label>
+</div>
+</div></details>
+<details class="studio-block-details"><summary>▣ Kits e curadorias <span>Personalizar os 3 cartões</span></summary>
+<div class="studio-block-inside"><label>Título da seção<input name="kits_title" maxlength="100" placeholder="Escolhas prontas para momentos reais."></label>
+<div class="studio-kit-card"><h4>Kit 1 — Nova Rotina</h4>
+<label>Nome do kit<input name="kit1_title" maxlength="64" placeholder="Nova Rotina"></label>
+<label>Descrição<textarea name="kit1_description" maxlength="180" rows="2"></textarea></label>
+<label>Botão leva para<select name="kit1_link" data-saluz-link-choice></select></label></div>
+<div class="studio-kit-card"><h4>Kit 2 — Organização</h4>
+<label>Nome do kit<input name="kit2_title" maxlength="64" placeholder="Organização"></label>
+<label>Descrição<textarea name="kit2_description" maxlength="180" rows="2"></textarea></label>
+<label>Botão leva para<select name="kit2_link" data-saluz-link-choice></select></label></div>
+<div class="studio-kit-card"><h4>Kit 3 — Presente para Ela</h4>
+<label>Nome do kit<input name="kit3_title" maxlength="64" placeholder="Presente para Ela"></label>
+<label>Descrição<textarea name="kit3_description" maxlength="180" rows="2"></textarea></label>
+<label>Botão leva para<select name="kit3_link" data-saluz-link-choice></select></label></div>
+</div></details>
+<p class="studio-tip">Estes campos alteram apenas os cartões existentes. Para adicionar banners novos ou gerenciar descontos, abra <strong>Campanhas e ofertas</strong> no menu.</p>
+</section>
+<section class="studio-card studio-panel" data-studio-panel="vitrine" hidden>
             <div class="studio-card-head"><span class="studio-number">03</span><div><h3>Títulos da vitrine</h3><p>Personalize as chamadas dos produtos em destaque e novidades.</p></div></div>
             <label>Título dos destaques<input name="featured_title" maxlength="80"></label>
             <label>Frase dos destaques<input name="featured_description" maxlength="180"></label>

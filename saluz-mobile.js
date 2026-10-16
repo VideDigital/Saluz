@@ -11,7 +11,7 @@
  window.addEventListener("saluz:tabchange",event=>{
   const tab=event.detail?.tab;
   for(const button of mobileButtons){const active=button.dataset.mobileTab===tab;button.classList.toggle("selected",active);if(active)button.setAttribute("aria-current","page");else button.removeAttribute("aria-current");}
-  more.classList.toggle("selected",tab==="finance"||tab==="reports"||tab==="studio");
+  more.classList.toggle("selected",tab==="finance"||tab==="reports"||tab==="studio"||tab==="campaigns");
   sidebar.classList.remove("mobile-menu-open");menu.setAttribute("aria-expanded","false");more.setAttribute("aria-expanded","false");
  });
 })();
