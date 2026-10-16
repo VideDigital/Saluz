@@ -4,7 +4,7 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow,noarchive">
 <title>SALUZ — Gestão da loja</title>
-<meta name="theme-color" content="#101c30">
+<meta name="theme-color" content="#f6f7fb">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
@@ -25,6 +25,8 @@
 <link rel="stylesheet" href="./saluz-simple.css?v=2">
 <link rel="stylesheet" href="./saluz-campaigns.css?v=1">
 <script src="./saluz-campaigns.js?v=1" defer></script>
+<link rel="stylesheet" href="./saluz-professional.css?v=1">
+<script src="./saluz-professional.js?v=1" defer></script>
 </head>
 <body>
 <main>
@@ -45,40 +47,87 @@
 </section>
 <section class="dashboard hidden" id="dashboard">
   <aside class="sidebar">
-    <div class="sidebar-top"><div class="sidebar-logo">SALUZ <span class="brand-dot">●</span><small>PAINEL DA LOJA</small></div><button id="mobile-menu-toggle" class="mobile-menu-toggle" type="button" aria-expanded="false" aria-controls="admin-nav" aria-label="Abrir menu">☰</button></div>
+    <div class="sidebar-top"><div class="sidebar-logo"><span class="admin-brand-mark" aria-hidden="true">S</span><span class="admin-brand-name">SALUZ<small>ADMINISTRAÇÃO</small></span></div><button id="mobile-menu-toggle" class="mobile-menu-toggle" type="button" aria-expanded="false" aria-controls="admin-nav" aria-label="Abrir menu">☰</button></div>
     <nav class="tabs" id="admin-nav" aria-label="Seções da administração">
-      <span class="nav-group-label">MINHA LOJA</span>
-      <button class="selected" type="button" data-tab="overview"><span aria-hidden="true">⌂</span> Início</button>
-      <button type="button" data-tab="products"><span aria-hidden="true">▣</span> Produtos</button>
-      <button type="button" data-tab="campaigns"><span aria-hidden="true">◈</span> Campanhas e ofertas</button>
-      <button type="button" data-tab="studio"><span aria-hidden="true">✦</span> Aparência e links</button>
-      <span class="nav-group-label">ACOMPANHAMENTO</span>
-      <button type="button" data-tab="orders"><span aria-hidden="true">▤</span> Pedidos</button>
-      <button type="button" data-tab="customers"><span aria-hidden="true">◯</span> Clientes</button>
-      <button type="button" data-tab="finance"><span aria-hidden="true">◇</span> Simular taxas</button>
-      <button type="button" data-tab="reports"><span aria-hidden="true">▥</span> Resultados</button>
+      <span class="nav-group-label">GERENCIAMENTO</span>
+      <button class="selected" type="button" data-tab="overview"><svg class="admin-nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg> Início</button>
+      <button type="button" data-tab="products"><svg class="admin-nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7.5 12 3l9 4.5v9L12 21l-9-4.5z"/><path d="M3 7.5 12 12l9-4.5M12 12v9"/></svg> Produtos</button>
+      <button type="button" data-tab="campaigns"><svg class="admin-nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 15 4.5-6 4 3.5 5-7.5 2.5 3.5"/><path d="M4 21h16"/><circle cx="18.5" cy="16" r="2.5"/></svg> Campanhas e ofertas</button>
+      <button type="button" data-tab="studio"><svg class="admin-nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3z"/><path d="m19 17 .8 2.2L22 20l-2.2.8L19 23l-.8-2.2L16 20l2.2-.8z"/></svg> Aparência e links</button>
+      <span class="nav-group-label">VENDAS E ANÁLISES</span>
+      <button type="button" data-tab="orders"><svg class="admin-nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4h12v17H5V7"/><path d="M4 4h8M8 11h8M8 15h8"/></svg> Pedidos</button>
+      <button type="button" data-tab="customers"><svg class="admin-nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2M17 8a3 3 0 0 1 0 6M18 15a5 5 0 0 1 3 5"/></svg> Clientes</button>
+      <button type="button" data-tab="finance"><svg class="admin-nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="2"/><path d="M3 10h18M7 15h3"/></svg> Simular taxas</button>
+      <button type="button" data-tab="reports"><svg class="admin-nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18M8 16v-4M13 16V8M18 16v-7"/></svg> Resultados</button>
     </nav>
-    <div class="sidebar-bottom" id="admin-sidebar-actions"><a href="https://usesaluz.com.br/loja.html" target="_blank" rel="noopener">Ver loja ↗</a><button id="logout" type="button">Sair</button></div>
+    <div class="sidebar-bottom" id="admin-sidebar-actions">
+      <div class="admin-sidebar-account"><span aria-hidden="true" class="admin-account-avatar">S</span><span><strong>Gestão SALUZ</strong><small>Acesso administrativo</small></span></div>
+      <a href="https://usesaluz.com.br/loja.html" target="_blank" rel="noopener">↗ Abrir loja</a><button id="logout" type="button">Sair da conta</button>
+    </div>
   </aside>
   <div class="workspace">
-    <header class="workspace-head"><div><span class="eyebrow">SALUZ / MEU NEGÓCIO</span><h1 id="section-title">Início</h1></div><a class="panel-open-store" href="https://usesaluz.com.br/" target="_blank" rel="noopener">Ver minha loja ↗</a><span id="admin-notice" class="hidden" aria-hidden="true">Ambiente administrativo</span></header>
+    <header class="workspace-head">
+      <div class="workspace-heading"><span class="eyebrow">SALUZ / CENTRAL DE CONTROLE</span><h1 id="section-title">Visão geral</h1>
+      <p id="section-description" class="workspace-section-desc">Gerencie sua loja com tranquilidade, em um só lugar.</p></div>
+      <div class="workspace-tools">
+        <div class="admin-global-search"><label for="admin-quick-search" class="sr-only">Pesquisar no painel</label>
+          <span class="admin-search-icon" aria-hidden="true">⌕</span><input id="admin-quick-search" type="search" placeholder="Buscar função ou produto..." autocomplete="off" aria-controls="admin-search-suggestions" aria-expanded="false">
+          <kbd>Ctrl K</kbd><div id="admin-search-suggestions" class="admin-search-suggestions" role="listbox" hidden></div>
+        </div>
+        <span class="admin-store-state" title="Checkout ainda desativado"><span aria-hidden="true"></span> Em preparação</span>
+        <a class="panel-open-store" href="https://usesaluz.com.br/" target="_blank" rel="noopener">Abrir loja ↗</a>
+      </div>
+      <span id="admin-notice" class="hidden" aria-hidden="true">Ambiente administrativo</span>
+    </header>
     <nav class="mobile-bottom-nav" aria-label="Acesso rápido"><button type="button" data-mobile-tab="overview"><span aria-hidden="true">▦</span><small>Início</small></button><button type="button" data-mobile-tab="orders"><span aria-hidden="true">▤</span><small>Pedidos</small></button><button type="button" data-mobile-tab="products"><span aria-hidden="true">▧</span><small>Produtos</small></button><button type="button" data-mobile-tab="customers"><span aria-hidden="true">◎</span><small>Clientes</small></button><button type="button" id="mobile-more" aria-expanded="false"><span aria-hidden="true">☰</span><small>Mais</small></button></nav>
     <p id="action-message" class="action-message" role="status"></p>
     <section id="tab-overview" class="tab">
-      <div class="panel-intro easy-intro"><div><span class="eyebrow">BEM-VINDA À SALUZ</span><h2>O que você quer fazer hoje?</h2><p>Escolha uma tarefa abaixo. As informações mais detalhadas ficam guardadas no resumo.</p></div></div>
-      <div class="management-notice" role="note"><strong>Loja em validação:</strong> o recebimento de pedidos online ainda não está liberado.</div>
-      <div class="overview-shortcuts easy-shortcuts">
-<button type="button" data-quick-tab="products"><span aria-hidden="true">▣</span><strong>Meus produtos</strong><small>Fotos, preços e estoque</small><b aria-hidden="true">→</b></button>
-<button type="button" data-quick-tab="campaigns"><span aria-hidden="true">◈</span><strong>Campanhas e ofertas</strong><small>Banners, descontos e divulgações</small><b aria-hidden="true">→</b></button>
-<button type="button" data-quick-tab="studio"><span aria-hidden="true">✦</span><strong>Aparência da loja</strong><small>Banners, textos e links</small><b aria-hidden="true">→</b></button>
-<button type="button" data-quick-tab="orders"><span aria-hidden="true">▤</span><strong>Ver pedidos</strong><small>Acompanhar solicitações</small><b aria-hidden="true">→</b></button>
-<button type="button" data-quick-tab="reports"><span aria-hidden="true">▥</span><strong>Ver resultados</strong><small>Visitas e interesse na loja</small><b aria-hidden="true">→</b></button>
-</div>
-<div class="easy-tips"><strong>Você controla o conteúdo.</strong><p>Pode incluir produtos, trocar fotos, criar descontos e editar áreas da loja. A estrutura e as páginas permanecem preservadas.</p></div>
-      <details class="overview-more"><summary>Ver números e detalhes da operação <span>⌄</span></summary><div class="overview-more-content"><div class="overview-more-bar"><span>Resumo dos pedidos e clientes</span><button type="button" class="outline" id="overview-refresh">Atualizar dados</button></div>
-<div id="overview-kpis" class="overview-kpis" aria-live="polite"><p class="muted">Carregando indicadores...</p></div>
-      <div class="panel-surface"><div class="panel-section-header"><h3>Pedidos recentes</h3><button type="button" id="overview-open-orders" class="outline">Ver pedidos ↗</button></div><div id="overview-recent">Carregando...</div></div><div class="dashboard-insights"><section class="panel-surface"><div class="panel-section-header"><h3>Andamento dos pedidos</h3></div><div id="overview-status" class="status-breakdown" aria-live="polite"></div></section><section class="panel-surface"><div class="panel-section-header"><h3>Prioridades da operação</h3></div><div id="overview-tasks" class="operation-tasks" aria-live="polite"></div></section></div>
-</div></details>
+      <div class="professional-welcome">
+        <div><span class="professional-eyebrow"><span aria-hidden="true">✦</span> SUA CENTRAL DE TRABALHO</span>
+          <h2>Bem-vinda ao controle da sua loja.</h2>
+          <p>Produtos, campanhas e pedidos organizados para você cuidar do que importa.</p>
+          <div class="professional-welcome-actions"><button type="button" class="primary" data-quick-tab="products">+ Adicionar produto</button>
+            <button type="button" class="professional-welcome-link" data-quick-tab="campaigns">Criar campanha <span aria-hidden="true">↗</span></button></div>
+        </div>
+        <div class="professional-welcome-art" aria-hidden="true"><span class="welcome-orbit orbit-one"></span><span class="welcome-orbit orbit-two"></span><span class="welcome-emblem">S<span>✦</span></span></div>
+      </div>
+      <div class="management-notice" role="note"><strong>Loja em validação.</strong> O catálogo e os banners estão disponíveis para edição. O checkout continua desativado até a aprovação final.</div>
+      <div class="professional-section-heading">
+        <div><span class="professional-kicker">PANORAMA</span><h2>Resumo da loja</h2><p>Informações reais do catálogo e das campanhas publicadas.</p></div>
+        <button type="button" class="outline" id="health-refresh">↻ Atualizar resumo</button>
+      </div>
+      <div class="professional-kpis" id="overview-health-kpis" aria-live="polite"><p class="muted">Carregando resumo...</p></div>
+      <p id="overview-health-caption" class="professional-kpis-caption" role="status"></p>
+      <div class="professional-section-heading professional-tools-heading">
+        <div><span class="professional-kicker">ACESSO RÁPIDO</span><h2>O que você deseja fazer?</h2><p>As tarefas mais importantes em poucos cliques.</p></div>
+      </div>
+      <div class="professional-dashboard-grid">
+        <div class="overview-shortcuts easy-shortcuts">
+          <button type="button" data-quick-tab="products"><span aria-hidden="true">▣</span><strong>Produtos</strong><small>Cadastrar, editar e controlar o estoque</small><b aria-hidden="true">↗</b></button>
+          <button type="button" data-quick-tab="campaigns"><span aria-hidden="true">◈</span><strong>Campanhas e ofertas</strong><small>Gerenciar banners e descontos</small><b aria-hidden="true">↗</b></button>
+          <button type="button" data-quick-tab="studio"><span aria-hidden="true">✦</span><strong>Aparência e links</strong><small>Alterar textos, fotos e seções do site</small><b aria-hidden="true">↗</b></button>
+          <button type="button" data-quick-tab="orders"><span aria-hidden="true">▤</span><strong>Pedidos</strong><small>Consultar e acompanhar solicitações</small><b aria-hidden="true">↗</b></button>
+        </div>
+        <section class="professional-attention" aria-labelledby="overview-attention-title">
+          <div class="professional-attention-head"><div><span class="professional-kicker">PRECISA DE ATENÇÃO</span>
+            <h3 id="overview-attention-title">Pendências importantes</h3></div><span class="attention-dot" aria-hidden="true"></span></div>
+          <div id="overview-attention-list" class="professional-attention-list" aria-live="polite">
+            <p class="muted">Verificando estoque e publicações...</p>
+          </div>
+          <div class="professional-attention-footer"><span>Atualizado com os dados da loja</span><span aria-hidden="true">●</span></div>
+        </section>
+      </div>
+      <details class="overview-more">
+        <summary>Detalhes de pedidos e atendimento <span>⌄</span></summary>
+        <div class="overview-more-content">
+          <div class="overview-more-bar"><span>Pedidos recentes e indicadores de atendimento</span><button type="button" class="outline" id="overview-refresh">Atualizar pedidos</button></div>
+          <div id="overview-kpis" class="overview-kpis" aria-live="polite"><p class="muted">Carregando indicadores...</p></div>
+          <div class="panel-surface"><div class="panel-section-header"><h3>Pedidos recentes</h3><button type="button" id="overview-open-orders" class="outline">Ver pedidos ↗</button></div><div id="overview-recent">Carregando...</div></div>
+          <div class="dashboard-insights"><section class="panel-surface"><div class="panel-section-header"><h3>Andamento dos pedidos</h3></div><div id="overview-status" class="status-breakdown" aria-live="polite"></div></section>
+            <section class="panel-surface"><div class="panel-section-header"><h3>Prioridades da operação</h3></div><div id="overview-tasks" class="operation-tasks" aria-live="polite"></div></section></div>
+        </div>
+      </details>
+      <div class="professional-assurance"><span aria-hidden="true">✓</span><p><strong>Você tem controle do conteúdo.</strong> Personalize fotos, banners, ofertas e informações da loja sem alterar a estrutura das páginas.</p></div>
     </section>
     <section id="tab-orders" class="tab hidden">
       <div class="tab-toolbar"><p>Solicitações recebidas no checkout. Um pedido recebido <strong>não significa que foi pago</strong>.</p><button type="button" id="refresh-orders" class="outline">Atualizar pedidos</button></div>
@@ -92,7 +141,9 @@
       <div class="panel-surface" id="customers-list" aria-live="polite"><p class="muted">Carregando clientes...</p></div>
     </section>
     <section id="tab-products" class="tab hidden">
-      <div class="easy-page-title"><div><h2>Seus produtos</h2><p>Adicione fotos, ajuste preços, ative ofertas e controle o que aparece para suas clientes.</p></div><button type="button" id="new-product" class="primary">+ Adicionar produto</button></div>
+      <div class="easy-page-title"><div><span class="professional-kicker">CATÁLOGO</span><h2>Seus produtos</h2><p>Gerencie fotos, preços, estoque e visibilidade de cada item.</p></div>
+        <div class="professional-product-actions"><button type="button" id="product-export-csv" class="outline">↓ Exportar catálogo</button>
+        <button type="button" id="new-product" class="primary">+ Adicionar produto</button></div></div>
       <div class="product-workspace product-catalog-only">
         <div class="product-list" id="product-list-panel">
           <div class="product-list-header">
@@ -108,7 +159,7 @@
                 <option value="all">Todos</option>
                 <option value="active">À venda</option><option value="featured">Destaques</option><option value="sale">Em oferta</option>
                 <option value="inactive">Ocultos</option>
-                <option value="out">Sem estoque</option>
+                <option value="out">Sem estoque</option><option value="low">Estoque baixo (até 5)</option><option value="no-photo">Sem foto</option>
               </select>
             </label>
           </div>
