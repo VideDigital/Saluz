@@ -4,7 +4,14 @@
   const keys = [
     "top_bar","hero_title","hero_description","hero_button","hero_link","hero_image_url",
     "featured_title","featured_description","new_title","new_description",
-    "business_hours","contact_email","whatsapp_number","instagram_url","store_notice"
+    "business_hours","contact_email","whatsapp_number","instagram_url","store_notice",
+    "moment_label","moment_title","moment_image_url",
+    "moment_link1_title","moment_link1_href","moment_link2_title","moment_link2_href",
+    "moment_link3_title","moment_link3_href","moment_link4_title","moment_link4_href",
+    "gift_label","gift_title","gift_description","gift_image_url","gift_button","gift_link",
+    "kits_title","kit1_title","kit1_description","kit1_link",
+    "kit2_title","kit2_description","kit2_link",
+    "kit3_title","kit3_description","kit3_link"
   ];
   const defaults = {
     top_bar:"Atendimento de segunda a sexta, 8h às 19h",
@@ -17,7 +24,22 @@
     featured_title:"Produtos em destaque.",featured_description:"Peças selecionadas pela SALUZ para você descobrir.",
     new_title:"Novidades na loja.",new_description:"Confira os produtos publicados mais recentemente pela SALUZ.",
     business_hours:"Segunda a sexta, das 8h às 19h",contact_email:"anny.csalustiano@gmail.com",
-    whatsapp_number:"",instagram_url:"",store_notice:""
+    whatsapp_number:"",instagram_url:"",store_notice:"",
+    moment_label:"COMPRE PELO MOMENTO",moment_title:"Pequenos rituais. Grandes diferenças.",moment_image_url:"",
+    moment_link1_title:"Organizar minha bolsa",moment_link1_href:"./colecao-organizadores-bolsa.html",
+    moment_link2_title:"Preparar uma viagem",moment_link2_href:"./colecao-acessorios-viagem.html",
+    moment_link3_title:"Organizar minha maquiagem",moment_link3_href:"./colecao-organizadores-maquiagem.html",
+    moment_link4_title:"Melhorar minha rotina",moment_link4_href:"./colecao-autocuidado.html",
+    gift_label:"PRESENTES SALUZ",gift_title:"Presentear também é cuidar.",
+    gift_description:"Kits, embalagem e curadoria pensados para transformar a escolha em experiência.",
+    gift_image_url:"",gift_button:"Descobrir presentes",gift_link:"#kits",
+    kits_title:"Escolhas prontas para momentos reais.",
+    kit1_title:"Nova Rotina",kit1_description:"Uma curadoria para começar pequenas mudanças de organização e cuidado.",
+    kit1_link:"./colecao-kits-presentes.html",
+    kit2_title:"Organização",kit2_description:"Itens que funcionam juntos para deixar cada coisa no seu lugar.",
+    kit2_link:"./colecao-kits-presentes.html",
+    kit3_title:"Presente para Ela",kit3_description:"Uma seleção pensada para presentear com intenção e apresentação.",
+    kit3_link:"./colecao-kits-presentes.html"
   };
   const el=id=>document.getElementById(id);
   const form=()=>el("studio-form");
@@ -123,7 +145,7 @@
       if(typeof uploadPhoto!=="function")throw new Error("Envio de fotos indisponível.");
       const url=await uploadPhoto(file);
       const name=input.dataset.studioUpload;
-      if(!["hero_image_url","promo_image_url"].includes(name))throw new Error("Campo de imagem não autorizado.");
+      if(!["hero_image_url","promo_image_url","moment_image_url","gift_image_url"].includes(name))throw new Error("Campo de imagem não autorizado.");
       const field=form().elements.namedItem(name);
       field.value=url;
       preview();
@@ -132,6 +154,21 @@
     finally{busy=false;input.disabled=false;input.value="";status();}
   }
   function init(){
+    const links=[
+      ["Todos os produtos","./loja.html"],["Todas as coleções","./colecoes.html"],
+      ["Nécessaires","./colecao-necessaires.html"],["Porta-joias","./colecao-porta-joias.html"],
+      ["Organizadores de maquiagem","./colecao-organizadores-maquiagem.html"],
+      ["Organizadores de bolsa","./colecao-organizadores-bolsa.html"],
+      ["Acessórios de viagem","./colecao-acessorios-viagem.html"],
+      ["Acessórios femininos","./colecao-acessorios-femininos.html"],
+      ["Autocuidado","./colecao-autocuidado.html"],["Kits e presentes","./colecao-kits-presentes.html"],
+      ["Atendimento","./atendimento.html"]
+    ];
+    for(const field of document.querySelectorAll("[data-saluz-link-choice]")){
+      const choices=field.dataset.saluzLinkChoice==="gift"?[["Ver os kits desta página","#kits"],...links]:links;
+      for(const [label,href] of choices){const option=document.createElement("option");
+        option.value=href;option.textContent=label;field.append(option);}
+    }
     form().addEventListener("input",()=>{preview();status();});
     form().addEventListener("change",()=>{preview();status();});
     form().addEventListener("submit",e=>{e.preventDefault();act("save");});
