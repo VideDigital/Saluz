@@ -189,6 +189,20 @@ async function login(request,env) {
   return output({ok:true,email:result.user.email},
     200,{"set-cookie":COOKIE+"="+result.access_token+"; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age="+age});
 }
+const siteContentFields={top_bar:110,hero_title:90,hero_description:310,hero_button:48,hero_image_url:500,featured_title:80,new_title:80,featured_description:180,new_description:180,business_hours:100,contact_email:180,store_notice:170};
+function validateSiteContent(raw){
+  if(!raw || Array.isArray(raw) || typeof raw!=="object")throw new Error("Conteúdo inválido");
+  if(Object.keys(raw).some(key=>!(key in siteContentFields)))throw new Error("Campo de conteúdo não permitido");
+  const cleaned={};
+  for(const [key,max] of Object.entries(siteContentFields)){
+    const value=safeText(raw[key],max);
+    if(/[<>]/.test(value))throw new Error("HTML não é permitido nos textos da loja");
+    if(key==="hero_image_url" && value && !/^https:\/\/[^\s]+$/i.test(value))throw new Error("Imagem deve usar URL HTTPS");
+    if(key==="contact_email" && value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))throw new Error("E-mail inválido");
+    cleaned[key]=value;
+  }
+  return cleaned;
+}
 async function adminAction(request,env,parts) {
   if (parts[1]==="orders" && request.method==="GET") {
     const rows=await sb(env,"/rest/v1/saluz_orders?select=*&order=created_at.desc&limit=150");
@@ -243,6 +257,35 @@ async function adminAction(request,env,parts) {
     const rows=await sb(env,"/rest/v1/saluz_products?id=eq."+parts[2]+"&select=*",{method:"PATCH",data:product});
     return output({product:rows[0]||null});
   }
+  if (parts[1]==="site-content" && parts.length===2) {
+    if(request.method==="GET") {
+      const rows=await sb(env,"/rest/v1/saluz_site_content?id=eq.1&select=draft,published,revision,updated_at,published_at&limit=1");
+      return output({content:rows[0]||{draft:{},published:{},revision:0}});
+    }
+    if(request.method==="PUT") {
+      const incoming=await bodyJson(request);
+      const current=await sb(env,"/rest/v1/saluz_site_content?id=eq.1&select=revision&limit=1");
+      const version=current[0]?.revision??0;
+      if(incoming.revision!==version)return error("Versão desatualizada: recarregue o editor para evitar sobrescrever alterações",409);
+      const cleaned=validateSiteContent(incoming.draft);
+      const rows=await sb(env,"/rest/v1/saluz_site_content?id=eq.1&revision=eq."+version+"&select=draft,published,revision,updated_at,published_at",{method:"PATCH",data:{draft:cleaned,revision:version+1,updated_at:new Date().toISOString()}});
+      if(!rows.length)return error("Alteração concorrente. Atualize o editor",409);
+      return output({content:rows[0]});
+    }
+  }
+  if(parts[1]==="site-content" && parts.length===3 && request.method==="POST" && ["publish","discard"].includes(parts[2])){
+    const incoming=await bodyJson(request);
+    const rows=await sb(env,"/rest/v1/saluz_site_content?id=eq.1&select=draft,published,revision,updated_at,published_at&limit=1");
+    const row=rows[0];
+    if(!row)return error("Conteúdo do site não configurado",503);
+    if(incoming.revision!==row.revision)return error("Versão desatualizada: recarregue o editor",409);
+    const now=new Date().toISOString(),changes=parts[2]==="publish"?
+      {published:row.draft,published_at:now,revision:row.revision+1,updated_at:now}:
+      {draft:row.published,revision:row.revision+1,updated_at:now};
+    const updated=await sb(env,"/rest/v1/saluz_site_content?id=eq.1&revision=eq."+row.revision+"&select=draft,published,revision,updated_at,published_at",{method:"PATCH",data:changes});
+    if(!updated.length)return error("Atualização concorrente. Recarregue o editor",409);
+    return output({content:updated[0]});
+  }
   if (parts[1]==="metrics" && request.method==="GET") {
     const days=Math.min(30,Math.max(1,Number(new URL(request.url).searchParams.get("days"))||7));
     const rows=await sb(env,"/rest/v1/rpc/saluz_analytics",{method:"POST",data:{period_days:days}});
@@ -261,6 +304,10 @@ export async function onRequest({request,env}) {
     return error("Ambiente em configuração",503);
   }
   try {
+    if(route[0]==="site-content" && route.length===1 && request.method==="GET"){
+      const rows=await sb(env,"/rest/v1/saluz_site_content?id=eq.1&select=published&limit=1");
+      return output({content:rows[0]?.published||{}});
+    }
     if (route[0]==="status" && request.method==="GET")
       return output({configured:true,checkout_enabled:false,orders_locked:true});
     if (route[0]==="products" && request.method==="GET") {
