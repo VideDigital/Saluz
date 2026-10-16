@@ -1,0 +1,58 @@
+name: SALUZ | Painel administrativo (preview)
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/saluz-admin-preview.yml']
+permissions:
+  contents: read
+concurrency:
+  group: saluz-admin-preview
+  cancel-in-progress: false
+jobs:
+  deploy-admin:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: saluz-homologacao
+    env:
+      CLOUDFLARE_ACCOUNT_ID: f84d79f13ae0a665e5046ebeb21ffddd
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+    steps:
+      - name: Carregar codigo testado da homologacao
+        uses: actions/checkout@v4
+        with:
+          ref: homologacao
+      - name: Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Testar API e paginas
+        run: node --test tests/*.test.mjs
+      - name: Preparar apenas os arquivos do painel
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import shutil
+          files = [
+            'admin.html', 'admin.js', 'admin.css',
+            'saluz-refinamento.css', 'saluz-admin-improvements.css',
+            'saluz-control.css', 'saluz-mobile.css',
+            'saluz-dashboard-pro.css', 'saluz-clean.css',
+            'saluz-product-dialog.css', 'saluz-admin-extras.js',
+            'saluz-mobile.js', 'saluz-studio.js', 'saluz-studio.css',
+            'favicon.svg', '_headers'
+          ]
+          out = Path('saluz-admin-public')
+          out.mkdir(exist_ok=True)
+          for name in files:
+            assert Path(name).exists(), f'Arquivo nao encontrado: {name}'
+            shutil.copy2(name, out / name)
+          shutil.copy2('admin.html', out / 'index.html')
+          assert Path('admin-deploy/functions/api/[[path]].js').exists()
+          shutil.copy2('admin-deploy/functions/api/[[path]].js','functions/api/[[path]].js')
+          PY
+      - name: Implantar painel em preview isolado
+        run: |
+          npx --yes wrangler@4 pages deploy saluz-admin-public \
+            --project-name saluz-admin \
+            --branch homologacao
