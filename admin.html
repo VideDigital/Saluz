@@ -13,8 +13,9 @@
 <link rel="stylesheet" href="./saluz-admin-improvements.css">
 <link rel="stylesheet" href="./saluz-control.css?v=20261015-dashboard1">
 <link rel="stylesheet" href="./saluz-mobile.css?v=20261015-mobile2">
+<link rel="stylesheet" href="./saluz-dashboard-pro.css?v=20261015-pro3">
 <script src="./admin.js?v=20261015-login2" defer></script>
-<script src="./saluz-admin-extras.js?v=20261015-login2" defer></script>
+<script src="./saluz-admin-extras.js?v=20261015-pro3" defer></script>
 <script src="./saluz-mobile.js?v=20261015-mobile2" defer></script>
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
 </head>
@@ -57,7 +58,7 @@
       <div class="management-notice" role="note"><strong>Ambiente de preparação.</strong> O checkout online ainda está desativado. Pedidos marcados como pagos exigem confirmação manual; não representam faturamento conciliado.</div>
       <div class="overview-shortcuts"><button type="button" data-quick-tab="orders"><span>▤</span><strong>Gerenciar pedidos</strong><small>Consultar solicitações</small></button><button type="button" data-quick-tab="products"><span>▧</span><strong>Gerenciar produtos</strong><small>Estoque e catálogo</small></button><button type="button" data-quick-tab="customers"><span>♙</span><strong>Ver clientes</strong><small>Histórico de pedidos</small></button></div>
       <div id="overview-kpis" class="overview-kpis" aria-live="polite"><p class="muted">Carregando indicadores...</p></div>
-      <div class="panel-surface"><div class="panel-section-header"><h3>Pedidos recentes</h3><button type="button" id="overview-open-orders" class="outline">Ver pedidos ↗</button></div><div id="overview-recent">Carregando...</div></div>
+      <div class="panel-surface"><div class="panel-section-header"><h3>Pedidos recentes</h3><button type="button" id="overview-open-orders" class="outline">Ver pedidos ↗</button></div><div id="overview-recent">Carregando...</div></div><div class="dashboard-insights"><section class="panel-surface"><div class="panel-section-header"><h3>Andamento dos pedidos</h3></div><div id="overview-status" class="status-breakdown" aria-live="polite"></div></section><section class="panel-surface"><div class="panel-section-header"><h3>Prioridades da operação</h3></div><div id="overview-tasks" class="operation-tasks" aria-live="polite"></div></section></div>
     </section>
     <section id="tab-orders" class="tab hidden">
       <div class="tab-toolbar"><p>Solicitações recebidas no checkout. Um pedido recebido <strong>não significa que foi pago</strong>.</p><button type="button" id="refresh-orders" class="outline">Atualizar pedidos</button></div>
@@ -67,7 +68,7 @@
     <section id="tab-customers" class="tab hidden">
       <div class="panel-intro"><div><span class="eyebrow">RELACIONAMENTO</span><h2>Clientes da loja</h2><p>Dados de contato associados aos pedidos registrados. Não é uma base independente de CRM.</p></div><button type="button" class="outline" id="customers-refresh">Atualizar clientes</button></div>
       <div class="management-notice" role="note">Exibição derivada dos pedidos retornados pelo sistema. Informações pessoais devem ser usadas somente para atendimento e gestão legítima da loja.</div>
-      <div class="panel-filter"><label for="customer-search">Buscar por nome, e-mail ou telefone<input type="search" id="customer-search" placeholder="Pesquisar cliente..." autocomplete="off"></label></div>
+      <div class="customer-summary" id="customer-summary" aria-live="polite"></div><div class="panel-filter"><label for="customer-search">Buscar por nome, e-mail ou telefone<input type="search" id="customer-search" placeholder="Pesquisar cliente..." autocomplete="off"></label></div>
       <div class="panel-surface" id="customers-list" aria-live="polite"><p class="muted">Carregando clientes...</p></div>
     </section>
     <section id="tab-products" class="tab hidden">

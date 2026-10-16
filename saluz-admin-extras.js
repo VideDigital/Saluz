@@ -53,6 +53,7 @@
         makeStat("Clientes identificados",unique.length,"Nos pedidos recentes"),
         makeStat("Total marcado como pago",reais(markedPaidCents),"Sem conciliação bancária")
       );
+      renderInsights(rows);
       recent.replaceChildren();
       if (!rows.length) {
         recent.append(txt("p","Ainda não há pedidos registrados. O checkout permanece desativado.","panel-empty"));
@@ -67,9 +68,21 @@
     } catch (err) {
       root.replaceChildren(txt("p","Não foi possível carregar indicadores: "+err.message,"muted"));
       recent.replaceChildren(txt("p","Tente atualizar os dados.","muted"));
+      el("overview-status").replaceChildren();el("overview-tasks").replaceChildren();
     }
   }
 
+  function renderInsights(rows){
+    const statusRoot=el("overview-status"),tasksRoot=el("overview-tasks");statusRoot.replaceChildren();tasksRoot.replaceChildren();
+    const groups=[["solicitacao_recebida","Recebidos"],["contatado","Em contato"],["aguardando_pagamento","Aguardando pagamento"],["pago_confirmado","Pago (manual)"],["em_preparacao","Em preparação"],["enviado","Enviados"],["cancelado","Cancelados"]];
+    const max=Math.max(1,rows.length);
+    for(const [key,label] of groups){const count=rows.filter(o=>o.status===key).length;const line=txt("div","","status-breakdown-row");const top=txt("div","","status-breakdown-top");top.append(txt("span",label),txt("strong",count));const track=txt("div","","status-breakdown-track"),bar=txt("div","","status-breakdown-fill");bar.style.width=(count/max*100)+"%";track.append(bar);line.append(top,track);statusRoot.append(line);}
+    const pending=rows.filter(o=>["solicitacao_recebida","contatado","aguardando_pagamento"].includes(o.status)).length;
+    const preparing=rows.filter(o=>o.status==="em_preparacao").length;
+    const taskItems=[[pending,"Solicitações para acompanhar","orders"],[preparing,"Pedidos em preparação","orders"]];
+    for(const [count,label,target] of taskItems){const b=txt("button","","operation-task");b.type="button";b.append(txt("strong",count),txt("span",label),txt("span","Ver →"));b.addEventListener("click",()=>document.querySelector('[data-tab="'+target+'"]').click());tasksRoot.append(b);}
+    const note=txt("p",rows.length?"Indicadores calculados apenas com os pedidos retornados pelo sistema. Pagamentos não são conciliados automaticamente.":"Nenhum pedido registrado. Cadastre produtos e prepare o catálogo para o lançamento.","muted");tasksRoot.append(note);
+  }
   function renderCustomers(q = "") {
     const root=el("customers-list");
     root.replaceChildren();
@@ -94,6 +107,9 @@
     try {
       const response=await api("admin/orders");
       customers=summarize(Array.isArray(response.orders)?response.orders:[]);
+      const summary=el("customer-summary");summary.replaceChildren();
+      const all=customers.length;const repeated=customers.filter(c=>c.orders>1).length;const withPhone=customers.filter(c=>c.phone).length;
+      for(const [name,val] of [["Clientes identificados",all],["Com mais de um pedido",repeated],["Com telefone",withPhone]]){const box=txt("div","","customer-summary-card");box.append(txt("small",name),txt("strong",val));summary.append(box);}
       renderCustomers(el("customer-search").value);
     } catch(err) {root.replaceChildren(txt("p","Não foi possível carregar clientes: "+err.message,"muted"));}
   }
