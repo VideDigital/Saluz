@@ -48,6 +48,8 @@ jobs:
             if item.is_file() and (item.suffix.lower() in allowed or item.name in {'_headers','_redirects','robots.txt'}):
               shutil.copy2(item,public/item.name)
           assert (public/'index.html').exists()
+          assert (public/'robots.txt').exists(), 'robots.txt obrigatorio para indexacao'
+          assert (public/'sitemap.xml').exists(), 'sitemap.xml obrigatorio para busca'
           assert Path('functions/api/[[path]].js').exists()
           PY
       - name: Publicar site oficial mantendo checkout desativado
