@@ -2,6 +2,8 @@
 const $=id=>document.getElementById(id);
 const fmt=n=>(Number(n||0)/100).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
 const text=(tag,value,cls)=>{const n=document.createElement(tag);n.textContent=value===undefined?"":String(value);if(cls)n.className=cls;return n;};
+const saluzStoreOrigin=location.hostname.startsWith("homologacao.")?"https://homologacao.saluz-loja.pages.dev":"https://usesaluz.com.br";
+for(const a of document.querySelectorAll('a[href^="https://usesaluz.com.br/"]')){if(saluzStoreOrigin!=="https://usesaluz.com.br")a.href=a.href.replace("https://usesaluz.com.br",saluzStoreOrigin);}
 const displayDate=s=>new Date(s).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"});
 let catalog=[],orders=[],currentTab="overview";
 let adminPage=0,adminHasMore=false,adminLoading=false;
@@ -109,7 +111,7 @@ function changeTab(name){
  for(const b of document.querySelectorAll("[data-tab]"))b.classList.toggle("selected",b.dataset.tab===name);
  window.dispatchEvent(new CustomEvent("saluz:tabchange",{detail:{tab:name}}));
  for(const name2 of ["overview","orders","customers","products","finance","reports","studio"])$("tab-"+name2).classList.toggle("hidden",name!==name2);
- $("section-title").textContent={overview:"Visão geral",orders:"Pedidos",customers:"Clientes",products:"Produtos",finance:"Financeiro",reports:"Relatórios",studio:"Personalizar loja"}[name];
+ $("section-title").textContent={overview:"Início",orders:"Pedidos",customers:"Clientes",products:"Produtos e ofertas",finance:"Simular taxas",reports:"Resultados",studio:"Aparência e links"}[name];
  message("");
  if(name==="overview")window.SaluzAdminExtras?.loadOverview();
  if(name==="orders")loadOrders();
@@ -188,6 +190,7 @@ function productMatches(p){
   if(q&&!(p.name+" "+p.category).toLocaleLowerCase("pt-BR").includes(q))return false;
   if(mode==="active"&&!p.is_active)return false;
   if(mode==="featured"&&!(p.is_active&&p.is_featured))return false;
+   if(mode==="sale"&&!(Number(p.original_price_cents)>Number(p.price_cents)))return false;
   if(mode==="inactive"&&p.is_active)return false;
   if(mode==="out"&&productStock(p)>0)return false;
   return true;
@@ -210,9 +213,11 @@ function renderProductList(){
   else imgWrap.append(text("span","✦"));
   const body=text("div",undefined,"product-row-info");
   const head=text("strong",p.name),meta=text("small",fmt(p.price_cents)+" · "+p.category);
+   if(Number(p.original_price_cents)>Number(p.price_cents))meta.textContent=fmt(p.original_price_cents)+" → "+fmt(p.price_cents)+" · "+p.category;
   const badges=text("div",undefined,"product-row-badges");
   badges.append(text("span",p.is_active?"Visível na loja":"Oculto",p.is_active?"product-badge public":"product-badge"));
-  if(p.is_featured)badges.append(text("span",p.is_active?"✦ Destaque na Home":"✦ Destaque aguardando ativação","product-badge"));
+  if(p.is_featured)badges.append(text("span",p.is_active?"✦ Destaque":"Destaque aguardando ativação","product-badge"));
+   if(Number(p.original_price_cents)>Number(p.price_cents))badges.append(text("span","Em oferta","product-badge sale"));
   const units=productStock(p);
   badges.append(text("span",units?units+" unidade(s)":"Sem estoque",units?"product-badge":"product-badge warning"));
   body.append(head,meta,badges);summary.append(imgWrap,body);
@@ -254,6 +259,8 @@ function publishingChecklist(){
   const price=Number(priceString);
   const hasName=name.length>=2;
   const hasPrice=priceString!==""&&Number.isFinite(price)&&price>=0&&price<=500000;
+   const oldPriceString=form.elements.original_price.value.trim();
+   const validOldPrice=oldPriceString===""||(Number(oldPriceString)>price&&Number(oldPriceString)<=500000);
   const validPhoto=url=>/^https:\/\//i.test(String(url||"").trim());
   const hasPhoto=validPhoto(form.elements.image_url.value)||rows.some(row=>validPhoto(row.querySelector('[data-field="image"]')?.value));
   const validVariants=rows.length>0&&rows.every(row=>{
@@ -269,7 +276,7 @@ function publishingChecklist(){
   });
   const checks=[
     {ok:hasName,label:"Nome do produto preenchido"},
-    {ok:hasPrice,label:"Preço informado corretamente"},
+    {ok:hasPrice&&validOldPrice,label:"Preços preenchidos corretamente"},
     {ok:hasPhoto,label:"Foto principal ou de variação em HTTPS"},
     {ok:validVariants,label:"Cores, tamanhos e estoques preenchidos"},
     {ok:noDuplicates,label:"Variações sem combinações repetidas"}
@@ -294,6 +301,7 @@ function updateProductPreview(){
  const name=f.elements.name.value.trim(),price=Number(f.elements.price.value);
  $("preview-name").textContent=name||"Seu produto aparecerá aqui";
  $("preview-price").textContent=Number.isFinite(price)&&price>=0?fmt(Math.round(price*100)):"Preço a definir";
+ const oldPrice=Number(f.elements.original_price.value);if(f.elements.original_price.value.trim()&&oldPrice>price)$("preview-price").textContent=fmt(Math.round(oldPrice*100))+" → "+fmt(Math.round(price*100))+" (oferta)";
  const rows=[...$("variant-rows").children];
  const units=rows.reduce((n,row)=>n+(Number(row.querySelector('[data-field="stock"]')?.value)||0),0);
  $("preview-variants").textContent=rows.length+" variação(ões) · "+Math.max(0,units)+" unidade(s) cadastrada(s)";
@@ -357,6 +365,7 @@ function editProduct(p){
  const f=$("product-form");f.reset();f.elements.id.value=p.id;
  f.elements.name.value=p.name;f.elements.description.value=p.description;
  f.elements.category.value=p.category;f.elements.price.value=(p.price_cents/100).toFixed(2);
+   f.elements.original_price.value=Number(p.original_price_cents)>0?(p.original_price_cents/100).toFixed(2):"";
  f.elements.image_url.value=p.image_url||"";
  $("variant-rows").replaceChildren();(p.variants||[]).forEach(addVariantRow);
  f.elements.is_active.checked=!!p.is_active;
@@ -366,7 +375,7 @@ function editProduct(p){
  $("cancel-edit").hidden=false;
  const visit=$("visit-product");
  visit.hidden=!p.is_active;
- if(p.is_active)visit.href="https://usesaluz.com.br/produto.html?id="+encodeURIComponent(p.id);
+ if(p.is_active)visit.href=saluzStoreOrigin+"/produto.html?id="+encodeURIComponent(p.id);
  updateProductPreview();
  openProductDialog("Editar produto");
 }
@@ -410,9 +419,12 @@ $("product-form").addEventListener("submit",async e=>{
   if(variants.some(v=>!v.color||!v.size||!Number.isInteger(v.stock)||v.stock<0))throw new Error("Preencha cor, tamanho e estoque em cada variação.");
   const price=Number(f.elements.price.value);
   if(!Number.isFinite(price))throw new Error("Preço inválido");
-  const product={name:f.elements.name.value,category:f.elements.category.value,
+  const originalRaw=f.elements.original_price.value.trim();
+   const original=originalRaw===""?null:Math.round(Number(originalRaw)*100);
+   if(original!==null && (!Number.isInteger(original)||original<=Math.round(price*100)))throw new Error("O preço anterior deve ser maior que o preço atual. Deixe vazio quando não houver oferta.");
+   const product={name:f.elements.name.value,category:f.elements.category.value,
    description:f.elements.description.value,image_url:f.elements.image_url.value,
-   price_cents:Math.round(price*100),is_active:f.elements.is_active.checked,is_featured:f.elements.is_featured.checked,variants};
+   price_cents:Math.round(price*100),original_price_cents:original,is_active:f.elements.is_active.checked,is_featured:f.elements.is_featured.checked,variants};
   const id=f.elements.id.value;
   await api(id?"admin/products/"+id:"admin/products",{method:id?"PATCH":"POST",body:JSON.stringify(product)});
   message("Produto salvo. Confira as variações e o estoque antes de ativar.");
