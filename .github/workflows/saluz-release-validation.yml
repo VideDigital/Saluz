@@ -1,0 +1,73 @@
+name: SALUZ | Publicar site e painel para validacao
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/saluz-release-validation.yml']
+permissions:
+  contents: read
+concurrency:
+  group: saluz-release-validation
+  cancel-in-progress: false
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: saluz-homologacao
+    env:
+      CLOUDFLARE_ACCOUNT_ID: f84d79f13ae0a665e5046ebeb21ffddd
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+    steps:
+      - name: Checkout branch principal
+        uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Rodar testes antes da publicacao
+        run: node --test tests/*.test.mjs
+      - name: Preparar loja publica
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import shutil
+          allowed={'.html','.css','.js','.svg','.png','.jpg','.jpeg','.webp','.ico','.txt','.woff2','.xml'}
+          public=Path('saluz-public')
+          public.mkdir(exist_ok=True)
+          for item in Path('.').iterdir():
+            if item.is_file() and (item.suffix.lower() in allowed or item.name in {'_headers','_redirects','robots.txt'}):
+              shutil.copy2(item,public/item.name)
+          assert (public/'index.html').exists()
+          assert Path('functions/api/[[path]].js').exists()
+          PY
+      - name: Publicar site oficial mantendo checkout desativado
+        run: |
+          npx --yes wrangler@4 pages deploy saluz-public \
+            --project-name saluz-loja \
+            --branch main
+      - name: Preparar painel administrativo
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import shutil
+          names=['admin.html','admin.js','admin.css','saluz-refinamento.css',
+          'saluz-admin-improvements.css','saluz-control.css','saluz-mobile.css',
+          'saluz-dashboard-pro.css','saluz-clean.css','saluz-product-dialog.css',
+          'saluz-admin-extras.js','saluz-mobile.js','saluz-studio.js','saluz-studio.css',
+          'favicon.svg','_headers']
+          public=Path('saluz-admin-public')
+          public.mkdir(exist_ok=True)
+          for name in names:
+            assert Path(name).exists(),f'Falta arquivo do painel: {name}'
+            shutil.copy2(name,public/name)
+          shutil.copy2('admin.html',public/'index.html')
+          assert Path('admin-deploy/functions/api/[[path]].js').exists()
+          shutil.copy2('admin-deploy/functions/api/[[path]].js','functions/api/[[path]].js')
+          PY
+      - name: Publicar painel admin em dominio independente
+        run: |
+          npx --yes wrangler@4 pages deploy saluz-admin-public \
+            --project-name saluz-admin \
+            --branch main
