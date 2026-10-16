@@ -366,7 +366,7 @@ function editProduct(p){
  $("cancel-edit").hidden=false;
  const visit=$("visit-product");
  visit.hidden=!p.is_active;
- if(p.is_active)visit.href="./produto.html?id="+encodeURIComponent(p.id);
+ if(p.is_active)visit.href="https://usesaluz.com.br/produto.html?id="+encodeURIComponent(p.id);
  updateProductPreview();
  openProductDialog("Editar produto");
 }
