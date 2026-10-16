@@ -194,13 +194,16 @@ function productMatches(p){
    if(mode==="sale"&&!(Number(p.original_price_cents)>Number(p.price_cents)))return false;
   if(mode==="inactive"&&p.is_active)return false;
   if(mode==="out"&&productStock(p)>0)return false;
+   if(mode==="low"&&(!p.is_active||productStock(p)<1||productStock(p)>5))return false;
+   if(mode==="no-photo"&&(p.image_url||(p.variants||[]).some(v=>v.image_url)))return false;
   return true;
 }
 function renderProductList(){
  const root=$("admin-products");root.replaceChildren();
  const visible=catalog.filter(p=>p.is_active).length;
  const stockless=catalog.filter(p=>productStock(p)===0).length;
- $("product-summary").textContent=catalog.length+" cadastrado(s) · "+visible+" visível(is) · "+stockless+" sem estoque";
+ $("product-summary").textContent=catalog.length+" carregado(s) · "+visible+" visível(is) · "+stockless+" sem estoque"+
+  (adminHasMore?" · Existem outros produtos para carregar":"");
  const items=catalog.filter(productMatches);
  if(!items.length){
   root.append(text("p",catalog.length?"Nenhum produto corresponde aos filtros.":"Nenhum produto cadastrado ainda.","muted"));
@@ -220,6 +223,7 @@ function renderProductList(){
   if(p.is_featured)badges.append(text("span",p.is_active?"✦ Destaque":"Destaque aguardando ativação","product-badge"));
    if(Number(p.original_price_cents)>Number(p.price_cents))badges.append(text("span","Em oferta","product-badge sale"));
   const units=productStock(p);
+   if(p.is_active&&units>0&&units<=5)badges.append(text("span","Estoque baixo","product-badge warning"));
   badges.append(text("span",units?units+" unidade(s)":"Sem estoque",units?"product-badge":"product-badge warning"));
   body.append(head,meta,badges);summary.append(imgWrap,body);
   const actions=text("div",undefined,"product-row-actions");
