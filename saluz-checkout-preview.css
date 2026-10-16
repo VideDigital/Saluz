@@ -1,0 +1,40 @@
+/* Checkout SALUZ - ambiente visual de homologação; nenhum componente de pagamento ativo. */
+.saluz-payment-dialog{width:min(980px,calc(100vw - 28px));max-width:980px;max-height:min(94dvh,900px);border:1px solid #e8d8d4;border-radius:18px;padding:0;background:#fffdfb;color:#392e34;box-shadow:0 30px 110px #20141a66;overflow-y:auto}
+.saluz-payment-dialog::backdrop{background:#1e161c99;backdrop-filter:blur(4px)}
+.saluz-pay-heading{display:flex;gap:20px;align-items:flex-start;justify-content:space-between;padding:30px 35px 22px;border-bottom:1px solid #eee2df}
+.saluz-pay-heading h2{font:400 clamp(27px,4vw,39px)/1.18 "DM Serif Display",serif;margin:7px 0;color:#443039}
+.saluz-pay-heading p{font-size:14px;color:#75666e;margin:0;line-height:1.6}
+.saluz-pay-eyebrow{font:750 11px "DM Sans",sans-serif;letter-spacing:.14em;color:#a27682}
+.saluz-pay-close{flex:none;display:grid;place-items:center;border:1px solid #e9d9d8;background:#faf4f2;color:#69535d;width:40px;height:40px;font-size:27px;border-radius:10px}
+.saluz-pay-warning{font:500 14px/1.55 "DM Sans",sans-serif;background:#fff9eb;color:#745b35;border:1px solid #f2e4c8;padding:11px 15px;margin:20px 35px;border-radius:10px}
+.saluz-pay-grid{display:grid;grid-template-columns:.95fr 1.05fr;gap:24px;padding:0 35px 35px}
+.saluz-pay-grid section{min-width:0}
+.saluz-pay-grid h3{font:750 20px/1.2 "DM Sans",sans-serif;color:#382e34;margin:4px 0 18px}
+.saluz-pay-summary{border-radius:14px;background:#faf5f2;border:1px solid #eee2dc;padding:23px}
+.saluz-pay-items{display:grid;gap:13px;min-height:55px;margin-bottom:17px}
+.saluz-pay-items p{font-size:14px}
+.saluz-pay-product{display:flex;justify-content:space-between;gap:14px;padding:0 0 11px;border-bottom:1px solid #ecdfdb;font-size:14px}
+.saluz-pay-product-info{display:grid;gap:5px}
+.saluz-pay-product-info strong{line-height:1.35}
+.saluz-pay-product-info small{font-size:12px;color:#82747a}
+.saluz-pay-line{display:flex;justify-content:space-between;gap:12px;margin:12px 0;font-size:14px}
+.saluz-pay-total{border-top:1px solid #ddcfca;padding-top:17px;margin-top:17px;font-weight:750;font-size:17px}
+.saluz-pay-total strong{font-size:20px}
+.saluz-pay-cep{display:grid;gap:8px;margin-top:23px;font-size:14px;font-weight:700}
+.saluz-pay-cep input{width:100%;min-height:47px;padding:11px 13px;border:1px solid #d9c5c5;border-radius:8px;background:#fff;color:#372b32;font-size:15px}
+.saluz-pay-recalculate{display:block;width:100%;margin-top:10px;border:1px solid #b89ca4;border-radius:8px;background:#fff;color:#704e5b;font-weight:750;padding:12px}
+.saluz-pay-hint{font-size:13px;line-height:1.55;color:#766b70;margin:15px 0 0}
+.saluz-pay-methods{padding:5px 0 0}
+.saluz-pay-choice{display:flex!important;flex-direction:row!important;align-items:flex-start;gap:12px;margin:10px 0;border:1px solid #e7d9d8;padding:16px;border-radius:12px;cursor:pointer;background:#fff}
+.saluz-pay-choice:has(input:checked){border-color:#af858f;background:#fdf8f7}
+.saluz-pay-choice input{accent-color:#815566;flex:none;width:20px;height:20px;margin:2px 0 0}
+.saluz-pay-choice span{display:grid;gap:5px}
+.saluz-pay-choice strong{font-size:16px}
+.saluz-pay-choice small{font-size:13px;line-height:1.5;color:#786970}
+.saluz-pay-provider{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:22px 0 12px;font-size:13px;color:#786770}
+.saluz-pay-provider strong{color:#3d3640;font-size:15px}
+.saluz-pay-brick-placeholder{padding:20px 18px;background:#faf5f3;border:1px dashed #c8aeb6;border-radius:11px;color:#715d67;font:400 14px/1.6 "DM Sans",sans-serif;min-height:95px}
+.saluz-pay-finish{display:block;width:100%;margin:15px 0 7px;min-height:50px;padding:13px 15px;border-radius:10px;background:#5d4954;color:#fff;font-weight:750;border:0;cursor:not-allowed;opacity:.6}
+.saluz-pay-feedback{font-size:13px;line-height:1.6;color:#765d66}
+@media(max-width:750px){.saluz-payment-dialog{width:100vw;max-width:100vw;max-height:100dvh;height:100dvh;border-radius:0}.saluz-pay-heading{padding:22px 17px 18px}.saluz-pay-warning{margin:15px}.saluz-pay-grid{padding:0 15px 30px;grid-template-columns:1fr;gap:24px}.saluz-pay-summary{padding:19px}.saluz-pay-methods{padding-bottom:15px}}
+@media(prefers-reduced-motion:reduce){.saluz-payment-dialog::backdrop{backdrop-filter:none}}

@@ -150,6 +150,53 @@ async function createOrder(request,env) {
   const created=await sb(env,"/rest/v1/saluz_orders?select=id,status,created_at",{method:"POST",data:insert});
   return output({order_id:created[0].id,status:created[0].status,notice:"Solicitação recebida. Ainda não há pagamento ou frete confirmado."},201);
 }
+
+/** Cotacao read-only do carrinho, exclusiva da homologacao.
+ * Valores e estoque consultados no banco; nao cria pedido e nao cobra.
+ */
+async function quoteCheckoutPreview(request,env){
+  const raw=await bodyJson(request);
+  if(!Array.isArray(raw.items)||raw.items.length===0||raw.items.length>20)
+    return error("Adicione de 1 a 20 produtos para consultar a sacola.",400);
+  const lines=raw.items.map(i=>{
+    const id=String(i?.id||""),quantity=Number(i?.quantity);
+    const color=safeText(i?.color,40),size=safeText(i?.size,30);
+    if(!uuid.test(id)||!Number.isInteger(quantity)||quantity<1||quantity>10||!color||!size)
+      throw new Error("Sacola inválida");
+    return {id,quantity,color,size};
+  });
+  const seen=new Set();
+  for(const item of lines){
+    const key=JSON.stringify([item.id,item.color,item.size]);
+    if(seen.has(key))throw new Error("Sacola com variações repetidas");
+    seen.add(key);
+  }
+  const ids=[...new Set(lines.map(x=>x.id))];
+  const rows=await sb(env,"/rest/v1/saluz_products?id=in.("+ids.join(",")+")&is_active=eq.true&select=id,name,price_cents,variants");
+  const products=new Map(rows.map(p=>[p.id,p]));
+  let subtotal=0;
+  const items=lines.map(item=>{
+    const product=products.get(item.id);
+    if(!product)throw new Error("Um produto não está disponível");
+    const variant=Array.isArray(product.variants)?product.variants.find(v=>v.color===item.color&&v.size===item.size):null;
+    if(!variant||Number(variant.stock)<item.quantity)throw new Error("Estoque indisponível: "+product.name);
+    const unit=Number(product.price_cents);
+    if(!Number.isSafeInteger(unit)||unit<0)throw new Error("Preço inválido");
+    subtotal+=unit*item.quantity;
+    if(!Number.isSafeInteger(subtotal)||subtotal>50000000)throw new Error("Pedido excede o limite");
+    return {id:item.id,name:product.name,color:item.color,size:item.size,
+      quantity:item.quantity,unit_price_cents:unit,line_total_cents:unit*item.quantity};
+  });
+  const postalCode=digits(raw.postal_code);
+  if(postalCode&&postalCode.length!==8)throw new Error("CEP inválido");
+  return output({
+    mode:"homologacao_visual",items,subtotal_cents:subtotal,
+    shipping_cents:null,shipping_status:"aguardando_configuracao",
+    total_cents:null,payment_enabled:false,available_payment_methods:["pix","credit_card"],
+    notice:"O frete ainda não foi configurado. Esta prévia não cria pedido nem cobra pagamentos."
+  });
+}
+
 async function recordEvent(request,env) {
   const b=await bodyJson(request);
   if (!uuid.test(String(b.session_id)) || !allowedEvents.has(b.event_type)) return error("Evento inválido");
@@ -427,7 +474,8 @@ export async function onRequest({request,env}) {
       return output({content:rows[0]?.published||{}});
     }
     if (route[0]==="status" && request.method==="GET")
-      return output({configured:true,checkout_enabled:false,orders_locked:true});
+      return output({configured:true,checkout_enabled:false,orders_locked:true,
+        checkout_preview:new URL(request.url).hostname==="homologacao.saluz-loja.pages.dev"});
     if (route[0]==="products" && request.method==="GET") {
       const columns="id,name,description,category,image_url,price_cents,original_price_cents,variants";
       if(route[1]==="home" && route.length===2){
@@ -472,6 +520,9 @@ export async function onRequest({request,env}) {
       return output({products:products.slice(0,limit),configured:true,page,limit,has_more:products.length>limit});
     }
     if (route[0]==="events" && request.method==="POST") return await recordEvent(request,env);
+    if(route[0]==="checkout"&&route[1]==="quote"&&request.method==="POST"&&
+      new URL(request.url).hostname==="homologacao.saluz-loja.pages.dev")
+      return await quoteCheckoutPreview(request,env);
     if (route[0]==="checkout" && request.method==="POST")
       return error("Pedidos desativados até existir reserva atômica de estoque e aprovação da SALUZ.",503);
     if (route[0]==="auth" && route[1]==="login" && request.method==="POST") return await login(request,env);

@@ -4,7 +4,7 @@ const money = cents => (Number(cents||0)/100).toLocaleString("pt-BR",{style:"cur
 const knownCategories=["Nécessaires","Porta-joias","Organizadores de maquiagem","Organizadores de bolsa","Acessórios de viagem","Autocuidado","Acessórios femininos","Kits e presentes"];
 const urlParams=new URLSearchParams(location.search);
 const requestedCategory=urlParams.get("categoria")||"all";
-let products=[],bag=[],activeCategory=knownCategories.includes(requestedCategory)?requestedCategory:"all",available=false,checkoutEnabled=false,detailProduct=null,detailCount=1;
+let products=[],bag=[],activeCategory=knownCategories.includes(requestedCategory)?requestedCategory:"all",available=false,checkoutEnabled=false,checkoutPreview=false,detailProduct=null,detailCount=1;
 let catalogPage=0,catalogHasMore=false,catalogLoading=false,bagLookup=[];
 bag=window.SaluzBag.read();
 const emit=(type,label="")=>{
@@ -206,9 +206,9 @@ function renderBag(){
  });
  if(!bag.length)root.append(node("p","notice","Sua sacola está vazia. Explore as coleções para começar."));
  $("cart-total").textContent=money(total);
- $("checkout-open").disabled=!checkoutEnabled||!bag.length||unavailable;
- $("checkout-open").textContent=checkoutEnabled?"Continuar com meus dados":"Pedidos em preparação";
- $("cart-feedback").textContent=checkoutEnabled?(unavailable?"Revise a disponibilidade dos itens.":""):"Você pode montar sua sacola. Os pedidos ainda não estão liberados.";
+ $("checkout-open").disabled=!(checkoutEnabled||checkoutPreview)||!bag.length||unavailable;
+ $("checkout-open").textContent=checkoutPreview?"Ver checkout de teste":checkoutEnabled?"Continuar com meus dados":"Pedidos em preparação";
+ $("cart-feedback").textContent=checkoutPreview?"Prévia para validar valores, frete e experiência, sem cobranças.":checkoutEnabled?(unavailable?"Revise a disponibilidade dos itens.":""):"Você pode montar sua sacola. Os pedidos ainda não estão liberados.";
 }
 async function fetchCatalogPage(page){
  const response=await fetch("/api/products?page="+page+"&limit=48",{cache:"no-store"});
@@ -245,17 +245,18 @@ async function loadBagReferences(){
  }catch{bagLookup=[];}
 }
 async function loadStore(){
-  checkoutEnabled=false;
+  checkoutEnabled=false;checkoutPreview=false;
   catalogLoading=true;
   try{
     const st=await fetch("/api/status",{cache:"no-store"});
     if(!st.ok)throw new Error("Loja indisponível");
     const settings=await st.json();
     checkoutEnabled=settings.checkout_enabled===true;
+    checkoutPreview=settings.checkout_preview===true&&location.hostname==="homologacao.saluz-loja.pages.dev";
     products=[];catalogPage=0;
     await fetchCatalogPage(1);
     await loadBagReferences();
-  }catch{available=false;checkoutEnabled=false;products=[];catalogHasMore=false;}
+  }catch{available=false;checkoutEnabled=false;checkoutPreview=false;products=[];catalogHasMore=false;}
   finally{catalogLoading=false;}
   $("checkout-status").textContent=checkoutEnabled?"Solicitação sem pagamento online. A SALUZ entrará em contato para confirmar valores, frete e forma de pagamento.":"O cadastro de pedidos está desativado até concluirmos a infraestrutura, segurança e políticas da loja.";
   $("checkout-submit").disabled=!checkoutEnabled;
@@ -294,10 +295,60 @@ if(location.hash==="#sacola"){history.replaceState(null,"",location.pathname+loc
 $("mobile-cart-open").onclick=()=>$("cart-open").click();
 
 
+
+/* Prévia somente homologação. O checkout pago permanece bloqueado no servidor. */
+async function refreshPaymentPreview(){
+ const feedback=$("payment-preview-feedback");
+ const list=$("payment-preview-items");
+ feedback.textContent="Conferindo preço e estoque...";
+ list.replaceChildren(node("p","","Conferindo itens da sacola..."));
+ $("payment-preview-subtotal").textContent="A consultar";
+ $("payment-preview-total").textContent="A confirmar";
+ const rawCep=$("payment-preview-cep").value.trim();
+ try{
+   const response=await fetch("/api/checkout/quote",{
+     method:"POST",headers:{"content-type":"application/json"},
+     body:JSON.stringify({items:bag.map(({id,color,size,quantity})=>({id,color,size,quantity})),postal_code:rawCep})
+   });
+   const quote=await response.json();
+   if(!response.ok)throw Error(quote.error||"Não foi possível conferir o carrinho.");
+   if(quote.payment_enabled!==false||quote.total_cents!==null||quote.shipping_cents!==null)
+     throw Error("Cotação inesperada: pagamentos bloqueados até revisão.");
+   list.replaceChildren();
+   for(const item of quote.items||[]){
+     const line=node("div","saluz-pay-product"),info=node("div","saluz-pay-product-info");
+     info.append(node("strong","",item.name),node("small","",item.color+" · "+item.size+" · "+item.quantity+" un."));
+     line.append(info,node("strong","",money(item.line_total_cents)));list.append(line);
+   }
+   $("payment-preview-subtotal").textContent=money(quote.subtotal_cents);
+   $("payment-preview-shipping").textContent="A calcular";
+   feedback.textContent=rawCep?"Carrinho conferido. Falta configurar o frete para este CEP; não haverá cobrança.":"Carrinho conferido. Informe o CEP para preparar a cotação do frete.";
+ }catch(e){
+   list.replaceChildren(node("p","","Não foi possível validar a sacola."));
+   feedback.textContent=e.message;
+ }
+}
+function openPaymentPreview(){
+ if(!checkoutPreview||location.hostname!=="homologacao.saluz-loja.pages.dev")return;
+ $("payment-preview-dialog").showModal();
+ refreshPaymentPreview();
+}
+$("payment-preview-close").addEventListener("click",()=>close($("payment-preview-dialog")));
+$("payment-preview-recalculate").addEventListener("click",refreshPaymentPreview);
+for(const option of document.querySelectorAll('input[name="payment-preview-method"]')){
+ option.addEventListener("change",()=>{
+   $("payment-preview-brick").textContent=option.value==="credit_card"?
+    "O formulário seguro de cartão será exibido aqui pelo Mercado Pago após as etapas técnicas de homologação.":
+    "Após a integração, o Pix apresentará QR Code e código copia e cola. Nenhuma cobrança está habilitada.";
+ });
+}
+
 $("checkout-close").onclick=()=>close($("checkout-dialog"));
 $("checkout-open").onclick=()=>{
   if(!$("checkout-open").disabled){
-    close($("cart-dialog"));$("checkout-dialog").showModal();emit("checkout_start");
+    close($("cart-dialog"));
+    if(checkoutPreview){openPaymentPreview();}else{$("checkout-dialog").showModal();}
+    emit("checkout_start");
   }
 };
 $("email-link").addEventListener("click",()=>emit("contact_click","email"));
