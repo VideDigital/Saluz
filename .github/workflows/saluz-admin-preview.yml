@@ -32,6 +32,8 @@ jobs:
           node --check saluz-studio.js
           node --check saluz-campaigns.js
           node --check saluz-professional.js
+          node --check functions/api/\[\[path\]\].js
+          node --check admin-deploy/functions/api/\[\[path\]\].js
           node --check saluz-site-content.js
           node --check saluz-mobile.js
           node --test tests/*.test.mjs
