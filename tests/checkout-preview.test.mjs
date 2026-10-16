@@ -18,7 +18,7 @@ async function endpoint(base,path,init={}){
  const before=globalThis.fetch;globalThis.fetch=fetchMock;
  try{
   const request=new Request(base+path,{...init,headers:{"origin":base,"content-type":"application/json",...(init.headers||{})}});
-  return onRequest({request,env});
+  return await onRequest({request,env});
  }finally{globalThis.fetch=before;}
 }
 test("homologacao informa apenas preview, nao ativa o checkout",async()=>{
