@@ -86,7 +86,11 @@ function productCard(p){
   const image=node("div","product-image"+(p.image_url?"":" placeholder"));
   if(p.image_url){const img=node("img");img.src=p.image_url;img.loading="lazy";img.decoding="async";img.alt="Produto "+p.name;img.onerror=()=>{img.remove();image.classList.add("placeholder");};image.append(img);}
   const picture=node("a","product-image-button");picture.href="./produto.html?id="+encodeURIComponent(p.id);picture.setAttribute("aria-label","Abrir página do produto "+p.name);picture.append(image);card.append(picture);
-  const b=node("div","product-body");b.append(node("span","product-category",p.category||"SALUZ"),node("h3","",p.name),node("span","price",money(p.price_cents)));
+  const b=node("div","product-body");b.append(node("span","product-category",p.category||"SALUZ"),node("h3","",p.name));
+   if(Number(p.original_price_cents)>p.price_cents){
+     b.append(node("span","saluz-price-old",money(p.original_price_cents)),node("span","saluz-sale-label","Oferta"));
+   }
+   b.append(node("span","price",money(p.price_cents)));
   const inStock=variantsFor(p);
   if(inStock.length){
     const opts=node("div","product-options");

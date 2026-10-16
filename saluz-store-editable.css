@@ -1,0 +1,15 @@
+/* Conteudo editorial da SALUZ, sem adicionar novas paginas. */
+.saluz-studio-notice{padding:12px 24px;background:#f5e9e6;color:#795057;text-align:center;font:500 14px/1.4 "DM Sans",sans-serif}
+.hero-visual.saluz-editorial-image .hero-product,.hero-visual.saluz-editorial-image .hero-caption{visibility:hidden}
+.saluz-editable-banner{width:min(1260px,calc(100% - 48px));margin:clamp(28px,5vw,60px) auto;display:grid;grid-template-columns:1.12fr .88fr;min-height:250px;background:#f4e8e5;border:1px solid #eadbd7;border-radius:15px;overflow:hidden}
+.saluz-editable-banner-text{padding:clamp(30px,5vw,62px);display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:14px;color:#443039}
+.saluz-editable-banner-kicker{font:700 11px "DM Sans",sans-serif;letter-spacing:.13em;color:#976b76}
+.saluz-editable-banner h2{font:400 clamp(28px,3vw,44px)/1.13 "DM Serif Display",serif;margin:0;max-width:18ch}
+.saluz-editable-banner p{font:400 15px/1.6 "DM Sans",sans-serif;margin:0;max-width:48ch}
+.saluz-editable-banner a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:12px 20px;background:#513942;color:white;text-decoration:none;border-radius:5px;font:650 14px "DM Sans",sans-serif}
+.saluz-editable-banner a:hover{background:#75545f}
+.saluz-editable-banner-photo{background-size:cover;background-position:center;background-color:#d4b5ac;min-height:220px}
+.saluz-price-old{display:inline-block;color:#83747b;text-decoration:line-through;font-size:.85em;margin-right:7px}
+.saluz-sale-label{display:inline-flex;align-items:center;background:#f6e5e5;border-radius:999px;padding:3px 9px;margin:2px 6px 2px 0;color:#8f4a55;font:700 11px/1.4 "DM Sans",sans-serif;letter-spacing:.01em;text-decoration:none}
+.saluz-offer-on-product{margin-top:7px;margin-bottom:6px}
+@media(max-width:720px){.saluz-editable-banner{grid-template-columns:1fr;width:calc(100% - 30px)}.saluz-editable-banner-photo{min-height:180px;order:-1}.saluz-editable-banner-text{padding:28px}}
