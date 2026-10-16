@@ -115,3 +115,17 @@
 @media(max-width:1250px){.market-layout{grid-template-columns:1fr}.market-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.market-list-card{border:1px solid #f0e5e3}.market-catalog{position:static}}
 @media(max-width:830px){.market-images{grid-template-columns:1fr}.market-publish-bar{position:static}.market-offer-actions{grid-column:2/-1;flex-direction:row;justify-content:flex-start}.market-offer-card{grid-template-columns:76px minmax(0,1fr)}.market-offer-photo{width:76px;height:80px}}
 @media(max-width:680px){.market-view-nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.market-view-nav button{padding:10px 12px;min-height:49px;font-size:13px;gap:7px}.market-view-nav button span{font-size:19px}.market-status-row{align-items:flex-start}.market-guide{font-size:14px}.market-top-actions{flex-wrap:wrap}.market-top-actions h3{font-size:21px}.market-list{grid-template-columns:1fr}.market-list-thumb{width:62px;min-width:62px;height:62px}.market-form-head{flex-direction:column}.market-form-grid,.market-filters{grid-template-columns:1fr}.market-images{padding:14px}.market-preview{grid-template-columns:minmax(100px,40%) minmax(0,1fr)}.market-preview>div:last-child{padding:14px}.market-preview strong{font-size:20px}.market-preview p{font-size:12px}.market-publish-bar{padding:17px 14px}.market-publish-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%}.market-publish-actions #campaign-publish{grid-column:1/-1}.market-offer-card{padding:13px;gap:11px}.market-offer-info strong{font-size:15px}.market-offer-actions{flex-wrap:wrap}.market-offer-edit{padding:13px}.market-offers-head{align-items:flex-start;flex-direction:column}}
+
+/* Edicao das secoes fixas da pagina inicial, sem editor livre de paginas. */
+.studio-block-details{border:1px solid #ebdfdc;border-radius:12px;background:#fff;overflow:hidden;margin:13px 0}
+.studio-block-details summary{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;list-style:none;cursor:pointer;font-size:16px;font-weight:750;color:#60424e;padding:18px 20px;background:#faf5f4}
+.studio-block-details summary::-webkit-details-marker{display:none}
+.studio-block-details[open] summary{border-bottom:1px solid #eadcda}
+.studio-block-details summary span{font-size:13px;font-weight:500;color:#86747b}
+.studio-block-inside{padding:17px 21px 24px}
+.studio-block-inside h4{font-size:16px;color:#493944;margin:23px 0 9px}
+.studio-block-help{font-size:13px;color:#76656d;line-height:1.55;margin:0 0 13px}
+.studio-kit-card{border:1px solid #eadbd8;border-radius:11px;background:#fdf9f7;padding:15px 17px;margin-top:14px}
+.studio-kit-card h4{margin:0 0 12px}
+.studio-block-inside .studio-pair{gap:13px}
+.studio-block-inside .studio-pair label{min-width:0}

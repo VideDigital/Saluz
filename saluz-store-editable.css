@@ -58,3 +58,4 @@
  .saluz-campaign-image .saluz-campaign-picture:after{background:linear-gradient(0deg,#25151fe0,#25151f3d)}
 }
 @media(prefers-reduced-motion:reduce){.saluz-campaign-banner *{scroll-behavior:auto!important}}
+.saluz-promo-moment-photo{color:#fff;background-position:center;background-size:cover}
