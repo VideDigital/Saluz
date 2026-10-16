@@ -18,6 +18,7 @@
 <script src="./saluz-shell.js" defer></script>
 <script src="./sacola.js" defer></script>
 <script src="./loja.js?v=2" defer></script>
+<link rel="stylesheet" href="./saluz-checkout-preview.css?v=1">
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="./saluz-store-editable.css?v=2">
 <script src="./saluz-site-content.js?v=2" defer></script>
@@ -91,6 +92,36 @@
   <div class="cart-total"><span>Subtotal dos produtos</span><strong id="cart-total">R$ 0,00</strong></div>
   <p class="small">Frete e disponibilidade serão confirmados antes do pagamento.</p>
   <button class="btn-dark wide" id="checkout-open" type="button">Continuar com meus dados</button>
+</dialog>
+<dialog id="payment-preview-dialog" class="saluz-payment-dialog" aria-labelledby="payment-preview-title">
+  <header class="saluz-pay-heading">
+    <div><span class="saluz-pay-eyebrow">SALUZ · HOMOLOGAÇÃO</span><h2 id="payment-preview-title">Finalizar minha compra</h2><p>Confira seus produtos e veja como será o pagamento.</p></div>
+    <button type="button" class="saluz-pay-close" id="payment-preview-close" aria-label="Fechar simulação">×</button>
+  </header>
+  <p class="saluz-pay-warning" role="status"><strong>Ambiente de testes.</strong> Nenhum pagamento será efetuado e nenhum dado de cartão será solicitado.</p>
+  <div class="saluz-pay-grid">
+    <section class="saluz-pay-summary" aria-labelledby="payment-preview-summary-title">
+      <h3 id="payment-preview-summary-title">Resumo do pedido</h3>
+      <div id="payment-preview-items" class="saluz-pay-items"><p>Consultando carrinho...</p></div>
+      <div class="saluz-pay-line"><span>Produtos</span><strong id="payment-preview-subtotal">A consultar</strong></div>
+      <div class="saluz-pay-line"><span>Frete</span><strong id="payment-preview-shipping">A calcular</strong></div>
+      <div class="saluz-pay-line saluz-pay-total"><span>Total a pagar</span><strong id="payment-preview-total">A confirmar</strong></div>
+      <label class="saluz-pay-cep" for="payment-preview-cep">CEP para entrega <input id="payment-preview-cep" inputmode="numeric" autocomplete="postal-code" maxlength="9" placeholder="00000-000"></label>
+      <button id="payment-preview-recalculate" type="button" class="saluz-pay-recalculate">Consultar carrinho e CEP ↗</button>
+      <p class="saluz-pay-hint">O valor final só será exibido quando o frete estiver configurado e calculado no servidor.</p>
+    </section>
+    <section class="saluz-pay-methods" aria-labelledby="payment-preview-method-title">
+      <h3 id="payment-preview-method-title">Como deseja pagar?</h3>
+      <label class="saluz-pay-choice"><input type="radio" name="payment-preview-method" value="pix" checked><span><strong>Pix</strong><small>QR Code e copia e cola após a confirmação do pedido.</small></span></label>
+      <label class="saluz-pay-choice"><input type="radio" name="payment-preview-method" value="credit_card"><span><strong>Cartão de crédito</strong><small>Formulário seguro e parcelamento pelo Mercado Pago.</small></span></label>
+      <div class="saluz-pay-provider"><span>Pagamento protegido</span><strong>Mercado Pago</strong></div>
+      <div id="payment-preview-brick" class="saluz-pay-brick-placeholder" role="status">
+        O formulário de pagamento será integrado aqui depois das credenciais de teste e da configuração do frete.
+      </div>
+      <button type="button" class="saluz-pay-finish" id="payment-preview-finish" disabled>Confirmar pagamento — indisponível nos testes</button>
+      <p id="payment-preview-feedback" class="saluz-pay-feedback" role="status" aria-live="polite">O checkout está em preparação e não realiza cobranças.</p>
+    </section>
+  </div>
 </dialog>
 <dialog id="checkout-dialog" class="checkout-dialog" aria-labelledby="checkout-title">
   <div class="cart-header"><div><span class="eyebrow">SALUZ</span><h2 id="checkout-title">Dados para o pedido</h2></div><button type="button" class="close" id="checkout-close" aria-label="Fechar">×</button></div>
