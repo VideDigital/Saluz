@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /api/
+Disallow: /favoritos.html
+Disallow: /produto.html
+Sitemap: https://usesaluz.com.br/sitemap.xml
