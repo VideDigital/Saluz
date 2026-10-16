@@ -1,5 +1,5 @@
 /* SALUZ Control: proxy same-origin limitado ao backend SALUZ, sem chaves no navegador. */
-const METHODS={auth:new Set(["login","logout","me"]),admin:new Set(["orders","upload","products","metrics","site-content","store-health"]),status:new Set([""])};
+const METHODS={auth:new Set(["login","logout","me"]),admin:new Set(["orders","upload","products","metrics","site-content","store-health","payment-integration"]),status:new Set([""])};
 export async function onRequest({request,env}){
   const target=String(env.ADMIN_API_ORIGIN||"");
   if(!["https://usesaluz.com.br","https://homologacao.saluz-loja.pages.dev"].includes(target))

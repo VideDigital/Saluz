@@ -306,6 +306,17 @@ async function storeHealth(env) {
     publishedAt:doc.published_at,truncated};
 }
 async function adminAction(request,env,parts) {
+  if(parts[1]==="payment-integration"&&parts.length===2&&request.method==="GET"){
+    // Estado de ativação privado. Não retorna chaves, emails ou tokens.
+    return output({provider:"mercado_pago",integration:"checkout_pro_orders",
+      credentials_configured:!!env.MP_ACCESS_TOKEN,
+      webhook_configured:!!env.MP_WEBHOOK_SECRET,
+      stock_reservation_ready:false,
+      payment_reconciliation_ready:false,
+      checkout_enabled:false,
+      live_payments_enabled:false,
+      notice:"Integração em preparação. Pagamentos reais continuam desativados."});
+  }
   if(parts[1]==="store-health"&&parts.length===2&&request.method==="GET")
     return output(await storeHealth(env));
   if (parts[1]==="orders" && request.method==="GET") {
