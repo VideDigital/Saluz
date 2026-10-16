@@ -24,6 +24,54 @@ const validImage=u=>typeof u==="string"&&/^https:\/\/[^\s<>"']+$/.test(u);
    const node=document.querySelector(selector);
    if(value&&node)node.textContent=value;
   }
+  // Cards promocionais e kits originais: alterar conteudo, nunca estrutura ou URLs externas.
+  const fixed={
+    moment_label:".promo-moment .promo-copy .eyebrow",
+    moment_title:".promo-moment .promo-copy h2",
+    gift_label:".promo-gift .promo-copy .eyebrow",
+    gift_title:".promo-gift .promo-copy h2",
+    gift_description:".promo-gift .promo-copy > p:not(.eyebrow)",
+    kits_title:".kits-section .section-title h2"
+  };
+  for(const [key,selector] of Object.entries(fixed)){
+    const value=String(c[key]||"").trim(),element=document.querySelector(selector);
+    if(element&&value)element.textContent=value;
+  }
+  document.querySelectorAll(".promo-moment .moment-links a").forEach((a,index)=>{
+    const n=index+1,label=String(c["moment_link"+n+"_title"]||"").trim();
+    const href=c["moment_link"+n+"_href"];
+    if(label){
+      const textNode=Array.from(a.childNodes).find(n=>n.nodeType===Node.TEXT_NODE);
+      if(textNode)textNode.textContent=label+" ";
+    }
+    if(allowedLinks.has(href))a.href=href;
+  });
+  const giftButton=document.querySelector(".promo-gift .promo-copy a.text-link");
+  if(giftButton){
+    if(c.gift_button)giftButton.textContent=String(c.gift_button).slice(0,48)+" ↗";
+    if(allowedLinks.has(c.gift_link)||c.gift_link==="#kits")giftButton.href=c.gift_link;
+  }
+  document.querySelectorAll(".kits-section .kit-card").forEach((card,index)=>{
+    const n=index+1;
+    for(const [key,selector] of [["title","h3"],["description","p"]]){
+      const value=String(c["kit"+n+"_"+key]||"").trim();
+      const el=card.querySelector(selector);if(value&&el)el.textContent=value;
+    }
+    const href=c["kit"+n+"_link"];
+    const link=card.querySelector("a");if(link&&allowedLinks.has(href))link.href=href;
+  });
+  if(validImage(c.moment_image_url)){
+    const moment=document.querySelector(".promo-moment");
+    if(moment){moment.classList.add("saluz-promo-moment-photo");
+      moment.style.backgroundImage="linear-gradient(110deg,#281f2ea8,#281f2e40),url("+JSON.stringify(c.moment_image_url)+")";
+      moment.style.backgroundSize="cover";moment.style.backgroundPosition="center";}
+  }
+  if(validImage(c.gift_image_url)){
+    const gift=document.querySelector(".promo-gift .gift-visual");
+    if(gift){gift.classList.add("saluz-promo-gift-photo");
+      gift.style.backgroundImage="url("+JSON.stringify(c.gift_image_url)+")";
+      gift.style.backgroundSize="cover";gift.style.backgroundPosition="center";}
+  }
   if(allowedLinks.has(c.hero_link)){
    const link=document.querySelector(".hero-actions .button-dark");
    if(link)link.href=c.hero_link;
