@@ -77,7 +77,9 @@ function validateProduct(raw) {
     "Organizadores de bolsa","Acessórios de viagem","Autocuidado","Acessórios femininos","Kits e presentes"]);
   if(!allowedCategories.has(category))throw new Error("Selecione uma categoria válida da SALUZ");
   const price_cents=Number(raw.price_cents);
+  const original_price_cents=raw.original_price_cents==null||raw.original_price_cents===""?null:Number(raw.original_price_cents);
   if (name.length<2 || !Number.isInteger(price_cents) || price_cents<0 || price_cents>50000000) throw new Error("Nome ou preço inválido");
+  if(original_price_cents!==null&&(!Number.isInteger(original_price_cents)||original_price_cents<=price_cents||original_price_cents>50000000))throw new Error("Preço anterior inválido: informe um valor maior que o preço de venda.");
   if (image_url && !/^https:\/\//.test(image_url)) throw new Error("Imagem precisa ter URL HTTPS");
   const variants=Array.isArray(raw.variants) ? raw.variants : [];
   if (variants.length>50) throw new Error("Muitas variações");
@@ -97,7 +99,7 @@ function validateProduct(raw) {
   }
   if(raw.is_active===true && !image_url && !normalized.some(v=>v.image_url))
     throw new Error("Adicione uma foto do produto antes de publicá-lo");
-  return {name,description,category,image_url,price_cents,variants:normalized,is_active:raw.is_active===true,is_featured:raw.is_featured===true,updated_at:new Date().toISOString()};
+  return {name,description,category,image_url,price_cents,original_price_cents,variants:normalized,is_active:raw.is_active===true,is_featured:raw.is_featured===true,updated_at:new Date().toISOString()};
 }
 function validateOrder(b) {
   const name=safeText(b.name,120), email=safeText(b.email,160).toLowerCase();
@@ -189,7 +191,10 @@ async function login(request,env) {
   return output({ok:true,email:result.user.email},
     200,{"set-cookie":COOKIE+"="+result.access_token+"; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age="+age});
 }
-const siteContentFields={top_bar:110,hero_title:90,hero_description:310,hero_button:48,hero_image_url:500,featured_title:80,new_title:80,featured_description:180,new_description:180,business_hours:100,contact_email:180,store_notice:170};
+const siteContentFields={top_bar:110,hero_title:90,hero_description:310,hero_button:48,hero_image_url:500,hero_link:95,
+  featured_title:80,new_title:80,featured_description:180,new_description:180,business_hours:100,contact_email:180,store_notice:170,
+  promo_enabled:3,promo_title:90,promo_description:220,promo_button:48,promo_link:95,promo_image_url:500,whatsapp_number:15,instagram_url:180};
+const allowedStoreLinks=new Set(["./loja.html","./colecoes.html","./colecao-necessaires.html","./colecao-porta-joias.html","./colecao-kits-presentes.html","./colecao-autocuidado.html","./atendimento.html"]);
 function validateSiteContent(raw){
   if(!raw || Array.isArray(raw) || typeof raw!=="object")throw new Error("Conteúdo inválido");
   if(Object.keys(raw).some(key=>!(key in siteContentFields)))throw new Error("Campo de conteúdo não permitido");
@@ -197,9 +202,13 @@ function validateSiteContent(raw){
   for(const [key,max] of Object.entries(siteContentFields)){
     const value=safeText(raw[key],max);
     if(/[<>]/.test(value))throw new Error("HTML não é permitido nos textos da loja");
-    if(key==="hero_image_url" && value && !/^https:\/\/[^\s]+$/i.test(value))throw new Error("Imagem deve usar URL HTTPS");
+    if((key==="hero_image_url"||key==="promo_image_url")&&value&&!/^https:\/\/[^\s<>"']+$/i.test(value))throw new Error("Imagem deve usar URL HTTPS");
+    if(["hero_link","promo_link"].includes(key)&&value&&!allowedStoreLinks.has(value))throw new Error("O link deve apontar para uma página existente da SALUZ");
+    if(key==="promo_enabled"&&value&&!["yes","no"].includes(value))throw new Error("Opção de banner inválida");
+    if(key==="whatsapp_number"&&value&&!/^\d{10,13}$/.test(value.replace(/\D/g,"")))throw new Error("WhatsApp deve ter DDD e número válidos");
+    if(key==="instagram_url"&&value&&!/^https:\/\/(?:www\.)?instagram\.com\/[a-zA-Z0-9_.]{1,30}\/?$/.test(value))throw new Error("Informe um link de perfil do Instagram válido");
     if(key==="contact_email" && value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))throw new Error("E-mail inválido");
-    cleaned[key]=value;
+    cleaned[key]=key==="whatsapp_number"?value.replace(/\D/g,""):value;
   }
   return cleaned;
 }
@@ -311,7 +320,7 @@ export async function onRequest({request,env}) {
     if (route[0]==="status" && request.method==="GET")
       return output({configured:true,checkout_enabled:false,orders_locked:true});
     if (route[0]==="products" && request.method==="GET") {
-      const columns="id,name,description,category,image_url,price_cents,variants";
+      const columns="id,name,description,category,image_url,price_cents,original_price_cents,variants";
       if(route[1]==="home" && route.length===2){
         const featured=await sb(env,"/rest/v1/saluz_products?is_active=eq.true&is_featured=eq.true&select="+columns+"&order=created_at.desc&limit=8");
         const recent=await sb(env,"/rest/v1/saluz_products?is_active=eq.true&select="+columns+"&order=created_at.desc&limit=24");
@@ -368,7 +377,7 @@ export async function onRequest({request,env}) {
     return error("Rota inexistente",404);
   } catch(e) {
     // Do not return credentials, customer data, stack traces or raw provider responses.
-    if (e.message && /inválid|incomplet|indisponível|excede|aceitar|Estoque|Muitas|variaç|Nome|Imagem|Um produto|Telefone|Informe|Sacola|Pedido|Endereç|Cadastre|Preencha|repetidas|Selecione|Adicione|duplicada/.test(e.message))
+    if (e.message && /inválid|incomplet|indisponível|excede|aceitar|Estoque|Muitas|variaç|Nome|Imagem|Um produto|Telefone|Informe|Sacola|Pedido|Endereç|Cadastre|Preencha|repetidas|Selecione|Adicione|duplicada|HTML|link|WhatsApp|E-mail|Preço anterior/.test(e.message))
       return error(e.message,400);
     return error("Não foi possível concluir a operação. Tente novamente.",500);
   }
