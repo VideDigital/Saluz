@@ -11,3 +11,6 @@
   Cache-Control: no-cache, max-age=0, must-revalidate
 /saluz-admin-extras.js
   Cache-Control: no-cache, max-age=0, must-revalidate
+
+/api/site-content
+  Cache-Control: no-store

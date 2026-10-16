@@ -20,6 +20,8 @@
 <script src="./saluz-admin-extras.js?v=20261015-pro3" defer></script>
 <script src="./saluz-mobile.js?v=20261015-mobile2" defer></script>
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="./saluz-studio.css?v=1">
+<script src="./saluz-studio.js?v=1" defer></script>
 </head>
 <body>
 <main>
@@ -35,7 +37,7 @@
       <button type="submit">Entrar no painel <span>↗</span></button>
     </form>
     <p class="message" id="login-message" role="status">Verificando ambiente...</p>
-    <a class="store-link" href="./loja.html">← Voltar à loja</a>
+    <a class="store-link" href="https://usesaluz.com.br/">← Voltar à loja</a>
   </div>
 </section>
 <section class="dashboard hidden" id="dashboard">
@@ -48,8 +50,9 @@
       <button type="button" data-tab="products">Produtos</button>
       <button type="button" data-tab="finance">Financeiro</button>
       <button type="button" data-tab="reports">Relatórios</button>
+      <button type="button" data-tab="studio">Personalizar loja</button>
     </nav>
-    <div class="sidebar-bottom" id="admin-sidebar-actions"><a href="./loja.html" target="_blank" rel="noopener">Ver loja ↗</a><button id="logout" type="button">Sair</button></div>
+    <div class="sidebar-bottom" id="admin-sidebar-actions"><a href="https://usesaluz.com.br/loja.html" target="_blank" rel="noopener">Ver loja ↗</a><button id="logout" type="button">Sair</button></div>
   </aside>
   <div class="workspace">
     <header class="workspace-head"><div><span class="eyebrow">PAINEL ADMINISTRATIVO</span><h1 id="section-title">Visão geral</h1></div><span id="admin-notice">Ambiente administrativo</span></header>
@@ -177,7 +180,34 @@
         <div id="fee-table" class="fee-list" aria-live="polite"><p class="muted">Ainda não há taxas cadastradas.</p></div>
       </section>
     </section>
-    <section id="tab-reports" class="tab hidden">
+    <section id="tab-studio" class="tab hidden">
+<div class="studio-intro"><div class="studio-eyebrow">SALUZ STUDIO <span>● EDITOR DA MARCA</span></div><h2>Sua loja, com a sua personalidade.</h2><p>Atualize mensagens, vitrine e informações da loja sem precisar chamar um desenvolvedor. Salve um rascunho e publique quando estiver pronta.</p></div>
+<div class="studio-summary"><span class="studio-badge" id="studio-state">Carregando conteúdo...</span><span id="studio-version"></span><a class="studio-site-link" href="https://usesaluz.com.br/" target="_blank" rel="noopener">Abrir loja ↗</a></div>
+<form id="studio-form" class="studio-layout">
+<div class="studio-editor">
+<article class="studio-card"><div class="studio-card-head"><span class="studio-number">01</span><div><h3>Primeira impressão</h3><p>O que sua cliente vê assim que entra no site.</p></div></div>
+<label>Mensagem da faixa superior<input name="top_bar" maxlength="110" placeholder="Atendimento de segunda a sexta, 8h às 19h"></label>
+<label>Chamada principal da página inicial<input name="hero_title" maxlength="90" placeholder="Um detalhe pode mudar tudo."></label>
+<label>Texto de apresentação<textarea name="hero_description" maxlength="310" rows="3" placeholder="Descubra possibilidades..."></textarea></label>
+<label>Texto do botão principal<input name="hero_button" maxlength="48" placeholder="Explorar a loja"></label>
+<label>Imagem principal (URL HTTPS, opcional)<input name="hero_image_url" type="url" maxlength="500" placeholder="https://..."></label>
+</article>
+<article class="studio-card"><div class="studio-card-head"><span class="studio-number">02</span><div><h3>Vitrine & lançamentos</h3><p>Personalize os títulos sem perder a seleção automática de produtos.</p></div></div>
+<div class="studio-pair"><label>Título dos destaques<input name="featured_title" maxlength="80" placeholder="Produtos em destaque."></label><label>Título das novidades<input name="new_title" maxlength="80" placeholder="Novidades na loja."></label></div>
+<label>Descrição dos destaques<input name="featured_description" maxlength="180" placeholder="Peças selecionadas pela SALUZ..."></label>
+<label>Descrição das novidades<input name="new_description" maxlength="180" placeholder="Confira os produtos publicados..."></label>
+</article>
+<article class="studio-card"><div class="studio-card-head"><span class="studio-number">03</span><div><h3>Atendimento & contato</h3><p>Mantenha o horário e o e-mail atualizados para suas clientes.</p></div></div>
+<div class="studio-pair"><label>Horário de atendimento<input name="business_hours" maxlength="100" placeholder="Segunda a sexta, das 8h às 19h"></label><label>E-mail de atendimento<input name="contact_email" type="email" maxlength="180" placeholder="contato@exemplo.com"></label></div>
+<label>Comunicado discreto (opcional)<input name="store_notice" maxlength="170" placeholder="Ex.: Coleção de presentes chegando em breve"></label>
+</article>
+<div class="studio-actions"><button id="studio-save" class="studio-save" type="submit">Salvar rascunho</button><button id="studio-publish" class="studio-publish" type="button">Publicar na loja ↗</button><button id="studio-discard" type="button" class="studio-reset">Descartar rascunho</button></div>
+<p id="studio-feedback" class="studio-feedback" role="status" aria-live="polite"></p>
+</div>
+<aside class="studio-preview-wrap"><div class="studio-preview-title"><span>PRÉ-VISUALIZAÇÃO</span><span>Home / Desktop</span></div><div class="studio-preview"><div class="studio-preview-top" id="studio-preview-top">✦ SALUZ · Beleza nos detalhes</div><div class="studio-preview-header">SALUZ <span>✦</span><small>INÍCIO　 COLEÇÕES　 LOJA</small></div><div class="studio-preview-hero"><div><span class="studio-preview-kicker">SALUZ / BELEZA NOS DETALHES</span><h3 id="studio-preview-headline">Um detalhe pode mudar tudo.</h3><p id="studio-preview-subtitle">Descubra possibilidades para organizar, presentear e acompanhar cada momento.</p><span class="studio-preview-button" id="studio-preview-cta">Explorar a loja ↗</span></div><div class="studio-preview-art" id="studio-preview-art"><span>S ✦</span></div></div><div class="studio-preview-section"><span>ESCOLHAS SALUZ</span><strong id="studio-preview-featured">Produtos em destaque.</strong><p id="studio-preview-featured-desc">Peças selecionadas pela SALUZ.</p></div><div class="studio-preview-bottom">✦ BELEZA NOS DETALHES</div></div><p class="studio-preview-note">Esta é uma simulação da aparência. O botão “Publicar” aplica as alterações de conteúdo na loja oficial; não ativa o checkout.</p></aside>
+</form>
+</section>
+<section id="tab-reports" class="tab hidden">
       <div class="tab-toolbar"><p>Visitas e cliques registrados apenas após o consentimento do visitante.</p>
         <label>Período <select id="period"><option value="7">Últimos 7 dias</option><option value="30">Últimos 30 dias</option></select></label></div>
       <div class="stats" id="stats"></div>

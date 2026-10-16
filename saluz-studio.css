@@ -1,0 +1,69 @@
+/* SALUZ Studio — editorial commerce dashboard visual system. */
+:root{--admin-accent:#9d6b72;--admin-navy:#2d303d;--pro-bg:#faf7f5;--pro-border:#ece4df;--pro-ink:#322b32;--pro-muted:#817781}
+.dashboard{background:#faf7f5}
+.sidebar{background:#2f303b!important}
+.sidebar-logo{font-family:"DM Serif Display",serif!important;font-size:28px!important;font-weight:400!important;letter-spacing:.02em!important}
+.sidebar-logo small{letter-spacing:.19em!important;color:#c0abb2!important}
+.sidebar-logo .brand-dot{color:#d8a5aa!important}
+.tabs button.selected{background:#544750!important;color:#fff!important}
+.tabs button.selected:before{background:#ebc3bd!important}
+.tabs button[data-tab="studio"]{margin-top:11px;border:1px solid #735f68!important;background:#463a43;color:#ffe9e6;min-height:49px}
+.tabs button[data-tab="studio"]:before{content:"✦";margin-right:9px;color:#dfb0b8}
+.tabs button[data-tab="studio"].selected{background:#72525e!important;color:#fff!important}
+.workspace{background:#faf7f5!important}
+.workspace-head h1{color:#342e36}
+.workspace-head #admin-notice{background:#f3eae9;color:#865f69;border-color:#eee0de}
+.management-kpi:before{background:#ab7881!important}
+a,.outline{accent-color:#a16f78}
+.studio-intro{margin:24px 0 20px;max-width:720px}
+.studio-eyebrow{color:#a4747e;letter-spacing:.15em;font-size:10px;font-weight:800}
+.studio-eyebrow span{background:#f5e5e5;border-radius:20px;padding:5px 9px;margin-left:8px;letter-spacing:.04em}
+.studio-intro h2{font-family:"DM Serif Display",serif!important;font-weight:400!important;letter-spacing:-.03em!important;font-size:clamp(28px,3vw,41px)!important;line-height:1.12;margin:16px 0 10px;color:#332b32}
+.studio-intro p{color:#7b717a;font-size:13px;line-height:1.65;margin:0}
+.studio-summary{display:flex;align-items:center;gap:13px;flex-wrap:wrap;background:#fff;border:1px solid #eee6e3;border-radius:12px;padding:12px 16px;margin:0 0 18px;color:#8a8088;font-size:11px}
+.studio-badge{display:inline-flex;align-items:center;padding:7px 12px;border-radius:20px;background:#f6edea;color:#865b62;font-weight:700}
+.studio-site-link{margin-left:auto;color:#855867;font-weight:750;text-decoration:none}
+.studio-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,39%);align-items:start;gap:18px}
+.studio-editor{display:grid;gap:15px}
+.studio-card{background:#fff;border:1px solid #eae1de;border-radius:17px;padding:25px;box-shadow:0 4px 22px #38293107}
+.studio-card-head{display:flex;gap:15px;align-items:flex-start;margin-bottom:22px}
+.studio-number{display:grid;place-items:center;min-width:37px;height:37px;border-radius:11px;background:#f7ebea;color:#996b77;font-size:12px;font-weight:800}
+.studio-card h3{font-family:"DM Serif Display",serif!important;font-size:22px;font-weight:400!important;letter-spacing:-.02em;color:#382e35;margin:0 0 5px}
+.studio-card-head p{color:#92868c;font-size:11px;margin:0;line-height:1.5}
+.studio-card label{display:grid;gap:8px;color:#63565e;font-size:11px;font-weight:700;margin:15px 0}
+.studio-card label input,.studio-card label textarea{width:100%;min-width:0;box-sizing:border-box;border:1px solid #e6dcda;border-radius:10px;background:#fffcfa;padding:12px 13px;font:500 12px "DM Sans",sans-serif;line-height:1.5;color:#342e36;outline:none;transition:border-color .2s,box-shadow .2s}
+.studio-card label input:focus,.studio-card label textarea:focus{border-color:#b58992;box-shadow:0 0 0 3px #e9c8ce66}
+.studio-pair{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.studio-actions{display:flex;flex-wrap:wrap;gap:9px;padding:4px 0}
+.studio-actions button{padding:11px 17px;border-radius:9px;font-size:12px;font-weight:750;cursor:pointer}
+.studio-save{background:#fff;color:#795963;border:1px solid #d8c7c7}
+.studio-publish{background:#765260;color:#fff;border:1px solid #765260;box-shadow:0 4px 13px #78535f32}
+.studio-reset{color:#98848a;border:0;background:transparent}
+.studio-actions button:disabled{opacity:.55;cursor:wait}
+.studio-feedback{font-size:12px;color:#64816a;min-height:18px}
+.studio-feedback.is-error{color:#a83e45}
+.studio-preview-wrap{position:sticky;top:18px;background:#fff;border:1px solid #ede2df;border-radius:16px;padding:17px;box-shadow:0 8px 26px #34232b0a}
+.studio-preview-title{display:flex;justify-content:space-between;font-size:10px;letter-spacing:.12em;font-weight:750;color:#8d7e81;margin-bottom:12px}
+.studio-preview-title span:last-child{letter-spacing:0;font-weight:500}
+.studio-preview{border:1px solid #eee5e0;background:#faf7f3;border-radius:10px;overflow:hidden;color:#342a2c}
+.studio-preview-top{background:#89636a;color:#fff;text-align:center;padding:9px;font-size:10px}
+.studio-preview-header{display:flex;justify-content:space-between;align-items:center;padding:14px 19px;background:#fff;font-family:"DM Serif Display",serif;font-size:23px}
+.studio-preview-header>span{color:#c99aa0}.studio-preview-header small{font:700 7px "DM Sans";color:#8b8589;letter-spacing:.05em}
+.studio-preview-hero{display:grid;grid-template-columns:1.14fr .86fr;min-height:215px;background:#f1eae6}
+.studio-preview-hero>div:first-child{padding:23px 19px}
+.studio-preview-kicker{font-size:7px;color:#886e75;font-weight:800;letter-spacing:.1em}
+.studio-preview-hero h3{font-family:"DM Serif Display",serif!important;font-size:clamp(19px,2vw,27px);line-height:1.05;font-weight:400!important;letter-spacing:-.035em;overflow-wrap:anywhere;margin:11px 0}
+.studio-preview-hero p{font-size:9px;line-height:1.55;color:#756c72;margin:0 0 17px;overflow-wrap:anywhere}
+.studio-preview-button{display:inline-block;background:#493c42;color:#fff;padding:9px 10px;font:700 8px "DM Sans"}
+.studio-preview-art{display:grid;place-items:center;background:radial-gradient(circle at 50% 50%,#ead4ce,#cba8a6);background-size:cover;background-position:center}
+.studio-preview-art span{display:grid;place-items:center;border:1px solid #fff8;border-radius:100%;width:100px;height:100px;font-family:"DM Serif Display",serif;font-size:38px;color:#fff9}
+.studio-preview-art.has-image span{visibility:hidden}
+.studio-preview-section{display:grid;gap:5px;padding:22px;background:#fff}
+.studio-preview-section span{font-size:8px;color:#ac8287;font-weight:800;letter-spacing:.15em}
+.studio-preview-section strong{font-family:"DM Serif Display",serif;font-size:20px;font-weight:400}
+.studio-preview-section p{font-size:9px;color:#8b7d80}
+.studio-preview-bottom{text-align:center;font-size:8px;letter-spacing:.2em;padding:13px;color:#9d8489}
+.studio-preview-note{font-size:10px;line-height:1.55;color:#9a8d94;margin:15px 3px 1px}
+.saluz-studio-notice{background:#f7ecec;color:#835862;text-align:center;padding:9px;font-size:12px;font-family:"DM Sans",sans-serif}
+@media(max-width:1050px){.studio-layout{grid-template-columns:1fr}.studio-preview-wrap{position:static}.studio-preview-hero{min-height:250px}}
+@media(max-width:620px){.studio-card{padding:17px}.studio-pair{grid-template-columns:1fr;gap:0}.studio-intro h2{font-size:31px!important}.studio-preview-wrap{padding:13px}.studio-summary{font-size:10px}}
