@@ -1,0 +1,35 @@
+/* SALUZ Control / catalog modal — consistent mobile and desktop */
+.product-catalog-only{display:block!important;grid-template-columns:minmax(0,1fr)!important}
+.product-catalog-only>.product-list{width:100%;max-width:none;min-width:0}
+.product-dialog-open{overflow:hidden}
+.product-dialog{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;padding:22px}
+.product-dialog.hidden{display:none!important}
+.product-dialog-backdrop{position:absolute;inset:0;background:rgba(12,23,40,.64);backdrop-filter:blur(3px)}
+.product-dialog-window{position:relative;display:flex;flex-direction:column;width:min(780px,100%);max-height:min(92dvh,980px);background:#fff;border:1px solid #e3e9f2;border-radius:15px;box-shadow:0 30px 95px #0e203a50;overflow:hidden}
+.product-dialog-header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px 24px;border-bottom:1px solid #e7ecf3;background:#fff;flex:0 0 auto}
+.product-dialog-header .eyebrow{font-size:9px;letter-spacing:.12em;color:#7b899e}
+.product-dialog-header h2{font-family:"DM Sans",sans-serif!important;font-size:21px;font-weight:750!important;letter-spacing:-.035em;margin:5px 0 0;color:#1e3049}
+.product-dialog-close{display:grid;place-items:center;flex:0 0 39px;width:39px;height:39px;background:#f3f5f9;color:#40546d;border:1px solid #e4e9f1;border-radius:9px;font-size:26px;line-height:1;cursor:pointer}
+.product-dialog-close:hover{background:#e9eef6}
+.product-dialog-scroll{overflow-y:auto;overscroll-behavior:contain;min-height:0;padding:0}
+.product-dialog .product-form{display:flex!important;flex-direction:column!important;width:100%;max-width:none!important;border:0!important;border-radius:0!important;box-shadow:none!important;padding:22px 24px!important;gap:17px}
+.product-dialog .product-form>.eyebrow,.product-dialog .product-form>h2{display:none}
+.product-dialog .product-form-footer{position:sticky;bottom:-22px;z-index:2;background:#fff;border-top:1px solid #e5eaf1;padding:15px 0 5px;margin-top:5px}
+.product-dialog-feedback{color:#b03e36;font-size:12px;line-height:1.5;margin:0}
+.product-dialog-feedback:empty{display:none}
+.product-list{min-height:250px}
+@media(max-width:680px){
+ .product-dialog{padding:0;align-items:stretch}
+ .product-dialog-window{width:100%;max-height:100dvh;height:100dvh;border:0;border-radius:0}
+ .product-dialog-header{padding:14px 16px;min-height:68px}
+ .product-dialog-header h2{font-size:19px}
+ .product-dialog-scroll{padding-bottom:env(safe-area-inset-bottom)}
+ .product-dialog .product-form{padding:17px 15px!important;gap:14px}
+ .product-dialog .product-form-footer{bottom:-17px;padding:12px 0 calc(12px + env(safe-area-inset-bottom))}
+ .product-dialog .product-form-footer button{min-height:45px}
+ .product-dialog .variant-editor{min-width:0}
+ .product-dialog .variant-row{min-width:0}
+ .product-dialog .finance-form-grid{grid-template-columns:1fr}
+ .product-catalog-only .product-list{min-height:250px}
+}
+@media(prefers-reduced-motion:reduce){.product-dialog-backdrop{backdrop-filter:none}}

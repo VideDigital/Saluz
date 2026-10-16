@@ -104,6 +104,7 @@ $("logout").onclick=async()=>{
  showLogin("Sessão encerrada. Entre novamente com sua senha.");
 };
 function changeTab(name){
+ if(document.getElementById("product-dialog")&&!document.getElementById("product-dialog").classList.contains("hidden")&&!closeProductDialog())return;
  currentTab=name;
  for(const b of document.querySelectorAll("[data-tab]"))b.classList.toggle("selected",b.dataset.tab===name);
  window.dispatchEvent(new CustomEvent("saluz:tabchange",{detail:{tab:name}}));
@@ -306,6 +307,51 @@ function updateProductPreview(){
 }
 $("product-form").addEventListener("input",updateProductPreview);
 $("product-form").addEventListener("change",updateProductPreview);
+/* Product editor dialog: existing form, upload and validation stay unchanged. */
+let productDialogSnapshot="";
+let productDialogReturnFocus=null;
+function productDialogState(){
+ const f=$("product-form");
+ const fields=[...f.querySelectorAll("input:not([type=file]),select,textarea")].map(x=>[x.name||x.id||x.dataset.field,x.type==="checkbox"?x.checked:x.value]);
+ return JSON.stringify(fields);
+}
+function openProductDialog(title){
+ const dialog=$("product-dialog");
+ productDialogReturnFocus=document.activeElement;
+ $("product-dialog-title").textContent=title;
+ $("product-dialog-mode").textContent=title==="Editar produto"?"EDIÇÃO DO CATÁLOGO":"CADASTRO DO CATÁLOGO";
+ $("product-dialog-feedback").textContent="";
+ productDialogSnapshot=productDialogState();
+ dialog.classList.remove("hidden");
+ document.body.classList.add("product-dialog-open");
+ dialog.querySelector(".product-dialog-window").scrollTop=0;
+ $("product-dialog-close").focus();
+}
+function closeProductDialog(force=false){
+ const dialog=$("product-dialog");
+ if(dialog.classList.contains("hidden"))return true;
+ if(!force && productDialogState()!==productDialogSnapshot && !confirm("Descartar as alterações não salvas neste produto?"))return false;
+ dialog.classList.add("hidden");
+ document.body.classList.remove("product-dialog-open");
+ $("product-dialog-feedback").textContent="";
+ const target=productDialogReturnFocus;
+ if(target?.isConnected)target.focus();else $("new-product").focus();
+ return true;
+}
+$("product-dialog-close").addEventListener("click",()=>closeProductDialog());
+$("product-dialog").querySelector("[data-close-product-dialog]").addEventListener("click",()=>closeProductDialog());
+document.addEventListener("keydown",event=>{
+ const dialog=$("product-dialog");
+ if(dialog.classList.contains("hidden"))return;
+ if(event.key==="Escape"){event.preventDefault();closeProductDialog();return;}
+ if(event.key==="Tab"){
+  const controls=[...dialog.querySelectorAll("button:not([disabled]):not([hidden]),input:not([disabled]):not([type=hidden]),select:not([disabled]),textarea:not([disabled]),a[href]:not([hidden])")].filter(x=>x.getClientRects().length>0);
+  if(!controls.length)return;
+  const first=controls[0],last=controls[controls.length-1];
+  if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}
+  else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}
+ }
+});
 function editProduct(p){
  const f=$("product-form");f.reset();f.elements.id.value=p.id;
  f.elements.name.value=p.name;f.elements.description.value=p.description;
@@ -321,21 +367,17 @@ function editProduct(p){
  visit.hidden=!p.is_active;
  if(p.is_active)visit.href="./produto.html?id="+encodeURIComponent(p.id);
  updateProductPreview();
- f.scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});
+ openProductDialog("Editar produto");
 }
 function newProduct(){
  const f=$("product-form");f.reset();f.elements.id.value="";$("variant-rows").replaceChildren();addVariantRow();$("main-preview").replaceChildren();
  $("product-form-label").textContent="NOVO PRODUTO";
- $("cancel-edit").hidden=true;
+ $("cancel-edit").hidden=false;
  $("visit-product").hidden=true;
  updateProductPreview();
 }
-$("new-product").onclick=()=>{newProduct();$("product-form").scrollIntoView({behavior:"smooth"});};
-$("cancel-edit").onclick=()=>{
- newProduct();
- message("Edição cancelada. Nenhuma alteração foi salva.");
- $("product-form").scrollIntoView({behavior:"auto",block:"start"});
-};
+$("new-product").onclick=()=>{newProduct();openProductDialog("Novo produto");};
+$("cancel-edit").onclick=()=>closeProductDialog();
 async function loadAdminPage(page){
  if(adminLoading)return;
  adminLoading=true;
@@ -373,8 +415,8 @@ $("product-form").addEventListener("submit",async e=>{
   const id=f.elements.id.value;
   await api(id?"admin/products/"+id:"admin/products",{method:id?"PATCH":"POST",body:JSON.stringify(product)});
   message("Produto salvo. Confira as variações e o estoque antes de ativar.");
-  newProduct();await loadProducts();
- }catch(err){message(err.message);}
+  closeProductDialog(true);newProduct();await loadProducts();
+ }catch(err){message(err.message);$("product-dialog-feedback").textContent=err.message;}
  finally{button.disabled=false;button.textContent="Salvar produto";}
 });
 

@@ -15,6 +15,7 @@
 <link rel="stylesheet" href="./saluz-mobile.css?v=20261015-mobile2">
 <link rel="stylesheet" href="./saluz-dashboard-pro.css?v=20261015-pro3">
 <link rel="stylesheet" href="./saluz-clean.css?v=20261015-clean4">
+<link rel="stylesheet" href="./saluz-product-dialog.css?v=20261015-dialog5">
 <script src="./admin.js?v=20261015-login2" defer></script>
 <script src="./saluz-admin-extras.js?v=20261015-pro3" defer></script>
 <script src="./saluz-mobile.js?v=20261015-mobile2" defer></script>
@@ -74,7 +75,7 @@
     </section>
     <section id="tab-products" class="tab hidden">
       <div class="tab-toolbar"><p>Cadastre itens reais, defina preço e variações e controle quais aparecem na loja.</p><button type="button" id="new-product" class="outline">+ Novo produto</button></div>
-      <div class="product-workspace">
+      <div class="product-workspace product-catalog-only">
         <div class="product-list" id="product-list-panel">
           <div class="product-list-header">
             <h2>Produtos cadastrados</h2>
@@ -96,7 +97,7 @@
           <div id="admin-products" class="product-items"><p>Carregando catálogo...</p></div>
           <div class="admin-pagination"><button id="admin-load-more" type="button" class="outline" hidden>Carregar mais produtos ↓</button><p id="admin-page-status" role="status"></p></div>
         </div>
-        <form id="product-form" class="product-form">
+        <div id="product-dialog" class="product-dialog hidden" role="dialog" aria-modal="true" aria-labelledby="product-dialog-title"><div class="product-dialog-backdrop" data-close-product-dialog></div><div class="product-dialog-window" tabindex="-1"><header class="product-dialog-header"><div><span class="eyebrow" id="product-dialog-mode">CADASTRO DE PRODUTO</span><h2 id="product-dialog-title">Novo produto</h2></div><button type="button" class="product-dialog-close" id="product-dialog-close" aria-label="Fechar cadastro">×</button></header><div class="product-dialog-scroll"><form id="product-form" class="product-form">
           <span class="eyebrow" id="product-form-label">NOVO PRODUTO</span>
           <h2>Informações do produto</h2>
           <input type="hidden" name="id">
@@ -138,12 +139,12 @@
               </div>
             </div>
           </div>
-          <div class="product-form-footer">
+          <p id="product-dialog-feedback" class="product-dialog-feedback" role="status"></p><div class="product-form-footer">
             <button id="save-product" type="submit" class="primary">Salvar produto</button>
-            <button id="cancel-edit" type="button" class="outline" hidden>Cancelar edição</button>
+            <button id="cancel-edit" type="button" class="outline">Cancelar</button>
             <a id="visit-product" href="./loja.html#produtos" target="_blank" rel="noopener" hidden>Ver produto na loja ↗</a>
           </div>
-        </form>
+        </form></div></div></div>
       </div>
     </section>
     <section id="tab-finance" class="tab hidden">
