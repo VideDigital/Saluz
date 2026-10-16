@@ -3,7 +3,6 @@
   "use strict";
   const keys = [
     "top_bar","hero_title","hero_description","hero_button","hero_link","hero_image_url",
-    "promo_enabled","promo_title","promo_description","promo_button","promo_link","promo_image_url",
     "featured_title","featured_description","new_title","new_description",
     "business_hours","contact_email","whatsapp_number","instagram_url","store_notice"
   ];
@@ -60,7 +59,7 @@
   function status(){
     if(!stored)return;
     const unsaved=!same(getForm(),stored.draft);
-    const unpublished=!same(stored.draft,stored.published);
+    const unpublished=!same(stored.draft,stored.published)||JSON.stringify(stored.draft?.banners||[])!==JSON.stringify(stored.published?.banners||[]);
     el("studio-state").textContent=unsaved?"● Você tem mudanças para salvar":
       unpublished?"● Rascunho salvo, ainda não publicado":"✓ Tudo salvo";
     el("studio-version").textContent=stored.published_at?
@@ -91,7 +90,7 @@
     try{
       const url="admin/site-content"+(action==="publish"?"/publish":action==="discard"?"/discard":"");
       const options=action==="save"?
-        {method:"PUT",body:JSON.stringify({revision:stored.revision,draft:edited})}:
+        {method:"PUT",body:JSON.stringify({revision:stored.revision,draft:{...stored.draft,...edited}})}:
         {method:"POST",body:JSON.stringify({revision:stored.revision})};
       const {content}=await request(url,options);
       stored=content;
@@ -147,7 +146,8 @@
   async function open(){
     if(!form())return;
     if(!loaded){init();loaded=true;}
-    if(stored){status();return;}
+    if(stored && !same(getForm(),stored.draft)){status();return;}
+    stored=null;
     feedback("Carregando suas configurações...");
     for(const id of ["studio-save","studio-publish","studio-discard"])el(id).disabled=true;
     try{

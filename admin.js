@@ -110,8 +110,8 @@ function changeTab(name){
  currentTab=name;
  for(const b of document.querySelectorAll("[data-tab]"))b.classList.toggle("selected",b.dataset.tab===name);
  window.dispatchEvent(new CustomEvent("saluz:tabchange",{detail:{tab:name}}));
- for(const name2 of ["overview","orders","customers","products","finance","reports","studio"])$("tab-"+name2).classList.toggle("hidden",name!==name2);
- $("section-title").textContent={overview:"Início",orders:"Pedidos",customers:"Clientes",products:"Produtos e ofertas",finance:"Simular taxas",reports:"Resultados",studio:"Aparência e links"}[name];
+ for(const name2 of ["overview","orders","customers","products","finance","reports","studio","campaigns"])$("tab-"+name2).classList.toggle("hidden",name!==name2);
+ $("section-title").textContent={overview:"Início",orders:"Pedidos",customers:"Clientes",products:"Produtos",finance:"Simular taxas",reports:"Resultados",studio:"Aparência e links",campaigns:"Campanhas e ofertas"}[name];
  message("");
  if(name==="overview")window.SaluzAdminExtras?.loadOverview();
  if(name==="orders")loadOrders();
@@ -120,6 +120,7 @@ function changeTab(name){
  if(name==="finance")window.SaluzAdminExtras?.openFinance();
  if(name==="reports")loadReports();
  if(name==="studio")window.SaluzStudio?.open();
+ if(name==="campaigns")window.SaluzCampaigns?.open();
 }
 for(const b of document.querySelectorAll("[data-tab]"))b.onclick=()=>changeTab(b.dataset.tab);
 function line(parent,label,value){
