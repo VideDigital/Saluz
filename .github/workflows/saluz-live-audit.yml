@@ -1,0 +1,22 @@
+name: SALUZ | Auditoria dos ambientes online
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/saluz-live-audit.yml'
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Testar os quatro ambientes online sem credenciais
+        run: node --test --test-reporter=spec tests-live/*.test.mjs
