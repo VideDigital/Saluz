@@ -28,6 +28,20 @@ jobs:
           node-version: '22'
       - name: Testar API e paginas
         run: node --test tests/*.test.mjs
+      - name: Preparar e publicar a vitrine de homologacao
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import shutil
+          out = Path('saluz-public')
+          out.mkdir(exist_ok=True)
+          allowed = {'.html','.css','.js','.svg','.png','.jpg','.jpeg','.webp','.ico','.txt','.woff2','.xml'}
+          for item in Path('.').iterdir():
+            if item.is_file() and (item.suffix.lower() in allowed or item.name in {'_headers','_redirects','robots.txt'}):
+              shutil.copy2(item,out/item.name)
+          assert (out/'index.html').exists()
+          PY
+          npx --yes wrangler@4 pages deploy saluz-public --project-name saluz-loja --branch homologacao
       - name: Preparar apenas os arquivos do painel
         run: |
           python3 - <<'PY'
