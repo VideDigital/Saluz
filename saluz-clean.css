@@ -1,0 +1,107 @@
+/* SALUZ Control / Clean System — design tokens and final visual layer */
+:root{--coffee:#172235;--sand:#bdc8d7;--paper:#fff;--cream:#f7f8fa;--line:#e6eaf0;--muted:#718096;--admin-accent:#3156c8;--admin-navy:#172235;--pro-bg:#f7f8fa;--pro-border:#e6eaf0;--pro-ink:#1c2c41;--pro-muted:#718096}
+body{background:#f7f8fa;color:#1c2c41;font-size:13px;-webkit-font-smoothing:antialiased}
+.dashboard{grid-template-columns:232px minmax(0,1fr);background:#f7f8fa}
+.sidebar{background:#172235;border-right:0;box-shadow:none;padding:27px 13px 16px;gap:24px}
+.sidebar-logo{font-size:20px;letter-spacing:-.055em;padding:6px 15px 22px;border-color:#2b394d}
+.sidebar-logo .brand-dot{color:#8aa4fa;font-size:9px;vertical-align:middle}
+.sidebar-logo small{margin-top:6px;font-size:9px;letter-spacing:.15em;color:#8395b0}
+.tabs{gap:3px}
+.tabs button{position:relative;min-height:43px;padding:11px 15px;border:0!important;border-radius:8px;font-size:12px;font-weight:600;color:#a7b6ca;justify-content:flex-start;letter-spacing:.005em;box-shadow:none!important}
+.tabs button:hover{background:#22334b;color:#fff}
+.tabs button.selected{background:#283b58!important;color:#fff!important;box-shadow:none!important}
+.tabs button.selected:before{content:"";position:absolute;left:0;top:11px;bottom:11px;width:3px;border-radius:3px;background:#91a9ff}
+.sidebar-bottom{margin-top:auto;border-color:#2b394d;padding:16px 15px 5px;gap:15px;font-size:12px}
+.sidebar-bottom a,.sidebar-bottom button{color:#b4c0d1;text-decoration:none}
+.sidebar-bottom a:hover,.sidebar-bottom button:hover{color:#fff}
+.workspace{max-width:none;padding:28px clamp(24px,3.4vw,55px) 60px;background:#f7f8fa}
+.workspace-head{border-color:#e3e8ef;padding-bottom:17px;gap:16px}
+.workspace-head h1{font-size:27px;font-weight:750;letter-spacing:-.04em;margin:5px 0 0}
+.workspace-head .eyebrow{font-size:10px;letter-spacing:.12em}
+.workspace-head #admin-notice{background:#eaf0fa;color:#516582;border:1px solid #dde5f0;border-radius:7px;font-size:11px;font-weight:600;padding:8px 11px}
+.panel-intro{margin:22px 0 17px;gap:14px}
+.panel-intro .eyebrow{font-size:10px;color:#8a97a8}
+.panel-intro h2{font-size:21px!important;font-weight:720!important;margin:6px 0 4px;letter-spacing:-.03em}
+.panel-intro p{font-size:12px;line-height:1.55;color:#718096}
+.panel-intro .outline{flex-shrink:0}
+.management-notice{border:1px solid #e9e1cf;border-left:3px solid #c9a866;background:#fcfaf5;color:#75684d;padding:12px 15px;border-radius:8px;font-size:11px;line-height:1.55;margin:13px 0 17px}
+.overview-shortcuts{gap:10px;margin:14px 0}
+.overview-shortcuts button{padding:13px 15px;gap:5px;border-radius:10px;border-color:#e5eaf0;box-shadow:none;transition:border-color .15s,background .15s}
+.overview-shortcuts button:hover{background:#fafdff;border-color:#becbe2}
+.overview-shortcuts button>span{width:29px;height:29px;border-radius:7px;background:#edf1f8;color:#506994;font-size:17px}
+.overview-shortcuts strong{font-size:12px;font-weight:650}
+.overview-shortcuts small{font-size:10px;color:#8a97a9}
+.overview-kpis{gap:11px;margin:14px 0}
+.management-kpi,.panel-surface,.order-card,.product-list,.product-form,.stat,.reports-chart,.customer-summary-card{border:1px solid #e5eaf0;border-radius:11px;box-shadow:0 1px 3px #14233d04;background:#fff}
+.management-kpi{padding:18px;min-height:127px;gap:9px}
+.management-kpi:before{width:2px;background:#a9b9d3!important}
+.management-kpi small{font-size:11px;color:#7b899a;font-weight:600}
+.management-kpi strong{font-size:26px;font-weight:750;color:#22324a;letter-spacing:-.045em}
+.management-kpi span{font-size:10px;color:#8a96a7}
+.panel-surface{padding:20px}
+.panel-section-header{margin-bottom:13px}
+.panel-section-header h3{font-size:15px!important;letter-spacing:-.02em}
+.dashboard-insights{gap:12px;margin-top:12px}
+.status-breakdown{gap:12px}
+.status-breakdown-top{font-size:11px}
+.status-breakdown-track{height:5px;background:#edf1f6}
+.status-breakdown-fill{background:#8ca2d0}
+.operation-task{border-color:#e9edf3;background:#fafbfd;border-radius:8px}
+.operation-task strong{background:#eaf0f9;color:#4a648e}
+.operation-task span:last-child{color:#5470a4}
+.customer-summary{gap:10px}
+.customer-summary-card{padding:16px}
+.customer-summary-card small{font-size:11px}
+.customer-summary-card strong{font-size:24px}
+.order-card{padding:20px}
+.order-top{border-color:#edf0f5}
+.pill,.product-badge{background:#eef2f8;color:#546b8d;border-color:#e0e7f1}
+input,select,textarea{border:1px solid #dce3ed;border-radius:8px;min-height:42px;padding:10px 12px;background:#fff;color:#23344d}
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible{outline:2px solid #7b99e2;outline-offset:2px}
+.primary,.login button[type=submit],.order-footer button{background:#3156c8;border-color:#3156c8;border-radius:8px;min-height:42px;font-size:12px;font-weight:700}
+.outline,.product-row button{border-radius:8px;min-height:41px;font-size:12px}
+.action-message:empty{display:none}
+.login{background:#f4f6fa}
+.login-card{border-color:#e4eaf2;border-radius:14px;box-shadow:0 20px 60px #1b2b4610}
+.login-brand{font-size:23px;letter-spacing:-.055em}
+.login-card h1{font-size:30px!important}
+@media(max-width:960px){.dashboard{grid-template-columns:208px minmax(0,1fr)}.workspace{padding:24px}}
+@media(max-width:680px){
+ .dashboard{display:block}
+ .sidebar{padding:0 15px!important;background:#172235}
+ .sidebar-top{height:54px}
+ .sidebar-logo{font-size:19px!important;padding:0!important;border:0}
+ .sidebar-logo small{display:none}
+ .mobile-menu-toggle{width:36px;height:36px;font-size:18px;background:#283950;border-color:#34465f}
+ .sidebar.mobile-menu-open .tabs{padding:7px 0 10px!important}
+ .sidebar .tabs button{min-height:42px}
+ .workspace{padding:17px 13px calc(102px + env(safe-area-inset-bottom))!important}
+ .workspace-head{padding-bottom:12px}
+ .workspace-head h1{font-size:24px!important;margin-top:4px!important}
+ .workspace-head .eyebrow{font-size:9px!important}
+ .panel-intro{margin:15px 0 12px!important;align-items:flex-start}
+ .panel-intro h2{font-size:18px!important;margin:4px 0}
+ .panel-intro p{font-size:11px}
+ .management-notice{padding:10px 12px;font-size:10px;margin:11px 0}
+ .overview-shortcuts{gap:7px;margin:11px 0}
+ .overview-shortcuts button{padding:10px 8px;border-radius:9px;gap:6px}
+ .overview-shortcuts button>span{width:28px;height:28px;font-size:16px}
+ .overview-shortcuts strong{font-size:10px}
+ .overview-kpis{gap:8px;margin:10px 0}
+ .management-kpi{min-height:104px!important;padding:13px!important;gap:6px!important}
+ .management-kpi strong{font-size:22px!important}
+ .management-kpi small{font-size:10px!important}
+ .panel-surface{padding:15px!important}
+ .panel-section-header h3{font-size:14px!important}
+ .dashboard-insights{gap:10px;margin-top:10px}
+ .mobile-bottom-nav{border-color:#e6ebf2;padding:5px 5px calc(7px + env(safe-area-inset-bottom));box-shadow:0 -3px 14px #17263b0a}
+ .mobile-bottom-nav button{min-height:47px;gap:3px}
+ .mobile-bottom-nav button span{font-size:19px}
+ .mobile-bottom-nav button small{font-size:10px}
+ .mobile-bottom-nav button.selected{background:#f0f3fb;color:#3156c8}
+ .order-card{padding:14px}
+ .customer-summary-card{padding:11px 8px}
+ .customer-summary-card strong{font-size:21px}
+ .orders-toolbar{gap:8px}
+}
+@media(prefers-reduced-motion:reduce){.overview-shortcuts button{transition:none}}
