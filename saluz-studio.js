@@ -1,36 +1,162 @@
-/* SALUZ Studio: editor autenticado de conteudo, revisao e publicacao. */
-(()=>{"use strict";
-const fields=["top_bar","hero_title","hero_description","hero_button","hero_image_url","featured_title","new_title","featured_description","new_description","business_hours","contact_email","store_notice"];
-const defaults={top_bar:"Atendimento de segunda a sexta, 8h às 19h",hero_title:"Um detalhe pode mudar tudo.",hero_description:"Descubra possibilidades para organizar, presentear e acompanhar cada momento com a delicadeza que faz sentido para você.",hero_button:"Explorar a loja",featured_title:"Produtos em destaque.",new_title:"Novidades na loja.",featured_description:"Peças selecionadas pela SALUZ para você descobrir.",new_description:"Confira os produtos publicados mais recentemente pela SALUZ.",business_hours:"Segunda a sexta, das 8h às 19h",contact_email:"anny.csalustiano@gmail.com",hero_image_url:"",store_notice:""};
-let data=null,initialized=false,busy=false;
-const el=id=>document.getElementById(id);
-const form=()=>el("studio-form");
-function read(){const f=new FormData(form());return Object.fromEntries(fields.map(key=>[key,String(f.get(key)||"").trim()]));}
-function fill(obj){for(const key of fields){const input=form().elements.namedItem(key);if(input)input.value=obj[key]??defaults[key]??"";}preview();}
-function preview(){if(!form())return;const v=read();const put=(id,key)=>{const target=el(id);if(target)target.textContent=v[key]||defaults[key]||"";};
- put("studio-preview-headline","hero_title");put("studio-preview-subtitle","hero_description");put("studio-preview-cta","hero_button");put("studio-preview-featured","featured_title");put("studio-preview-featured-desc","featured_description");put("studio-preview-top","top_bar");
- const art=el("studio-preview-art");if(art){if(/^https:\/\//.test(v.hero_image_url)){art.style.backgroundImage="url("+JSON.stringify(v.hero_image_url)+")";art.classList.add("has-image");}else{art.style.backgroundImage="";art.classList.remove("has-image");}}
-}
-const equal=(a,b)=>JSON.stringify(fields.map(k=>a[k]||""))===JSON.stringify(fields.map(k=>b[k]||""));
-function status(){if(!data)return;const changed=!equal(data.draft||{},data.published||{});const local=!equal(read(),data.draft||{});
-el("studio-state").textContent=local?"● Alterações não salvas":changed?"● Rascunho aguardando publicação":"● Loja sincronizada";
-el("studio-version").textContent="Revisão "+data.revision+(data.published_at?" · Última publicação: "+new Date(data.published_at).toLocaleString("pt-BR"):" · Ainda não publicada pelo editor");}
-function note(msg,err=false){el("studio-feedback").textContent=msg;el("studio-feedback").classList.toggle("is-error",err);}
-async function call(path,opts){const res=await fetch("/api/"+path,{cache:"no-store",credentials:"same-origin",headers:{"content-type":"application/json"},...opts});const json=await res.json().catch(()=>({}));if(!res.ok)throw new Error(json.error||"Falha ao comunicar com o servidor");return json;}
-async function run(action){if(busy)return;busy=true;for(const id of ["studio-save","studio-publish","studio-discard"])el(id).disabled=true;
-try{
- if(action==="publish" && !equal(read(),data.draft||{}))throw new Error("Salve o rascunho antes de publicar.");
- if(action==="discard" && !confirm("Descartar o rascunho e voltar à última versão publicada?"))return;
- const path="admin/site-content"+(action==="publish"?"/publish":action==="discard"?"/discard":"");
- const opts=action==="save"?{method:"PUT",body:JSON.stringify({revision:data.revision,draft:read()})}:{method:"POST",body:JSON.stringify({revision:data.revision})};
- const {content}=await call(path,opts);data=content;fill(data.draft||{});
- note(action==="save"?"Rascunho salvo. A loja não foi alterada.":action==="publish"?"Conteúdo publicado! Confira a loja em outra aba.":"Rascunho descartado.");
- status();
-}catch(err){note(err.message,true);}finally{busy=false;for(const id of ["studio-save","studio-publish","studio-discard"])el(id).disabled=false;}
-}
-async function open(){if(!initialized){initialized=true;form().addEventListener("input",()=>{preview();status();});form().addEventListener("submit",e=>{e.preventDefault();run("save")});el("studio-publish").addEventListener("click",()=>run("publish"));el("studio-discard").addEventListener("click",()=>run("discard"));}
-note("Carregando as configurações da loja...");
-try{const response=await call("admin/site-content");data=response.content;fill(data.draft||{});status();note("Edite os campos, salve o rascunho e publique quando estiver satisfeita.");}catch(err){note("Não foi possível carregar o conteúdo: "+err.message,true);}
-}
-window.SaluzStudio={open};
+/* SALUZ / Editor simples de banners, vitrine e contato. Apenas areas existentes da loja. */
+(() => {
+  "use strict";
+  const keys = [
+    "top_bar","hero_title","hero_description","hero_button","hero_link","hero_image_url",
+    "promo_enabled","promo_title","promo_description","promo_button","promo_link","promo_image_url",
+    "featured_title","featured_description","new_title","new_description",
+    "business_hours","contact_email","whatsapp_number","instagram_url","store_notice"
+  ];
+  const defaults = {
+    top_bar:"Atendimento de segunda a sexta, 8h às 19h",
+    hero_title:"Um detalhe pode mudar tudo.",
+    hero_description:"Descubra possibilidades para organizar, presentear e acompanhar cada momento com a delicadeza que faz sentido para você.",
+    hero_button:"Explorar a loja",hero_link:"./loja.html",hero_image_url:"",
+    promo_enabled:"no",promo_title:"Novidades para sua rotina",
+    promo_description:"Descubra nossa seleção especial.",promo_button:"Ver coleção",
+    promo_link:"./loja.html",promo_image_url:"",
+    featured_title:"Produtos em destaque.",featured_description:"Peças selecionadas pela SALUZ para você descobrir.",
+    new_title:"Novidades na loja.",new_description:"Confira os produtos publicados mais recentemente pela SALUZ.",
+    business_hours:"Segunda a sexta, das 8h às 19h",contact_email:"anny.csalustiano@gmail.com",
+    whatsapp_number:"",instagram_url:"",store_notice:""
+  };
+  const el=id=>document.getElementById(id);
+  const form=()=>el("studio-form");
+  const normalize=object=>Object.fromEntries(keys.map(key=>[key,String(object?.[key]??defaults[key]??"")]));
+  let stored=null,loaded=false,busy=false;
+  const getForm=()=>{
+    const data=new FormData(form());
+    return Object.fromEntries(keys.map(key=>[key,String(data.get(key)||"").trim()]));
+  };
+  const same=(a,b)=>keys.every(key=>normalize(a)[key]===normalize(b)[key]);
+  function feedback(message,kind=""){const node=el("studio-feedback");node.textContent=message;node.classList.toggle("is-error",kind==="error");}
+  function fill(values){
+    const normalized=normalize(values);
+    for(const key of keys){const field=form()?.elements.namedItem(key);if(field)field.value=normalized[key];}
+    preview();
+  }
+  function preview(){
+    if(!form())return;
+    const v=getForm(),set=(id,key)=>{const n=el(id);if(n)n.textContent=v[key]||defaults[key]||"";};
+    set("studio-preview-headline","hero_title");
+    set("studio-preview-subtitle","hero_description");
+    set("studio-preview-cta","hero_button");
+    set("studio-preview-featured","featured_title");
+    set("studio-preview-featured-desc","featured_description");
+    set("studio-preview-top","top_bar");
+    const art=el("studio-preview-art");
+    if(art){
+      art.style.backgroundImage=/^https:\/\//.test(v.hero_image_url)?"url("+JSON.stringify(v.hero_image_url)+")":"";
+      art.classList.toggle("has-image",!!art.style.backgroundImage);
+    }
+    const promo=el("studio-preview-promo");
+    promo.hidden=v.promo_enabled!=="yes";
+    set("studio-preview-promo-title","promo_title");
+    set("studio-preview-promo-desc","promo_description");
+    set("studio-preview-promo-cta","promo_button");
+    const promoArt=el("studio-preview-promo-art");
+    promoArt.style.backgroundImage=/^https:\/\//.test(v.promo_image_url)?"url("+JSON.stringify(v.promo_image_url)+")":"";
+  }
+  function status(){
+    if(!stored)return;
+    const unsaved=!same(getForm(),stored.draft);
+    const unpublished=!same(stored.draft,stored.published);
+    el("studio-state").textContent=unsaved?"● Você tem mudanças para salvar":
+      unpublished?"● Rascunho salvo, ainda não publicado":"✓ Tudo salvo";
+    el("studio-version").textContent=stored.published_at?
+      "Publicado em "+new Date(stored.published_at).toLocaleDateString("pt-BR"):
+      "Sem alterações publicadas pelo editor";
+    el("studio-publish").disabled=busy||unsaved||!unpublished;
+    el("studio-save").disabled=busy||!unsaved;
+    el("studio-discard").disabled=busy||!unpublished;
+  }
+  async function request(path,options={}){
+    const response=await fetch("/api/"+path,{
+      ...options,headers:{"content-type":"application/json"},
+      credentials:"same-origin",cache:"no-store"
+    });
+    const data=await response.json().catch(()=>({}));
+    if(!response.ok)throw new Error(data.error||"Não foi possível salvar. Tente novamente.");
+    return data;
+  }
+  async function act(action){
+    if(busy||!stored)return;
+    const edited=getForm();
+    if(action==="publish"){
+      if(!same(edited,stored.draft)){feedback("Salve o rascunho antes de publicar.","error");return;}
+      if(!confirm("Publicar estas mudanças para as clientes da loja agora?"))return;
+    }
+    if(action==="discard"&&!confirm("Descartar o rascunho e voltar à última versão publicada?"))return;
+    busy=true;status();
+    try{
+      const url="admin/site-content"+(action==="publish"?"/publish":action==="discard"?"/discard":"");
+      const options=action==="save"?
+        {method:"PUT",body:JSON.stringify({revision:stored.revision,draft:edited})}:
+        {method:"POST",body:JSON.stringify({revision:stored.revision})};
+      const {content}=await request(url,options);
+      stored=content;
+      fill(stored.draft);
+      feedback(action==="save"?"Rascunho salvo. Agora clique em Publicar mudanças para atualizar a loja.":
+        action==="publish"?"Mudanças publicadas! Abra a loja para conferir.":
+        "Rascunho desfeito. A loja não foi alterada.");
+    }catch(error){feedback(error.message,"error");}
+    finally{busy=false;status();}
+  }
+  function changePanel(section){
+    for(const button of document.querySelectorAll("[data-studio-section]")){
+      const active=button.dataset.studioSection===section;
+      button.classList.toggle("selected",active);
+      button.setAttribute("aria-pressed",String(active));
+    }
+    for(const panel of document.querySelectorAll("[data-studio-panel]"))panel.hidden=panel.dataset.studioPanel!==section;
+  }
+  async function uploadImage(input){
+    const file=input.files?.[0];
+    if(!file)return;
+    if(busy)return;
+    if(!["image/jpeg","image/png","image/webp"].includes(file.type)||file.size>5*1024*1024){
+      feedback("Escolha uma imagem JPG, PNG ou WebP de até 5 MB.","error");input.value="";return;
+    }
+    busy=true;input.disabled=true;status();
+    feedback("Enviando foto...");
+    try{
+      // uploadPhoto() pertence ao arquivo admin.js; a autenticacao permanece no servidor.
+      if(typeof uploadPhoto!=="function")throw new Error("Envio de fotos indisponível.");
+      const url=await uploadPhoto(file);
+      const name=input.dataset.studioUpload;
+      if(!["hero_image_url","promo_image_url"].includes(name))throw new Error("Campo de imagem não autorizado.");
+      const field=form().elements.namedItem(name);
+      field.value=url;
+      preview();
+      feedback("Foto enviada! Salve o rascunho e publique para mostrar no site.");
+    }catch(error){feedback(error.message,"error");}
+    finally{busy=false;input.disabled=false;input.value="";status();}
+  }
+  function init(){
+    form().addEventListener("input",()=>{preview();status();});
+    form().addEventListener("change",()=>{preview();status();});
+    form().addEventListener("submit",e=>{e.preventDefault();act("save");});
+    el("studio-publish").addEventListener("click",()=>act("publish"));
+    el("studio-discard").addEventListener("click",()=>act("discard"));
+    for(const b of document.querySelectorAll("[data-studio-section]"))
+      b.addEventListener("click",()=>changePanel(b.dataset.studioSection));
+    for(const file of document.querySelectorAll("[data-studio-upload]"))
+      file.addEventListener("change",()=>uploadImage(file));
+    changePanel("principal");
+  }
+  async function open(){
+    if(!form())return;
+    if(!loaded){init();loaded=true;}
+    if(stored){status();return;}
+    feedback("Carregando suas configurações...");
+    for(const id of ["studio-save","studio-publish","studio-discard"])el(id).disabled=true;
+    try{
+      const {content}=await request("admin/site-content");
+      stored=content;
+      fill(stored.draft);
+      status();
+      feedback("Escolha uma área acima e faça as alterações que desejar.");
+    }catch(error){feedback("Não foi possível abrir o editor: "+error.message,"error");}
+  }
+  window.SaluzStudio={open};
 })();

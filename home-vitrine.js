@@ -18,7 +18,11 @@ function card(p){
  }else picture.append(node("span","home-product-placeholder","✦"));
  const body=node("div","home-product-copy");
  body.append(node("span","home-product-category",p.category||"SALUZ"),
-   node("h3","",p.name),node("strong","home-product-price",money(p.price_cents)));
+   node("h3","",p.name));
+  if(Number(p.original_price_cents)>p.price_cents){
+    body.append(node("span","saluz-price-old",money(p.original_price_cents)),node("span","saluz-sale-label","Oferta"));
+  }
+  body.append(node("strong","home-product-price",money(p.price_cents)));
  const view=node("a","home-product-link","Ver detalhes e opções ↗");view.href=picture.href;body.append(view);
  const heart=node("button","product-heart");heart.type="button";
  const sync=()=>{

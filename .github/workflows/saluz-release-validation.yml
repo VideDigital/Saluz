@@ -26,8 +26,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Rodar testes antes da publicacao
-        run: node --test tests/*.test.mjs
+      - name: Testes e sintaxe antes de publicar
+        run: |
+          node --check admin.js
+          node --check saluz-studio.js
+          node --check functions/api/\[\[path\]\].js
+          node --test tests/*.test.mjs
       - name: Preparar loja publica
         run: |
           python3 - <<'PY'
@@ -55,7 +59,7 @@ jobs:
           names=['admin.html','admin.js','admin.css','saluz-refinamento.css',
           'saluz-admin-improvements.css','saluz-control.css','saluz-mobile.css',
           'saluz-dashboard-pro.css','saluz-clean.css','saluz-product-dialog.css',
-          'saluz-admin-extras.js','saluz-mobile.js','saluz-studio.js','saluz-studio.css',
+          'saluz-admin-extras.js','saluz-mobile.js','saluz-studio.js','saluz-studio.css','saluz-simple.css',
           'favicon.svg','_headers']
           public=Path('saluz-admin-public')
           public.mkdir(exist_ok=True)
