@@ -53,7 +53,7 @@ jobs:
             'saluz-control.css', 'saluz-mobile.css',
             'saluz-dashboard-pro.css', 'saluz-clean.css',
             'saluz-product-dialog.css', 'saluz-admin-extras.js',
-            'saluz-mobile.js', 'saluz-studio.js', 'saluz-studio.css',
+            'saluz-mobile.js', 'saluz-studio.js', 'saluz-studio.css', 'saluz-simple.css',
             'favicon.svg', '_headers'
           ]
           out = Path('saluz-admin-public')
