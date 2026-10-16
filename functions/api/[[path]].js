@@ -267,7 +267,47 @@ function validateSiteContent(raw){
   cleaned.banners=validateBanners(raw.banners);
   return cleaned;
 }
+/* Resumo privado, agregado. Nenhum dado de cliente e exposto nesta rota. */
+async function storeHealth(env) {
+  const limit=200,maxPages=10;
+  const counts={total:0,active:0,hidden:0,featured:0,onSale:0,lowStock:0,outOfStock:0};
+  const lowStockItems=[];
+  let truncated=false;
+  for(let page=0;page<maxPages;page++){
+    const items=await sb(env,"/rest/v1/saluz_products?select=id,name,category,is_active,is_featured,variants,price_cents,original_price_cents,image_url&order=id.asc&limit="+(limit+1)+"&offset="+page*limit);
+    const chunk=items.slice(0,limit);
+    for(const p of chunk){
+      counts.total++;
+      if(p.is_active)counts.active++;else counts.hidden++;
+      if(p.is_active&&p.is_featured)counts.featured++;
+      if(Number(p.original_price_cents)>Number(p.price_cents))counts.onSale++;
+      const stock=(Array.isArray(p.variants)?p.variants:[]).reduce((a,v)=>a+Math.max(0,Number(v.stock)||0),0);
+      if(p.is_active&&stock===0)counts.outOfStock++;
+      if(p.is_active&&stock>0&&stock<=5)counts.lowStock++;
+      if(p.is_active&&stock<=5&&lowStockItems.length<8){
+        lowStockItems.push({id:p.id,name:p.name.slice(0,140),stock,image_url:p.image_url||""});
+      }
+    }
+    if(items.length<=limit){truncated=false;break;}
+    if(page===maxPages-1)truncated=true;
+  }
+  const rows=await sb(env,"/rest/v1/saluz_site_content?id=eq.1&select=draft,published,published_at&limit=1");
+  const doc=rows[0]||{draft:{},published:{},published_at:null};
+  const now=Date.now();
+  let activeBanners=0,scheduledBanners=0;
+  for(const b of (Array.isArray(doc.published?.banners)?doc.published.banners:[])){
+    if(!b||!b.active)continue;
+    if(b.ends_at&&Date.parse(b.ends_at)<=now)continue;
+    if(b.starts_at&&Date.parse(b.starts_at)>now)scheduledBanners++;else activeBanners++;
+  }
+  // Confrontar apenas configuracoes publicaveis; data historica de revisao nao muda a contagem.
+  const unpublished=JSON.stringify(doc.draft||{})!==JSON.stringify(doc.published||{});
+  return {counts,lowStockItems,activeBanners,scheduledBanners,unpublished,updatedAt:new Date().toISOString(),
+    publishedAt:doc.published_at,truncated};
+}
 async function adminAction(request,env,parts) {
+  if(parts[1]==="store-health"&&parts.length===2&&request.method==="GET")
+    return output(await storeHealth(env));
   if (parts[1]==="orders" && request.method==="GET") {
     const rows=await sb(env,"/rest/v1/saluz_orders?select=*&order=created_at.desc&limit=150");
     return output({orders:rows});
@@ -307,7 +347,10 @@ async function adminAction(request,env,parts) {
     const rawPage=query.get("page")||"1";
     if(!/^[1-9][0-9]{0,4}$/.test(rawPage)||Number(rawPage)>10000)return error("Paginação inválida",400);
     const page=Number(rawPage),limit=48;
-    const rows=await sb(env,"/rest/v1/saluz_products?select=*&order=created_at.desc,id.desc&limit="+(limit+1)+"&offset="+((page-1)*limit));
+    const search=(query.get("search")||"").trim();
+    if(search.length>90||!/^[\p{L}\p{N}\s-]*$/u.test(search))return error("Pesquisa de produtos inválida",400);
+    const filter=search?"&or="+encodeURIComponent("(name.ilike.*"+search+"*,category.ilike.*"+search+"*)"):"";
+    const rows=await sb(env,"/rest/v1/saluz_products?select=*"+filter+"&order=created_at.desc,id.desc&limit="+(limit+1)+"&offset="+((page-1)*limit));
     return output({products:rows.slice(0,limit),page,has_more:rows.length>limit});
   }
   if (parts[1]==="products" && request.method==="POST" && parts.length===2) {
