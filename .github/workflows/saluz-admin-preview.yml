@@ -37,6 +37,8 @@ jobs:
           node --check saluz-site-content.js
           node --check functions/api/mp-orders.mjs
           node --check saluz-mobile.js
+          node --check loja.js
+          node --check functions/api/\[\[path\]\].js
           node --test tests/*.test.mjs
       - name: Preparar e publicar a vitrine de homologacao
         run: |
