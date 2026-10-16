@@ -256,7 +256,11 @@ function renderProductList(){
   actions.append(toggle,btn);row.append(summary,actions);root.append(row);
  }
 }
-$("product-search").addEventListener("input",renderProductList);
+let productSearchTimer=null;
+$("product-search").addEventListener("input",()=>{
+  clearTimeout(productSearchTimer);
+  productSearchTimer=setTimeout(()=>loadProducts(),260);
+});
 $("product-filter").addEventListener("change",renderProductList);
 function publishingChecklist(){
   const form=$("product-form"),rows=[...$("variant-rows").children];
@@ -399,7 +403,8 @@ async function loadAdminPage(page){
  const btn=$("admin-load-more");btn.disabled=true;
  $("admin-page-status").textContent="Carregando catálogo...";
  try{
-  const result=await api("admin/products?page="+page);
+  const q=$("product-search").value.trim().replace(/[^\p{L}\p{N}\s-]/gu,"").slice(0,90);
+   const result=await api("admin/products?page="+page+(q?"&search="+encodeURIComponent(q):""));
   const current=new Set(catalog.map(p=>p.id));
   if(page===1){catalog=[];current.clear();}
   catalog.push(...(result.products||[]).filter(p=>!current.has(p.id)));

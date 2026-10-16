@@ -347,7 +347,10 @@ async function adminAction(request,env,parts) {
     const rawPage=query.get("page")||"1";
     if(!/^[1-9][0-9]{0,4}$/.test(rawPage)||Number(rawPage)>10000)return error("Paginação inválida",400);
     const page=Number(rawPage),limit=48;
-    const rows=await sb(env,"/rest/v1/saluz_products?select=*&order=created_at.desc,id.desc&limit="+(limit+1)+"&offset="+((page-1)*limit));
+    const search=(query.get("search")||"").trim();
+    if(search.length>90||!/^[\p{L}\p{N}\s-]*$/u.test(search))return error("Pesquisa de produtos inválida",400);
+    const filter=search?"&or="+encodeURIComponent("(name.ilike.*"+search+"*,category.ilike.*"+search+"*)"):"";
+    const rows=await sb(env,"/rest/v1/saluz_products?select=*"+filter+"&order=created_at.desc,id.desc&limit="+(limit+1)+"&offset="+((page-1)*limit));
     return output({products:rows.slice(0,limit),page,has_more:rows.length>limit});
   }
   if (parts[1]==="products" && request.method==="POST" && parts.length===2) {
