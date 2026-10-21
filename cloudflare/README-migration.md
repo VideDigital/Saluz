@@ -11,6 +11,26 @@ O site de produção ainda usa Supabase. Não alterar DNS, chaves, dados nem ati
 - Em homologação no momento da auditoria: 0 produtos, 0 pedidos, 0 eventos, 1 registro de conteúdo e 1 registro no limitador de login. Não exportar logs de login ou credenciais.
 - A conta Cloudflare é a **da SALUZ**, não reutilizar a da VIDE. Os recursos D1 e R2 ainda precisam ser criados/verificados nessa conta.
 
+## Alternativa sem cartão — validada em 21/10/2026
+
+**Preferência atual:** Cloudflare D1 + Workers KV no plano Free; R2 apenas opcional.
+A documentação oficial informa que D1 e KV fazem parte do Workers Free.
+- D1: limite gratuito de 5 milhões de linhas lidas/dia, 100 mil escritas/dia e 5 GB por conta (com limite por banco).
+- Workers KV: limite gratuito de 1 GB por conta (compartilhado pelos namespaces), 100 mil leituras/dia e 1.000 gravações/dia.
+- KV aceita valores de até 25 MiB, mas a SALUZ deverá comprimir imagens para aproximadamente 200–500 KB e limitar arquivos grandes.
+- KV possui consistência eventual. Usar nomes imutáveis por hash e cache, em vez de sobrescrever a mesma chave; aguardar propagação após upload.
+- R2 inclui cota mensal gratuita maior, mas requer assinatura via fluxo de checkout. Não cadastrar cartão, PayPal nem qualquer método de pagamento sem permissão da cliente.
+- Reservar DEV/STAGING em namespaces distintos; 1 GB é da **conta inteira**, não de cada ambiente.
+- Implementar no painel indicadores reais de bytes usados, quantidade de arquivos, 70/85/95% de alertas, revisão manual e cópias externas. Bloquear uploads quando ultrapassar a margem segura.
+- Essa alteração é de **arquitetura planejada**, não migração concluída: não houve ativação de serviços novos e a loja não usa KV.
+- Antes de publicar em produção: comparar custo real, foto por foto, testes de recuperação, sessão administrativa, reserva de estoque e status de pagamento.
+
+Referências:
+https://developers.cloudflare.com/kv/platform/pricing/
+https://developers.cloudflare.com/kv/platform/limits/
+https://developers.cloudflare.com/r2/get-started/
+https://developers.cloudflare.com/billing/get-started/create-billing-profile/
+
 ## Arquitetura alvo
 | Área | Origem | Destino planejado |
 | --- | --- | --- |
