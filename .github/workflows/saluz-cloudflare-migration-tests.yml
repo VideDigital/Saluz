@@ -1,0 +1,49 @@
+name: SALUZ | Migração Cloudflare (validação isolada)
+on:
+  pull_request:
+    branches: [homologacao]
+    paths:
+      - 'cloudflare/**'
+      - 'tests/cloudflare-migration.test.mjs'
+      - '.github/workflows/saluz-cloudflare-migration-tests.yml'
+permissions:
+  contents: read
+jobs:
+  migration-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verificar sintaxe dos modulos
+        run: |
+          node --check cloudflare/storage/r2-media.mjs
+          node --check cloudflare/d1/repository.mjs
+      - name: Testes de seguranca e comportamento dos adaptadores
+        run: node --test tests/cloudflare-migration.test.mjs
+      - name: Validar schema em SQLite limpo e seeds somente DEV
+        run: |
+          python3 - <<'PY'
+          import sqlite3
+          from pathlib import Path
+          db=sqlite3.connect(':memory:')
+          db.execute('PRAGMA foreign_keys=ON')
+          db.executescript(Path('cloudflare/d1/0001_initial.sql').read_text())
+          db.executescript(Path('cloudflare/d1/0001_initial.sql').read_text())
+          db.executescript(Path('cloudflare/d1/dev-seed.sql').read_text())
+          tables={r[0] for r in db.execute("select name from sqlite_master where type='table'")}
+          expected={'saluz_admins','saluz_products','saluz_orders','saluz_events','saluz_site_content','saluz_login_limits','saluz_media','saluz_media_references','saluz_audit_log'}
+          assert expected.issubset(tables),expected-tables
+          assert db.execute('select count(*) from saluz_products').fetchone()[0]==2
+          assert db.execute('select count(*) from saluz_products where is_active=1').fetchone()[0]==0
+          assert db.execute('select count(*) from saluz_site_content').fetchone()[0]==1
+          try:
+            db.execute("INSERT INTO saluz_products(id,name,price_cents,original_price_cents) VALUES (?,?,?,?)",('invalid','Produto falso',100,90))
+          except sqlite3.IntegrityError:
+            pass
+          else:
+            raise AssertionError('Precificacao invalida deveria ser rejeitada')
+          print('SQLite schema e seed: OK, sem dados da cliente')
+          PY
