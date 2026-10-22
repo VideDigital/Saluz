@@ -94,6 +94,25 @@ jobs:
           assert.equal(catalog.source,'D1 staging');
           assert.equal(catalog.payments_enabled,false);
           assert.equal(catalog.demo_only,true);
+          // Validar as MESMAS APIs de produtos usadas pelo site aprovado.
+          // O canario de migration-catalog sozinho nao detecta loja vazia.
+          const items=await get('/api/products?source=d1&page=1&limit=48');
+          assert.equal(items.configured,true,'Catálogo original nao conectado ao D1 staging');
+          assert.ok(Array.isArray(items.products),'Resposta de catálogo inválida');
+          assert.ok(items.products.length>0,'Catálogo original vazio apesar do D1 de teste');
+          const kit=await get('/api/products?source=d1&category=Kits%20e%20presentes&page=1&limit=48');
+          assert.equal(kit.configured,true);
+          assert.ok(kit.products.every(p=>p.category==='Kits e presentes'));
+          const home=await get('/api/products/home?source=d1');
+          assert.equal(home.configured,true,'Home nao conectada ao D1');
+          assert.ok(Array.isArray(home.featured)&&Array.isArray(home.newest));
+          assert.ok(home.featured.length+home.newest.length>0,'Home vazia com produtos no D1');
+          for(const page of ['/index.html','/loja.html','/colecao-kits-presentes.html']){
+            const html=await fetch(base+page,{cache:'no-store'});
+            assert.equal(html.status,200,page+' nao publicada');
+            assert.match(await html.text(),/saluz-shell\\.js\\?v=20261022-d1-default/,page+' cache antigo');
+          }
+          console.log('Catálogo, home, coleções e versão dos scripts D1 staging OK.');
           const status=await get('/api/status');
           assert.equal(status.checkout_enabled,false);
           console.log('Homologacao D1/KV conectada, APIs respondendo; pagamentos bloqueados.');
