@@ -58,7 +58,7 @@ export async function onAdminRequest({request,env,route,validateProduct}){
      const p=validProduct(b,validateProduct);
      await syncPhotoReferences(db,p);
      const changed=await db.prepare("UPDATE saluz_products SET name=?,description=?,category=?,image_url=?,price_cents=?,original_price_cents=?,variants=?,is_active=?,is_featured=?,updated_at=?,revision=revision+1 WHERE id=? AND revision=?")
-       .bind(p.name,p.description,p.category,p.image_url,p.price_cents,p.original_price_cents,JSON.stringify(p.variants),p.is_active?1:0,p.is_featured?1:0,p.updated_at,id,revision).run();
+       .bind(p.name,p.description,p.category,p.image_url,p.price_cents,p.original_price_cents,JSON.stringify(p.variants),p.is_active?1:0,p.is_featured?1:0,new Date().toISOString(),id,revision).run();
      if(changed.meta?.changes!==1)return response({error:"Produto alterado por outra sessão ou não encontrado"},409);
      return response({product:product(await db.prepare("SELECT * FROM saluz_products WHERE id=?").bind(id).first())});
    }
