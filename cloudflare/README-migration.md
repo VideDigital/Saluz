@@ -3,6 +3,29 @@
 Status: **arquitetura e módulos isolados preparados**. NÃO é uma migração concluída.
 O site de produção ainda usa Supabase. Não alterar DNS, chaves, dados nem ativar checkout.
 
+## Infraestrutura realmente criada na Cloudflare da Anny — 22/10/2026
+
+Consulta autenticada: `anny.csalustiano@gmail.com`, conta Cloudflare SALUZ `f84d79f13ae0a665e5046ebeb21ffddd`.
+
+| Ambiente | Recurso | Identificador | Estado |
+| --- | --- | --- | --- |
+| DEV | D1 `saluz-dev-db` | `329078fa-010a-48e2-8e3e-3cb70c92725c` | Criado, esquema SQLite aplicado |
+| STAGING | D1 `saluz-staging-db` | `a25c8470-7e3a-4cb3-a7fe-65037bd1ce8b` | Criado, esquema SQLite aplicado |
+| DEV | KV `saluz-dev-media-kv` | `2c72a3afed384504a9b2771527ba5aed` | Criado, ainda não conectado |
+| STAGING | KV `saluz-staging-media-kv` | `63d2082e789349518f6569c43b19524d` | Criado, ainda não conectado |
+
+O SQL `cloudflare/d1/0001_initial.sql` foi executado com sucesso nos dois D1 (21 statements por banco).
+O `dev-seed.sql` foi aplicado somente no DEV. Contagens verificadas:
+- DEV: **2 produtos fictícios inativos**, 0 pedidos, 1 linha de conteúdo, 0 arquivos.
+- STAGING: **0 produtos, 0 pedidos**, 1 linha de conteúdo, 0 arquivos.
+
+Sem cartão cadastrado na criação dos quatro recursos.
+Não houve configuração de D1/KV nos projetos Pages existentes, troca de API, conexão de Auth, cópia de dados da cliente ou publicação na loja.
+A conta Supabase da cliente permanece ativa e é a fonte oficial dos dados por enquanto.
+O checkout Mercado Pago continua bloqueado.
+
+**Próximo marco técnico**: ligar D1/KV apenas a endpoints isolados de homologação, resolver autenticação/admin, testar upload/consulta/relatórios sem interferir no backend vigente e verificar recuperação de backup; só então avaliar migração de dados e corte.
+
 ## Auditoria de origem (21/10/2026)
 - Repositório: \`VideDigital/Saluz\`, público, main (produção) e homologacao (staging).
 - Conta Supabase SALUZ: produção \`msulvbwahdiztxnlohdv\`, homologação \`twgaspjziugekxlrkgru\`, ambos ativos no momento da consulta.
