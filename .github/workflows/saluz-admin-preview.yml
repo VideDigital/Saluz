@@ -60,6 +60,36 @@ jobs:
           assert (out/'index.html').exists()
           PY
           npx --yes wrangler@4 pages deploy saluz-public --project-name saluz-loja --branch homologacao
+      - name: Conferir conexao D1/KV no endpoint real de homologacao
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          const base='https://homologacao.saluz-loja.pages.dev';
+          async function get(path){
+            let error;
+            for(let attempt=0;attempt<6;attempt++){
+              try{
+                const res=await fetch(base+path,{headers:{accept:'application/json'},signal:AbortSignal.timeout(12000),cache:'no-store'});
+                const data=await res.json();
+                if(!res.ok)throw new Error(path+' HTTP '+res.status);
+                return data;
+              }catch(e){error=e;await new Promise(r=>setTimeout(r,1500));}
+            }
+            throw error;
+          }
+          const health=await get('/api/migration-health');
+          assert.equal(health.ready,true,'D1 staging nao esta funcional');
+          assert.equal(health.database_connected,true);
+          assert.equal(health.media_connected,true);
+          assert.equal(health.payments_enabled,false);
+          const catalog=await get('/api/migration-catalog');
+          assert.equal(catalog.source,'D1 staging');
+          assert.equal(catalog.payments_enabled,false);
+          assert.equal(catalog.demo_only,true);
+          const status=await get('/api/status');
+          assert.equal(status.checkout_enabled,false);
+          console.log('Homologacao D1/KV conectada, APIs respondendo; pagamentos bloqueados.');
+          NODE
       - name: Preparar apenas os arquivos do painel
         run: |
           python3 - <<'PY'
