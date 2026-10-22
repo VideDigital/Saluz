@@ -57,3 +57,17 @@ test("KV valida imagens de até 500 KB e isolamento entre ambientes",async()=>{
  await assert.rejects(validateAndNameImage({bytes:new Uint8Array(500001),claimedType:"image/png",environment:"staging",purpose:"banner"}));
  await assert.rejects(validateAndNameImage({bytes:sample,claimedType:"image/png",environment:"production",purpose:"banner"}));
 });
+
+test("Workers KV recebe ArrayBuffer binário, não Uint8Array",async()=>{
+ const {putImage}=await import("../cloudflare/storage/kv-media.mjs");
+ const bytes=new Uint8Array([137,80,78,71,13,10,26,10,0,0,0,0]);
+ let gotArrayBuffer=false;
+ const kv={get:async()=>null,put:async(_key,body)=>{gotArrayBuffer=body instanceof ArrayBuffer;}};
+ const db={prepare(sql){return {bind(){return {
+    first:async()=>null,
+    run:async()=>({success:true})
+ }}}}};
+ const result=await putImage({kv,db,bytes,claimedType:"image/png",environment:"staging",purpose:"product",filename:"teste.png"});
+ assert.equal(gotArrayBuffer,true);
+ assert.equal(result.reused,false);
+});
