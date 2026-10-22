@@ -9,6 +9,8 @@ on:
       - 'functions/api/**'
       - 'migration-lab.*'
       - 'admin.html'
+      - 'admin.js'
+      - 'tests/admin-d1-approved.test.mjs'
       - 'admin-deploy/**'
       - '.github/workflows/saluz-cloudflare-migration-tests.yml'
 permissions:
