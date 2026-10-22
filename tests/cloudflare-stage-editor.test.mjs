@@ -69,3 +69,40 @@ test("sem media configurada o endpoint público não publica arquivo",async()=>{
  const r=await onPublicMediaGet({request:new Request(base+"/api/migration-media?key=staging/x"),env:{}});
  assert.equal(r.status,404);
 });
+
+test("edição real pelo painel D1 salva data do servidor e nova revisão sem updated_at do cliente",async()=>{
+ const id="90000000-0000-4000-8000-000000000001";
+ let updatedValues=null;
+ const row={id,name:prod.name,description:prod.description,category:prod.category,image_url:"",
+  price_cents:prod.price_cents,original_price_cents:null,variants:JSON.stringify(prod.variants),
+  is_active:1,is_featured:0,revision:4};
+ // A validação real devolve o produto normalizado, sem campo updated_at.
+ const normalized=raw=>({...raw});
+ const db={prepare(sql){
+  return {bind(...values){
+   if(sql.startsWith("UPDATE saluz_products")){
+    updatedValues=values;
+    return {run:async()=>({success:true,meta:{changes:1}})};
+   }
+   if(sql.startsWith("SELECT * FROM saluz_products")){
+    return {first:async()=>row};
+   }
+   throw Error("Query inesperada: "+sql);
+  }};
+ }};
+ const request=build("products/"+id,{
+  method:"PATCH",headers:{"content-type":"application/json"},
+  body:JSON.stringify({...prod,is_active:true,revision:3})
+ });
+ const result=await onAdminRequest({request,
+  env:{SALUZ_D1_PREVIEW:db,SALUZ_MEDIA_PREVIEW:{get(){}}},route:"products/"+id,validateProduct:normalized});
+ assert.equal(result.status,200);
+ const saved=(await result.json()).product;
+ assert.equal(saved.revision,4);
+ assert.equal(saved.is_active,true);
+ assert.equal(updatedValues.length,12);
+ assert.ok(updatedValues.every(v=>v!==undefined),"D1 não aceita valor undefined");
+ assert.equal(updatedValues[10],id);
+ assert.equal(updatedValues[11],3);
+ assert.equal(new Date(updatedValues[9]).toISOString(),updatedValues[9]);
+});
