@@ -1,4 +1,3 @@
-import {onAdminRequest as d1Admin, onPublicMediaGet as d1Media} from "../../cloudflare/d1/staging-admin.mjs";
 // Cloudflare Pages Function catch-all: /api/*
 // No gateway is active on GitHub Pages. Never put a service key in browser code.
 const JSON_HEADERS = { "content-type": "application/json; charset=utf-8", "cache-control": "no-store", "x-content-type-options": "nosniff" };
@@ -472,12 +471,12 @@ export async function onRequest({request,env}) {
   try {
     // Canário D1/KV exclusivo da homologação. Mantém catálogo e painel atuais no Supabase.
     if(route[0]==="migration-media" && route.length===1 && request.method==="GET")
-      return await d1Media({request,env});
+      return await (await import("../../cloudflare/d1/staging-admin.mjs")).onPublicMediaGet({request,env});
     if(route[0]==="migration-admin"){
       if(new URL(request.url).hostname!=="homologacao.saluz-loja.pages.dev")
         return error("Não disponível",404);
       if(!(await isAdmin(request,env)))return error("Acesso administrativo necessário",401);
-      return await d1Admin({request,env,route:route.slice(1).join("/"),validateProduct});
+      return await (await import("../../cloudflare/d1/staging-admin.mjs")).onAdminRequest({request,env,route:route.slice(1).join("/"),validateProduct});
     }
     if(route[0]==="site-content" && route.length===1 && request.method==="GET"){
       const rows=await sb(env,"/rest/v1/saluz_site_content?id=eq.1&select=published&limit=1");
