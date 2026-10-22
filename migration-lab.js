@@ -11,7 +11,7 @@ let products=[],revision=0,draft={};
 const qs={};
 document.querySelectorAll("[data-view]").forEach(b=>b.onclick=()=>{
  document.querySelectorAll("[data-view]").forEach(x=>x.classList.toggle("active",x===b));
- for(const id of ["products","storage","content","orders"])$("view-"+id).hidden=b.dataset.view!==id;
+ for(const id of ["products","storage","content","orders","auth"])$("view-"+id).hidden=b.dataset.view!==id;
  if(b.dataset.view==="storage")loadStorage();if(b.dataset.view==="content")loadContent();
 });
 async function access(){
@@ -122,5 +122,43 @@ $("content-form").onsubmit=async(e)=>{
   msg("Rascunho salvo somente no D1. Não foi publicado.");await loadContent();
  }catch(err){msg(err.message,true)}
 };
+
+/* A ativação D1 é um segundo acesso de TESTE, nunca autentica /api/admin.
+   O painel atual continua dependendo do Supabase. */
+function authFeedback(id,message){$(id).textContent=message;}
+$("d1-auth-setup").onsubmit=async event=>{
+ event.preventDefault();
+ const form=event.currentTarget,button=form.querySelector("[type=submit]");
+ const password=form.elements.password.value;
+ if(password!==form.elements.confirm.value){authFeedback("d1-setup-feedback","As senhas não coincidem.");return;}
+ if(password.length<14||password.length>128){authFeedback("d1-setup-feedback","Use entre 14 e 128 caracteres.");return;}
+ button.disabled=true;authFeedback("d1-setup-feedback","Configurando acesso de testes...");
+ try{
+  await req("migration-auth/setup",{method:"POST",headers:{"content-type":"application/json"},
+   body:JSON.stringify({password,confirm_reset:form.elements.confirm_reset.checked})});
+  authFeedback("d1-setup-feedback","Senha Cloudflare preparada. Faça o teste de login abaixo.");
+  form.reset();
+ }catch(e){authFeedback("d1-setup-feedback",e.message);}
+ finally{button.disabled=false;}
+};
+$("d1-auth-login").onsubmit=async event=>{
+ event.preventDefault();
+ const form=event.currentTarget,button=form.querySelector("[type=submit]");
+ button.disabled=true;authFeedback("d1-login-feedback","Testando autenticação Cloudflare...");
+ try{
+  const r=await req("migration-auth/login",{method:"POST",headers:{"content-type":"application/json"},
+   body:JSON.stringify({email:form.elements.email.value.trim(),password:form.elements.password.value})});
+  form.elements.password.value="";
+  authFeedback("d1-login-feedback",r.ok?"Login D1 confirmado. Esta sessão é experimental; seu painel atual permanece conectado.":"Resposta de teste inesperada.");
+ }catch(e){authFeedback("d1-login-feedback",e.message);form.elements.password.value="";}
+ finally{button.disabled=false;}
+};
+$("d1-auth-logout").onclick=async()=>{
+ try{
+  await req("migration-auth/logout",{method:"POST",headers:{"content-type":"application/json"},body:"{}"});
+  authFeedback("d1-login-feedback","Sessão D1 encerrada. A sessão atual do painel continua independente.");
+ }catch(e){authFeedback("d1-login-feedback",e.message);}
+};
+
 access();
 })();
