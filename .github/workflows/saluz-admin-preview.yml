@@ -43,6 +43,8 @@ jobs:
           node --check functions/api/migration-catalog.js
           node --check cloudflare/d1/repository.mjs
           node --check cloudflare/storage/kv-media.mjs
+          node --check cloudflare/d1/staging-admin.mjs
+          node --check migration-lab.js
           node --test tests/*.test.mjs
           test -f functions/api/migration-health.js
           test -f functions/api/migration-catalog.js
@@ -104,7 +106,8 @@ jobs:
             'saluz-mobile.js', 'saluz-studio.js', 'saluz-studio.css', 'saluz-simple.css',
             'saluz-campaigns.js', 'saluz-campaigns.css',
             'saluz-professional.js', 'saluz-professional.css',
-            'favicon.svg', '_headers'
+            'favicon.svg', '_headers',
+            'migration-lab.html','migration-lab.js','migration-lab.css'
           ]
           out = Path('saluz-admin-public')
           out.mkdir(exist_ok=True)
