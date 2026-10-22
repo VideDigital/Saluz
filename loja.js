@@ -211,7 +211,7 @@ function renderBag(){
  $("cart-feedback").textContent=checkoutPreview?"Prévia para validar valores, frete e experiência, sem cobranças.":checkoutEnabled?(unavailable?"Revise a disponibilidade dos itens.":""):"Você pode montar sua sacola. Os pedidos ainda não estão liberados.";
 }
 async function fetchCatalogPage(page){
- const response=await fetch("/api/products?page="+page+"&limit=48",{cache:"no-store"});
+ const response=await fetch((window.saluzD1PreviewUrl?.("/api/products?page="+page+"&limit=48")||"/api/products?page="+page+"&limit=48"),{cache:"no-store"});
  if(!response.ok)throw new Error("Não foi possível carregar os produtos.");
  const payload=await response.json();
  if(!payload.configured)throw new Error("A loja ainda está sendo configurada.");
@@ -238,7 +238,7 @@ async function loadBagReferences(){
  const ids=[...new Set(window.SaluzBag.read().map(line=>line.id))];
  if(!ids.length){bagLookup=[];return;}
  try{
-  const response=await fetch("/api/products/favorites?ids="+encodeURIComponent(ids.join(",")),{cache:"no-store"});
+  const response=await fetch((window.saluzD1PreviewUrl?.("/api/products/favorites?ids="+encodeURIComponent(ids.join(",")))||"/api/products/favorites?ids="+encodeURIComponent(ids.join(","))),{cache:"no-store"});
   if(!response.ok)throw new Error("Dados indisponíveis");
   const result=await response.json();
   bagLookup=Array.isArray(result.products)?result.products:[];

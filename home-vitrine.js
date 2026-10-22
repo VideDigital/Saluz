@@ -48,7 +48,7 @@ function render(items,key){
 }
 async function load(){
  try{
-  const response=await fetch("/api/products/home",{cache:"no-store"});
+  const response=await fetch((window.saluzD1PreviewUrl?.("/api/products/home")||"/api/products/home"),{cache:"no-store"});
   if(!response.ok)throw new Error("Catálogo indisponível");
   const payload=await response.json();
   if(!payload.configured)throw new Error("Loja em implantação");

@@ -165,7 +165,7 @@ async function loadRelated(current){
  const wrap=byId("related-section"),grid=byId("related-grid");
  if(!wrap||!grid||!current?.category)return;
  try{
-  const res=await fetch("/api/products?category="+encodeURIComponent(current.category),{cache:"no-store"});
+  const res=await fetch((window.saluzD1PreviewUrl?.("/api/products?category="+encodeURIComponent(current.category))||"/api/products?category="+encodeURIComponent(current.category)),{cache:"no-store"});
   if(!res.ok)return;
   const response=await res.json();
   const items=(Array.isArray(response.products)?response.products:[])
@@ -204,7 +204,7 @@ async function load(){
  const id=params.get("id");
  if(!id||!uuid.test(id)){byId("product-loading").textContent="Produto não encontrado.";return;}
  try{
-  const res=await fetch("/api/products/"+encodeURIComponent(id),{cache:"no-store"});
+  const res=await fetch((window.saluzD1PreviewUrl?.("/api/products/"+encodeURIComponent(id))||"/api/products/"+encodeURIComponent(id)),{cache:"no-store"});
   if(res.status===404){
     byId("product-loading").textContent="Este produto não está disponível no catálogo.";
     return;

@@ -478,6 +478,12 @@ export async function onRequest({request,env}) {
       if(!(await isAdmin(request,env)))return error("Acesso administrativo necessário",401);
       return await (await import("../../cloudflare/d1/staging-admin.mjs")).onAdminRequest({request,env,route:route.slice(1).join("/"),validateProduct});
     }
+    // Usar a API original de produtos com D1 só no modo opcional de homologação.
+    if(route[0]==="products" && request.method==="GET" &&
+       new URL(request.url).hostname==="homologacao.saluz-loja.pages.dev" &&
+       new URL(request.url).searchParams.get("source")==="d1")
+      return (await import("../../cloudflare/d1/approved-api.mjs"))
+        .approvedProductsFromD1({request,env,route});
     if(route[0]==="site-content" && route.length===1 && request.method==="GET"){
       const rows=await sb(env,"/rest/v1/saluz_site_content?id=eq.1&select=published&limit=1");
       return output({content:rows[0]?.published||{}});
