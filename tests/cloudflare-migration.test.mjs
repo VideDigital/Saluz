@@ -45,3 +45,15 @@ test("exclusao nunca e fisica e requer confirmacao e falta de vinculos",async()=
  const res=await moveToTrash({db,...ids,confirmed:true});
  assert.equal(res.physicalDeletion,false);assert.equal(audits,1);
 });
+
+
+test("KV valida imagens de até 500 KB e isolamento entre ambientes",async()=>{
+ const {validateAndNameImage,imageMime}=await import("../cloudflare/storage/kv-media.mjs");
+ const sample=new Uint8Array([137,80,78,71,13,10,26,10,0,0,0,0]);
+ assert.equal(imageMime(sample),"image/png");
+ const result=await validateAndNameImage({bytes:sample,claimedType:"image/png",environment:"staging",purpose:"banner"});
+ assert.match(result.key,/^staging\/banner\/[0-9a-f]{64}\.png$/);
+ await assert.rejects(validateAndNameImage({bytes:sample,claimedType:"image/jpeg",environment:"staging",purpose:"banner"}));
+ await assert.rejects(validateAndNameImage({bytes:new Uint8Array(500001),claimedType:"image/png",environment:"staging",purpose:"banner"}));
+ await assert.rejects(validateAndNameImage({bytes:sample,claimedType:"image/png",environment:"production",purpose:"banner"}));
+});
