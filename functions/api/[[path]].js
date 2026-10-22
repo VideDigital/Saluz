@@ -469,6 +469,15 @@ export async function onRequest({request,env}) {
     return error("Ambiente em configuração",503);
   }
   try {
+    // Canário D1/KV exclusivo da homologação. Mantém catálogo e painel atuais no Supabase.
+    if(route[0]==="migration-media" && route.length===1 && request.method==="GET")
+      return await (await import("../../cloudflare/d1/staging-admin.mjs")).onPublicMediaGet({request,env});
+    if(route[0]==="migration-admin"){
+      if(new URL(request.url).hostname!=="homologacao.saluz-loja.pages.dev")
+        return error("Não disponível",404);
+      if(!(await isAdmin(request,env)))return error("Acesso administrativo necessário",401);
+      return await (await import("../../cloudflare/d1/staging-admin.mjs")).onAdminRequest({request,env,route:route.slice(1).join("/"),validateProduct});
+    }
     if(route[0]==="site-content" && route.length===1 && request.method==="GET"){
       const rows=await sb(env,"/rest/v1/saluz_site_content?id=eq.1&select=published&limit=1");
       return output({content:rows[0]?.published||{}});

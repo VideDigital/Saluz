@@ -61,7 +61,7 @@ test('notificação é emitida quando a lista muda',()=>{
  assert.equal(events[0].detail.count,1);
 });
 test('páginas públicas incluem menu e módulos de favoritos',()=>{
- const pages=readdirSync('.').filter(name=>name.endsWith('.html')&&name!=='admin.html');
+ const pages=readdirSync('.').filter(name=>name.endsWith('.html')&&!['admin.html','migration-lab.html'].includes(name));
  for(const file of pages){
    const html=readFileSync(file,'utf8');
    assert.match(html,/class="commerce-favorites-link"/,file);

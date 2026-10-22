@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><title>SALUZ | Laboratório de migração</title>
+<link rel="stylesheet" href="./migration-lab.css"><script src="./migration-lab.js" defer></script></head>
+<body><header><div class="brand">SALUZ <span>✦</span> <small>AMBIENTE DE HOMOLOGAÇÃO</small></div><a href="./">← Voltar ao painel</a></header>
+<main id="workspace" hidden><div class="intro"><div><span class="kicker">CLOUDFLARE D1 + KV</span><h1>Laboratório de migração</h1><p>Teste o novo catálogo e o armazenamento sem alterar a loja oficial ou ativar pagamentos.</p></div><span class="status">Somente homologação</span></div>
+<nav class="nav"><button data-view="products" class="active">Produtos</button><button data-view="storage">Armazenamento</button><button data-view="content">Conteúdo</button><button data-view="orders">Pedidos e segurança</button></nav>
+<p id="message" role="status" aria-live="polite"></p>
+<section id="view-products"><div class="panel"><div class="sectiontitle"><h2>Catálogo D1</h2><button id="refresh-products">Atualizar</button></div><p>Este cadastro é separado do Supabase. A vitrine oficial continua inalterada.</p><div id="product-list" class="items"></div></div>
+<div class="panel"><h2 id="form-title">Cadastrar produto de teste</h2><form id="product-form">
+<input type="hidden" name="id"><input type="hidden" name="revision" value="0"><div class="fields"><label>Nome<input name="name" required minlength="2" maxlength="140"></label>
+<label>Categoria<select name="category" required><option>Nécessaires</option><option>Porta-joias</option><option>Organizadores de maquiagem</option><option>Organizadores de bolsa</option><option>Acessórios de viagem</option><option>Autocuidado</option><option>Acessórios femininos</option><option>Kits e presentes</option></select></label>
+<label>Preço em R$<input name="price" type="number" min="0" max="500000" step="0.01" required></label><label>Preço anterior em R$ (opcional)<input name="original_price" type="number" min="0" step="0.01"></label>
+<label>Cor da variação<input name="color" required value="Padrão" maxlength="40"></label><label>Tamanho<input name="size" required value="Único" maxlength="30"></label>
+<label>Estoque<input name="stock" type="number" min="0" max="100000" value="0" step="1" required></label><label>Foto do produto (no KV)<input id="photo" type="file" accept="image/png,image/webp,image/jpeg"></label></div>
+<label>Descrição<textarea name="description" rows="3" maxlength="2000"></textarea></label><label>URL da foto<input name="image_url" type="url" placeholder="Faça upload acima"></label>
+<label class="check"><input type="checkbox" name="is_active"> Visível somente no catálogo experimental D1</label><label class="check"><input type="checkbox" name="is_featured"> Destacar no teste</label>
+<div class="actions"><button class="primary" type="submit">Salvar no D1</button><button type="button" id="clear-product">Novo produto</button></div></form></div></section>
+<section id="view-storage" hidden><div class="panel"><h2>Armazenamento KV</h2><p>Arquivos protegidos contra exclusão automática. Fotos com até 500 KB depois da otimização.</p>
+<div id="storage-metrics" class="metrics"></div><p class="hint">A cota exibida é interna da homologação (80 MB), não o limite global oficial da Cloudflare. Contagem derivada de metadados D1.</p>
+<div id="storage-list" class="items"></div></div></section>
+<section id="view-content" hidden><div class="panel"><h2>Conteúdo de teste</h2><p>Os textos abaixo são apenas rascunhos do D1, não publicados no site.</p><form id="content-form">
+<label>Título principal<input name="hero_title" maxlength="140"></label><label>Descrição principal<textarea name="hero_description" rows="4" maxlength="310"></textarea></label>
+<button class="primary" type="submit">Salvar rascunho D1</button></form></div></section>
+<section id="view-orders" hidden><div class="panel"><h2>Pedidos e segurança</h2><p><strong>Pagamentos desativados.</strong> O módulo de pedidos não foi transferido; não vamos criar nem confirmar pedidos nesta área até validar estoque transacional, webhook, conciliação e frete.</p>
+<p>O acesso administrativo atual é autenticado pelo Supabase e será substituído numa fase posterior com redefinição segura de acesso. Nenhuma senha é copiada.</p></div></section>
+</main><section id="auth-wall" class="auth">Conferindo autorização administrativa...</section></body></html>

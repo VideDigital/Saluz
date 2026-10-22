@@ -5,6 +5,11 @@ on:
     paths:
       - 'cloudflare/**'
       - 'tests/cloudflare-migration.test.mjs'
+      - 'tests/cloudflare-stage-editor.test.mjs'
+      - 'functions/api/**'
+      - 'migration-lab.*'
+      - 'admin.html'
+      - 'admin-deploy/**'
       - '.github/workflows/saluz-cloudflare-migration-tests.yml'
 permissions:
   contents: read
@@ -21,8 +26,13 @@ jobs:
         run: |
           node --check cloudflare/storage/r2-media.mjs
           node --check cloudflare/d1/repository.mjs
+          node --check cloudflare/d1/staging-admin.mjs
+          node --check cloudflare/storage/kv-media.mjs
+          node --check functions/api/\[\[path\]\].js
+          node --check admin-deploy/functions/api/\[\[path\]\].js
+          node --check migration-lab.js
       - name: Testes de seguranca e comportamento dos adaptadores
-        run: node --test tests/cloudflare-migration.test.mjs
+        run: node --test tests/*.test.mjs
       - name: Validar schema em SQLite limpo e seeds somente DEV
         run: |
           python3 - <<'PY'
