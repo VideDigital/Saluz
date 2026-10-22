@@ -143,7 +143,7 @@
  }
  window.saluzD1PreviewEnabled=enabled;
  window.saluzD1PreviewUrl=path=>{
-  if(!enabled||typeof path!=="string"||!/^\/api\/products(?:\/|\?|$)/.test(path))return path;
+  if(!enabled||typeof path!=="string"||!/^\/api\/(?:products(?:\/|\?|$)|site-content(?:\?|$))/.test(path))return path;
   const url=new URL(path,window.location.origin);
   url.searchParams.set("source","d1");
   return url.pathname+url.search;
