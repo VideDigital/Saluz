@@ -54,3 +54,39 @@ test("ausência do binding D1 não retorna dados Supabase no modo de testes",asy
  const r=await approvedProductsFromD1({request:new Request(staging+"/api/products?source=d1"),env:{},route:["products"]});
  assert.equal(r.status,503);
 });
+
+test("conteúdo aprovado usa contrato original e somente dados publicados",async()=>{
+ const mock={prepare:sql=>{
+   assert.equal(sql,"SELECT published FROM saluz_site_content WHERE id=1");
+   return {first:async()=>({published:'{"hero_title":"Título original"}'})};
+ }};
+ const res=await (await import("../cloudflare/d1/approved-api.mjs")).approvedSiteContentFromD1({
+   request:new Request(staging+"/api/site-content?source=d1"),
+   env:{SALUZ_D1_PREVIEW:mock}
+ });
+ assert.equal(res.status,200);
+ assert.deepEqual(await res.json(),{content:{hero_title:"Título original"}});
+ assert.equal(res.headers.get("x-robots-tag"),"noindex, nofollow");
+});
+test("conteúdo D1 nunca é servido na produção e falha fechado sem banco",async()=>{
+ const {approvedSiteContentFromD1}=await import("../cloudflare/d1/approved-api.mjs");
+ const productionResponse=await approvedSiteContentFromD1({
+   request:new Request(production+"/api/site-content?source=d1"),env:{SALUZ_D1_PREVIEW:db}
+ });
+ assert.equal(productionResponse.status,404);
+ const missing=await approvedSiteContentFromD1({request:new Request(staging+"/api/site-content?source=d1"),env:{}});
+ assert.equal(missing.status,503);
+});
+test("modo D1 do site consulta banco mesmo sem segredos Supabase, sem mudar layout",async()=>{
+ const {readFileSync}=await import("node:fs");
+ const source=readFileSync("functions/api/[[path]].js","utf8");
+ const shell=readFileSync("saluz-shell.js","utf8");
+ const content=readFileSync("saluz-site-content.js","utf8");
+ assert.ok(source.indexOf('const d1Preview=request.method==="GET"')<source.indexOf("if (!ready(env))"));
+ assert.match(source,/approvedSiteContentFromD1/);
+ assert.match(shell,/site-content/);
+ assert.match(content,/saluzD1PreviewUrl/);
+ for(const html of ["index.html","loja.html","produto.html"]){
+   assert.doesNotMatch(readFileSync(html,"utf8"),/migration-showcase/);
+ }
+});

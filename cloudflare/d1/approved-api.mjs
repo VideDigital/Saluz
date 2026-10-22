@@ -3,7 +3,7 @@
  * no hostname exato de homologação; produção NUNCA acessa esta rota D1.
  * O catálogo não cria pedidos, não habilita checkout e não modifica dados.
  */
-import {publicProducts,productById,parseProduct} from "./repository.mjs";
+import {publicProducts,productById,parseProduct,publishedSiteContent} from "./repository.mjs";
 const PRODUCT_COLUMNS="id,name,description,category,image_url,price_cents,original_price_cents,variants,is_active,is_featured";
 const uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const response=(body,status=200)=>new Response(JSON.stringify(body),{
@@ -65,5 +65,20 @@ export async function approvedProductsFromD1({request,env,route}) {
    if(/Categoria invalida|Numero invalido/.test(e.message))
      return response({error:"Filtros inválidos"},400);
    return response({error:"Catálogo de homologação indisponível"},503);
+ }
+}
+
+/* Mesmo contrato de /api/site-content do site aprovado; staging apenas.
+   Leitura de conteúdo publicado, nunca rascunho de edição. */
+export async function approvedSiteContentFromD1({request,env}){
+ if(!previewD1Requested(request))return response({error:"Prévia indisponível"},404);
+ if(request.method!=="GET")return response({error:"Método inválido"},405);
+ const db=env?.SALUZ_D1_PREVIEW;
+ if(!db?.prepare)return response({error:"Banco de homologação indisponível"},503);
+ try{
+   const result=await publishedSiteContent(db);
+   return response(result);
+ }catch{
+   return response({error:"Conteúdo de homologação indisponível"},503);
  }
 }

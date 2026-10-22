@@ -15,7 +15,7 @@ const map={
 const validImage=u=>typeof u==="string"&&/^https:\/\/[^\s<>"']+$/.test(u);
 (async()=>{
  try{
-  const res=await fetch("/api/site-content",{cache:"no-store"});
+  const res=await fetch((window.saluzD1PreviewUrl?.("/api/site-content")||"/api/site-content"),{cache:"no-store"});
   if(!res.ok)return;
   const {content:c}=await res.json();
   if(!c||typeof c!=="object")return;
