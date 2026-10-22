@@ -10,6 +10,9 @@ on:
       - 'migration-lab.*'
       - 'admin.html'
       - 'admin.js'
+      - 'colecao.js'
+      - 'saluz-shell.js'
+      - 'tests/collection-d1-preview.test.mjs'
       - 'tests/admin-d1-approved.test.mjs'
       - 'admin-deploy/**'
       - '.github/workflows/saluz-cloudflare-migration-tests.yml'
@@ -33,6 +36,8 @@ jobs:
           node --check functions/api/\[\[path\]\].js
           node --check admin-deploy/functions/api/\[\[path\]\].js
           node --check migration-lab.js
+          node --check colecao.js
+          node --check saluz-shell.js
       - name: Testes de seguranca e comportamento dos adaptadores
         run: node --test tests/*.test.mjs
       - name: Validar schema em SQLite limpo e seeds somente DEV
