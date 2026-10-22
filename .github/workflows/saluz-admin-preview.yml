@@ -39,7 +39,13 @@ jobs:
           node --check saluz-mobile.js
           node --check loja.js
           node --check functions/api/\[\[path\]\].js
+          node --check functions/api/migration-health.js
+          node --check functions/api/migration-catalog.js
+          node --check cloudflare/d1/repository.mjs
+          node --check cloudflare/storage/kv-media.mjs
           node --test tests/*.test.mjs
+          test -f functions/api/migration-health.js
+          test -f functions/api/migration-catalog.js
       - name: Preparar e publicar a vitrine de homologacao
         run: |
           python3 - <<'PY'
