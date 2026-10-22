@@ -123,3 +123,30 @@ jobs:
           npx --yes wrangler@4 pages deploy saluz-admin-public \
             --project-name saluz-admin \
             --branch homologacao
+
+      - name: Smoke de seguranca do laboratorio online
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          const base='https://homologacao.saluz-admin.pages.dev';
+          async function check(url){
+            let last;
+            for(let n=0;n<6;n++){
+              try{const r=await fetch(url,{cache:'no-store',signal:AbortSignal.timeout(12000)});return r;}
+              catch(e){last=e;await new Promise(r=>setTimeout(r,1600));}
+            }
+            throw last;
+          }
+          const lab=await check(base+'/migration-lab.html');
+          assert.equal(lab.status,200,'Laboratorio nao publicado no preview');
+          assert.match(await lab.text(),/Laboratório de migração/);
+          const denied=await check(base+'/api/migration-admin/products');
+          assert.equal(denied.status,401,'Endpoint administrativo sem autenticacao deve recusar acesso');
+          const content=await check(base+'/api/migration-admin/content');
+          assert.equal(content.status,401);
+          const catalog=await check('https://homologacao.saluz-loja.pages.dev/api/migration-catalog');
+          assert.equal(catalog.status,200);
+          const list=await catalog.json();
+          assert.equal(list.payments_enabled,false);
+          console.log('Laboratorio publicado; acesso sem sessao bloqueado; checkout desativado.');
+          NODE
