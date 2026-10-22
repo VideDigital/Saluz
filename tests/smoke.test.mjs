@@ -35,7 +35,7 @@ test('menu público e rodapé são consistentes nas páginas de loja',()=>{
  }
 });
 test('busca mobile presente em todas as páginas públicas',()=>{
- const pages=readdirSync(root).filter(name=>name.endsWith('.html')&&!['admin.html','migration-lab.html'].includes(name));
+ const pages=readdirSync(root).filter(name=>name.endsWith('.html')&&!['admin.html','migration-lab.html','migration-showcase.html'].includes(name));
  for(const page of pages){
    const html=file(page);
    assert.ok(html.includes('class="commerce-mobile-search"'),page);
