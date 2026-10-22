@@ -30,7 +30,7 @@ export async function putImage({kv,db,bytes,claimedType,environment,purpose,file
  if(existing?.lifecycle==="active")return {id:existing.id,key:info.key,reused:true};
  if(existing)throw Error("Imagem está em descarte: recupere antes de reutilizar");
  // KV não realiza escrita condicional; nome imutável derivado do hash permite repetição segura.
- await kv.put(info.key,bytes,{metadata:{sha256:info.sha256,mime:info.mime}});
+ await kv.put(info.key,bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength),{metadata:{sha256:info.sha256,mime:info.mime}});
  const id=crypto.randomUUID();
  const registered=await db.prepare("INSERT INTO saluz_media (id,r2_key,original_name,mime_type,byte_size,sha256,purpose) VALUES(?,?,?,?,?,?,?)")
    .bind(id,info.key,String(filename||"imagem").slice(0,140),info.mime,info.bytes,info.sha256,purpose).run();
