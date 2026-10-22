@@ -45,6 +45,8 @@ jobs:
           node --check cloudflare/storage/kv-media.mjs
           node --check cloudflare/d1/staging-admin.mjs
           node --check migration-lab.js
+          node --check migration-showcase.js
+          node --test tests/migration-showcase.test.mjs
           test -f cloudflare/d1/0002_product_revision.sql
           node --test tests/*.test.mjs
           test -f functions/api/migration-health.js
@@ -85,6 +87,9 @@ jobs:
           assert.equal(health.database_connected,true);
           assert.equal(health.media_connected,true);
           assert.equal(health.payments_enabled,false);
+          const showcase=await fetch(base+'/migration-showcase.html',{cache:'no-store'});
+          assert.equal(showcase.status,200,'Vitrine D1 nao publicada na homologacao');
+          assert.match(await showcase.text(),/Vitrine D1 de testes/);
           const catalog=await get('/api/migration-catalog');
           assert.equal(catalog.source,'D1 staging');
           assert.equal(catalog.payments_enabled,false);
