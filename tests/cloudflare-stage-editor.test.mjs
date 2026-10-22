@@ -53,7 +53,7 @@ test("proxy e gateway exigem autenticação antes de chamar o laboratório",asyn
  assert.ok(idx>0);
  const sub=source.slice(idx,idx+420);
  assert.match(sub,/await isAdmin\(request,env\)/);
- assert.match(sub,/return await d1Admin/);
+ assert.match(sub,/onAdminRequest/);
  const proxy=await readFile(new URL("../admin-deploy/functions/api/[[path]].js",import.meta.url),"utf8");
  assert.match(proxy,/migration-admin/);
  assert.match(proxy,/migration-media/);
