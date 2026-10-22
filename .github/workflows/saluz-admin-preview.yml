@@ -110,7 +110,7 @@ jobs:
           for(const page of ['/index.html','/loja.html','/colecao-kits-presentes.html']){
             const html=await fetch(base+page,{cache:'no-store'});
             assert.equal(html.status,200,page+' nao publicada');
-            assert.match(await html.text(),/saluz-shell\\.js\\?v=20261022-d1-default/,page+' cache antigo');
+            assert.match(await html.text(),/saluz-shell\.js\?v=20261022-d1-default/,page+' cache antigo');
           }
           console.log('Catálogo, home, coleções e versão dos scripts D1 staging OK.');
           const status=await get('/api/status');
