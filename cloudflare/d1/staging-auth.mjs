@@ -63,19 +63,24 @@ async function rateLimit(db,request,env,email){
  if(typeof env.LOGIN_RATE_SECRET!=="string"||env.LOGIN_RATE_SECRET.length<32)
    return {configured:false,allowed:false};
  const ip=String(request.headers.get("cf-connecting-ip")||"unknown").slice(0,128).toLowerCase();
- const id="saluz-d1-login-v1|"+ip+"|"+email.toLowerCase();
  const key=await crypto.subtle.importKey("raw",enc.encode(env.LOGIN_RATE_SECRET),
    {name:"HMAC",hash:"SHA-256"},false,["sign"]);
- const hash=hex(new Uint8Array(await crypto.subtle.sign("HMAC",key,enc.encode(id))));
  const now=new Date().toISOString();
  const limit=new Date(Date.now()-15*60*1000).toISOString();
- const rows=await db.prepare(
-   "INSERT INTO saluz_auth_login_limits(key_hash,window_start,attempts) VALUES(?,?,1) "+
-   "ON CONFLICT(key_hash) DO UPDATE SET attempts=CASE WHEN window_start<? THEN 1 ELSE attempts+1 END, "+
-   "window_start=CASE WHEN window_start<? THEN excluded.window_start ELSE window_start END "+
-   "RETURNING attempts"
- ).bind(hash,now,limit,limit).first();
- return {configured:true,allowed:Number(rows?.attempts||99)<=8};
+ // Duas barreiras: por IP (inclui troca de e-mail) e por IP+e-mail.
+ let allowed=true;
+ for(const [identity,max] of [["ip|"+ip,20],["account|"+ip+"|"+email.toLowerCase(),8]]){
+   const hash=hex(new Uint8Array(await crypto.subtle.sign("HMAC",key,
+     enc.encode("saluz-d1-login-v1|"+identity))));
+   const rows=await db.prepare(
+     "INSERT INTO saluz_auth_login_limits(key_hash,window_start,attempts) VALUES(?,?,1) "+
+     "ON CONFLICT(key_hash) DO UPDATE SET attempts=CASE WHEN window_start<? THEN 1 ELSE attempts+1 END, "+
+     "window_start=CASE WHEN window_start<? THEN excluded.window_start ELSE window_start END "+
+     "RETURNING attempts"
+   ).bind(hash,now,limit,limit).first();
+   if(Number(rows?.attempts||99)>max)allowed=false;
+ }
+ return {configured:true,allowed};
 }
 async function setup({request,env,verifyLegacyAdmin}){
  // O cliente não envia ID/e-mail para conceder a si próprio privilégios.

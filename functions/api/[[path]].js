@@ -474,6 +474,25 @@ export async function onRequest({request,env}) {
       ?adapter.approvedProductsFromD1({request,env,route})
       :adapter.approvedSiteContentFromD1({request,env});
   }
+  // Laboratório de autenticação D1: independente do Supabase para login/sessão.
+  // Primeiro cadastro exige identidade já autenticada e autorizada no Supabase.
+  // Não modifica /api/auth, /api/admin nem cookies do painel aprovado.
+  if(route[0]==="migration-auth" && route.length===2){
+    if(new URL(request.url).hostname!=="homologacao.saluz-loja.pages.dev")
+      return error("Rota indisponível",404);
+    const authModule=await import("../../cloudflare/d1/staging-auth.mjs");
+    return authModule.onD1AuthRequest({request,env,route:route[1],
+      verifyLegacyAdmin:async()=>{
+        if(!ready(env)||!(await isAdmin(request,env)))return null;
+        const token=cookieToken(request);
+        const verified=await fetch(sbUrl(env,"/auth/v1/user"),{
+          headers:{apikey:env.SUPABASE_ANON_KEY,authorization:"Bearer "+token}
+        });
+        if(!verified.ok)return null;
+        const account=await verified.json();
+        return account?.id&&account?.email?{id:account.id,email:account.email}:null;
+      }});
+  }
   if (!ready(env)) {
     if (request.method==="GET" && (route[0]==="products" || route[0]==="status"))
       return output({products:[],configured:false,checkout_enabled:false});
