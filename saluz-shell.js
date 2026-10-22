@@ -132,14 +132,17 @@
    adicionar ?d1=1 ao endereço da loja, ou ?d1=0 para desativar. */
 (()=>{
  const isStage=window.location?.hostname==="homologacao.saluz-loja.pages.dev";
+ // Homologação: catálogo D1 é padrão, mesmo em abas novas ou navegador interno.
+ // d1=0 desativa explicitamente para comparar o Supabase legado nesta aba.
  let enabled=false;
  if(isStage){
   const value=new URLSearchParams(window.location.search).get("d1");
   try{
    if(value==="1")window.sessionStorage.setItem("saluz-d1-preview","1");
-   if(value==="0")window.sessionStorage.removeItem("saluz-d1-preview");
-   enabled=window.sessionStorage.getItem("saluz-d1-preview")==="1";
-  }catch{enabled=value==="1";}
+   if(value==="0")window.sessionStorage.setItem("saluz-d1-preview","0");
+   const saved=window.sessionStorage.getItem("saluz-d1-preview");
+   enabled=value==="1"||(value!=="0"&&saved!=="0");
+  }catch{enabled=value!=="0";}
  }
  window.saluzD1PreviewEnabled=enabled;
  window.saluzD1PreviewUrl=path=>{

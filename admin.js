@@ -9,9 +9,10 @@ const saluzD1AdminPreview=(()=>{
  const selected=new URLSearchParams(location.search).get("d1");
  try{
   if(selected==="1")sessionStorage.setItem("saluz-admin-d1-preview","1");
-  if(selected==="0")sessionStorage.removeItem("saluz-admin-d1-preview");
-  return sessionStorage.getItem("saluz-admin-d1-preview")==="1";
- }catch{return selected==="1";}
+  if(selected==="0")sessionStorage.setItem("saluz-admin-d1-preview","0");
+  const saved=sessionStorage.getItem("saluz-admin-d1-preview");
+  return selected==="1"||(selected!=="0"&&saved!=="0");
+ }catch{return selected!=="0";}
 })();
 let saluzProductRevision=0;
 for(const a of document.querySelectorAll('a[href^="https://usesaluz.com.br/"]')){if(saluzStoreOrigin!=="https://usesaluz.com.br")a.href=a.href.replace("https://usesaluz.com.br",saluzStoreOrigin);}
