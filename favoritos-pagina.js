@@ -58,7 +58,7 @@ async function load(){
  if(!ids.length){render();return;}
  status.textContent="Carregando favoritos...";
  try{
-   const response=await fetch("/api/products/favorites?ids="+encodeURIComponent(ids.join(",")),{cache:"no-store"});
+   const response=await fetch((window.saluzD1PreviewUrl?.("/api/products/favorites?ids="+encodeURIComponent(ids.join(",")))||"/api/products/favorites?ids="+encodeURIComponent(ids.join(","))),{cache:"no-store"});
    if(!response.ok)throw new Error("Catálogo indisponível");
    const data=await response.json();
    list=Array.isArray(data.products)?data.products:[];
