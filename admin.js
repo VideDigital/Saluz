@@ -3,6 +3,17 @@ const $=id=>document.getElementById(id);
 const fmt=n=>(Number(n||0)/100).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
 const text=(tag,value,cls)=>{const n=document.createElement(tag);n.textContent=value===undefined?"":String(value);if(cls)n.className=cls;return n;};
 const saluzStoreOrigin=location.hostname.startsWith("homologacao.")?"https://homologacao.saluz-loja.pages.dev":"https://usesaluz.com.br";
+// Apenas homologação: trocar a fonte do módulo Produtos sem alterar o painel aprovado.
+const saluzD1AdminPreview=(()=>{
+ if(location.hostname!=="homologacao.saluz-admin.pages.dev")return false;
+ const selected=new URLSearchParams(location.search).get("d1");
+ try{
+  if(selected==="1")sessionStorage.setItem("saluz-admin-d1-preview","1");
+  if(selected==="0")sessionStorage.removeItem("saluz-admin-d1-preview");
+  return sessionStorage.getItem("saluz-admin-d1-preview")==="1";
+ }catch{return selected==="1";}
+})();
+let saluzProductRevision=0;
 for(const a of document.querySelectorAll('a[href^="https://usesaluz.com.br/"]')){if(saluzStoreOrigin!=="https://usesaluz.com.br")a.href=a.href.replace("https://usesaluz.com.br",saluzStoreOrigin);}
 const displayDate=s=>new Date(s).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"});
 let catalog=[],orders=[],currentTab="overview";
@@ -13,7 +24,9 @@ const statusNames={
  em_preparacao:"Em preparação",enviado:"Enviado",cancelado:"Cancelado"
 };
 async function api(path,opts={}){
- const res=await fetch("/api/"+path,{cache:"no-store",credentials:"same-origin",
+ const routed=saluzD1AdminPreview && /^admin\/products(?:\/|\?|$)/.test(path)
+  ?path.replace(/^admin\//,"migration-admin/"):path;
+ const res=await fetch("/api/"+routed,{cache:"no-store",credentials:"same-origin",
    ...opts,headers:{"content-type":"application/json",...(opts.headers||{})}});
  const b=await res.json().catch(()=>({}));
  if(!res.ok){const detail=b.error||"Erro de comunicação com o sistema";throw new Error(res.status===503?"Painel em configuração: falta concluir a conexão segura com o Supabase.":detail);}
@@ -116,7 +129,10 @@ function changeTab(name){
  if(name==="overview")window.SaluzAdminExtras?.loadOverview();
  if(name==="orders")loadOrders();
  if(name==="customers")window.SaluzAdminExtras?.loadCustomers();
- if(name==="products")loadProducts();
+ if(name==="products"){
+  if(saluzD1AdminPreview)message("Homologação D1: produtos fictícios. Demais módulos continuam na integração atual.");
+  loadProducts();
+ }
  if(name==="finance")window.SaluzAdminExtras?.openFinance();
  if(name==="reports")loadReports();
  if(name==="studio")window.SaluzStudio?.open();
@@ -371,7 +387,7 @@ document.addEventListener("keydown",event=>{
  }
 });
 function editProduct(p){
- const f=$("product-form");f.reset();f.elements.id.value=p.id;
+ const f=$("product-form");f.reset();f.elements.id.value=p.id;saluzProductRevision=Number(p.revision||0);
  f.elements.name.value=p.name;f.elements.description.value=p.description;
  f.elements.category.value=p.category;f.elements.price.value=(p.price_cents/100).toFixed(2);
    f.elements.original_price.value=Number(p.original_price_cents)>0?(p.original_price_cents/100).toFixed(2):"";
@@ -384,12 +400,12 @@ function editProduct(p){
  $("cancel-edit").hidden=false;
  const visit=$("visit-product");
  visit.hidden=!p.is_active;
- if(p.is_active)visit.href=saluzStoreOrigin+"/produto.html?id="+encodeURIComponent(p.id);
+ if(p.is_active)visit.href=saluzStoreOrigin+"/produto.html?id="+encodeURIComponent(p.id)+(saluzD1AdminPreview?"&d1=1":"");
  updateProductPreview();
  openProductDialog("Editar produto");
 }
 function newProduct(){
- const f=$("product-form");f.reset();f.elements.id.value="";$("variant-rows").replaceChildren();addVariantRow();$("main-preview").replaceChildren();
+ const f=$("product-form");f.reset();f.elements.id.value="";saluzProductRevision=0;$("variant-rows").replaceChildren();addVariantRow();$("main-preview").replaceChildren();
  $("product-form-label").textContent="NOVO PRODUTO";
  $("cancel-edit").hidden=false;
  $("visit-product").hidden=true;
@@ -436,8 +452,9 @@ $("product-form").addEventListener("submit",async e=>{
    description:f.elements.description.value,image_url:f.elements.image_url.value,
    price_cents:Math.round(price*100),original_price_cents:original,is_active:f.elements.is_active.checked,is_featured:f.elements.is_featured.checked,variants};
   const id=f.elements.id.value;
+  if(id&&saluzD1AdminPreview)product.revision=saluzProductRevision;
   await api(id?"admin/products/"+id:"admin/products",{method:id?"PATCH":"POST",body:JSON.stringify(product)});
-  message("Produto salvo. Confira as variações e o estoque antes de ativar.");
+  message(saluzD1AdminPreview?"Produto salvo no D1 de homologação; produção inalterada.":"Produto salvo. Confira as variações e o estoque antes de ativar.");
   closeProductDialog(true);newProduct();await loadProducts();
  }catch(err){message(err.message);$("product-dialog-feedback").textContent=err.message;}
  finally{button.disabled=false;button.textContent="Salvar produto";}
@@ -446,6 +463,28 @@ $("product-form").addEventListener("submit",async e=>{
 async function uploadPhoto(file){
  if(!file)return "";
  if(!["image/jpeg","image/png","image/webp"].includes(file.type)||file.size>5*1024*1024)throw new Error("Use uma foto JPG, PNG ou WebP de até 5 MB.");
+ if(saluzD1AdminPreview){
+  const bitmap=await createImageBitmap(file),canvas=document.createElement("canvas");
+  const scale=Math.min(1,1000/Math.max(bitmap.width,bitmap.height));
+  canvas.width=Math.max(1,Math.round(bitmap.width*scale));
+  canvas.height=Math.max(1,Math.round(bitmap.height*scale));
+  try{canvas.getContext("2d").drawImage(bitmap,0,0,canvas.width,canvas.height);}
+  finally{bitmap.close();}
+  let compressed=null;
+  for(const quality of [.82,.66,.50,.38]){
+   const image=await new Promise(resolve=>canvas.toBlob(resolve,"image/webp",quality));
+   if(image?.type==="image/webp"&&image.size>0&&image.size<=500000){compressed=image;break;}
+  }
+  if(!compressed)throw new Error("Não foi possível otimizar a foto para 500 KB.");
+  const response=await fetch("/api/migration-admin/upload",{
+   method:"POST",credentials:"same-origin",cache:"no-store",
+   headers:{"content-type":"image/webp","x-saluz-media-purpose":"product","x-saluz-filename":file.name.slice(0,140)},
+   body:compressed
+  });
+  const data=await response.json().catch(()=>({}));
+  if(!response.ok||!data.url)throw new Error(data.error||"Falha no upload KV de homologação.");
+  return data.url;
+ }
  const res=await fetch("/api/admin/upload",{method:"POST",credentials:"same-origin",headers:{"content-type":file.type},body:file});
  const data=await res.json().catch(()=>({}));
  if(!res.ok)throw new Error(data.error||"Não foi possível enviar a foto.");
