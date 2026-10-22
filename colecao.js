@@ -31,7 +31,9 @@ async function loadNext(){
  loading=true;more.disabled=true;
  status.textContent="Carregando produtos da coleção...";
  try{
-  const response=await fetch("/api/products?category="+encodeURIComponent(chosen)+"&page="+(page+1)+"&limit=48",{cache:"no-store"});
+  // A coleção usa a mesma fonte da vitrine geral, somente se D1 foi ativado em homologação.
+  const path="/api/products?category="+encodeURIComponent(chosen)+"&page="+(page+1)+"&limit=48";
+  const response=await fetch(window.saluzD1PreviewUrl?.(path)||path,{cache:"no-store"});
   if(!response.ok)throw new Error("Serviço temporariamente indisponível");
   const data=await response.json();
   const items=(Array.isArray(data.products)?data.products:[]).filter(p=>p.category===chosen);
@@ -40,7 +42,7 @@ async function loadNext(){
   empty.hidden=total+items.length>0;
  for(const p of items){
   const card=el("article","category-product"),link=el("a","category-product-photo"),copy=el("div","category-product-copy");
-  link.href="./produto.html?id="+encodeURIComponent(p.id);
+  link.href="./produto.html?id="+encodeURIComponent(p.id)+(window.saluzD1PreviewEnabled?"&d1=1":"");
   link.setAttribute("aria-label","Ver "+p.name);
   const variant=(Array.isArray(p.variants)?p.variants:[]).find(v=>Number(v.stock)>0)||p.variants?.[0];
   const image=variant?.image_url||p.image_url;

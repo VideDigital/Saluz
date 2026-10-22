@@ -148,4 +148,25 @@
   url.searchParams.set("source","d1");
   return url.pathname+url.search;
  };
+
+ // Navegação da homologação preserva a origem D1 ao abrir coleções, detalhes,
+ // favoritos e páginas internas, inclusive em nova aba, sem tocar na produção.
+ if(enabled){
+  const updateLink=anchor=>{
+   if(!anchor?.getAttribute)return;
+   const raw=anchor.getAttribute("href");
+   if(!raw||raw.startsWith("#"))return;
+   try{
+    const u=new URL(raw,window.location.href);
+    if(u.origin!==window.location.origin||!u.pathname.endsWith(".html")||u.searchParams.get("d1")==="0")return;
+    u.searchParams.set("d1","1");
+    anchor.href=u.pathname+u.search+u.hash;
+   }catch{}
+  };
+  document.querySelectorAll("a[href]").forEach(updateLink);
+  document.addEventListener("click",event=>{
+   const anchor=event.target?.closest?.("a[href]");
+   if(anchor)updateLink(anchor);
+  },true);
+ }
 })();
