@@ -13,6 +13,7 @@ document.querySelectorAll("[data-view]").forEach(b=>b.onclick=()=>{
  document.querySelectorAll("[data-view]").forEach(x=>x.classList.toggle("active",x===b));
  for(const id of ["products","storage","content","orders","auth"])$("view-"+id).hidden=b.dataset.view!==id;
  if(b.dataset.view==="storage")loadStorage();if(b.dataset.view==="content")loadContent();
+ if(b.dataset.view==="auth")checkAuthCapabilities();
 });
 async function access(){
  try{
@@ -123,6 +124,22 @@ $("content-form").onsubmit=async(e)=>{
  }catch(err){msg(err.message,true)}
 };
 
+async function checkAuthCapabilities(){
+ const form=$("d1-auth-setup"),button=form.querySelector('[type="submit"]');
+ try{
+  const data=await req("migration-auth/capabilities");
+  if(data.kdf?.supported!==true){
+   button.disabled=true;
+   form.querySelectorAll('input').forEach(x=>x.disabled=true);
+   authFeedback("d1-setup-feedback","O runtime Cloudflare não aceita o método de proteção de senha configurado. Esta opção foi bloqueada para sua segurança. Continue utilizando o login atual do painel até disponibilizarmos uma alternativa segura.");
+   return;
+  }
+  button.disabled=false;
+ }catch{
+  button.disabled=true;
+  authFeedback("d1-setup-feedback","Não foi possível verificar a segurança deste método. Cadastro temporariamente indisponível; seu login atual permanece funcionando.");
+ }
+}
 /* A ativação D1 é um segundo acesso de TESTE, nunca autentica /api/admin.
    O painel atual continua dependendo do Supabase. */
 function authFeedback(id,message){$(id).textContent=message;}
