@@ -14,6 +14,8 @@ on:
       - 'saluz-shell.js'
       - 'tests/collection-d1-preview.test.mjs'
       - 'tests/admin-d1-approved.test.mjs'
+      - 'tests/staging-auth.test.mjs'
+      - 'cloudflare/d1/0003_staging_auth.sql'
       - 'admin-deploy/**'
       - '.github/workflows/saluz-cloudflare-migration-tests.yml'
 permissions:
@@ -32,6 +34,7 @@ jobs:
           node --check cloudflare/storage/r2-media.mjs
           node --check cloudflare/d1/repository.mjs
           node --check cloudflare/d1/staging-admin.mjs
+          node --check cloudflare/d1/staging-auth.mjs
           node --check cloudflare/storage/kv-media.mjs
           node --check functions/api/\[\[path\]\].js
           node --check admin-deploy/functions/api/\[\[path\]\].js
@@ -49,10 +52,13 @@ jobs:
           db.execute('PRAGMA foreign_keys=ON')
           db.executescript(Path('cloudflare/d1/0001_initial.sql').read_text())
           db.executescript(Path('cloudflare/d1/0001_initial.sql').read_text())
+          db.executescript(Path('cloudflare/d1/0003_staging_auth.sql').read_text())
           db.executescript(Path('cloudflare/d1/dev-seed.sql').read_text())
           tables={r[0] for r in db.execute("select name from sqlite_master where type='table'")}
           expected={'saluz_admins','saluz_products','saluz_orders','saluz_events','saluz_site_content','saluz_login_limits','saluz_media','saluz_media_references','saluz_audit_log'}
+          expected.update({'saluz_auth_credentials','saluz_auth_sessions','saluz_auth_login_limits'})
           assert expected.issubset(tables),expected-tables
+          assert db.execute('select count(*) from saluz_auth_credentials').fetchone()[0]==0
           assert db.execute('select count(*) from saluz_products').fetchone()[0]==2
           assert db.execute('select count(*) from saluz_products where is_active=1').fetchone()[0]==0
           assert db.execute('select count(*) from saluz_site_content').fetchone()[0]==1

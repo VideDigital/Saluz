@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="./migration-lab.css"><script src="./migration-lab.js" defer></script></head>
 <body><header><div class="brand">SALUZ <span>✦</span> <small>AMBIENTE DE HOMOLOGAÇÃO</small></div><a href="./">← Voltar ao painel</a></header>
 <main id="workspace" hidden><div class="intro"><div><span class="kicker">CLOUDFLARE D1 + KV</span><h1>Laboratório de migração</h1><p>Teste o novo catálogo e o armazenamento sem alterar a loja oficial ou ativar pagamentos.</p><a href="https://homologacao.saluz-loja.pages.dev/loja.html?d1=1" target="_blank" rel="noopener" style="display:inline-block;background:#825064;color:white;padding:12px 18px;border-radius:9px;margin-top:8px;font-weight:700">Testar na loja aprovada ↗</a></div><span class="status">Somente homologação</span></div>
-<nav class="nav"><button data-view="products" class="active">Produtos</button><button data-view="storage">Armazenamento</button><button data-view="content">Conteúdo</button><button data-view="orders">Pedidos e segurança</button></nav>
+<nav class="nav"><button data-view="products" class="active">Produtos</button><button data-view="storage">Armazenamento</button><button data-view="content">Conteúdo</button><button data-view="orders">Pedidos e segurança</button><button data-view="auth">Acesso Cloudflare</button></nav>
 <p id="message" role="status" aria-live="polite"></p>
 <section id="view-products"><div class="panel"><div class="sectiontitle"><h2>Catálogo D1</h2><button id="refresh-products">Atualizar</button></div><p>Este cadastro é separado do Supabase. A vitrine oficial continua inalterada.</p><div id="product-list" class="items"></div></div>
 <div class="panel"><h2 id="form-title">Cadastrar produto de teste</h2><form id="product-form">
@@ -24,4 +24,21 @@
 <button class="primary" type="submit">Salvar rascunho D1</button></form></div></section>
 <section id="view-orders" hidden><div class="panel"><h2>Pedidos e segurança</h2><p><strong>Pagamentos desativados.</strong> O módulo de pedidos não foi transferido; não vamos criar nem confirmar pedidos nesta área até validar estoque transacional, webhook, conciliação e frete.</p>
 <p>O acesso administrativo atual é autenticado pelo Supabase e será substituído numa fase posterior com redefinição segura de acesso. Nenhuma senha é copiada.</p></div></section>
+<section id="view-auth" hidden>
+<div class="panel"><h2>Acesso administrativo Cloudflare — teste isolado</h2>
+<p>Prepare uma senha NOVA para a sua própria conta administrativa verificada. Essa senha não substitui o acesso do painel atual; a migração completa ocorrerá somente após validação e aprovação.</p>
+<p class="hint">Use uma senha exclusiva com no mínimo 14 caracteres. Não use a senha do Supabase. Ela será processada no servidor Cloudflare e armazenada apenas como hash protegido, nunca enviada ao ChatGPT.</p>
+<form id="d1-auth-setup" autocomplete="off">
+<label>Nova senha de testes<input name="password" type="password" minlength="14" maxlength="128" autocomplete="new-password" required></label>
+<label>Confirmar nova senha<input name="confirm" type="password" minlength="14" maxlength="128" autocomplete="new-password" required></label>
+<label class="check"><input name="confirm_reset" type="checkbox"> Estou redefinindo minha senha Cloudflare existente (invalida outras sessões)</label>
+<button class="primary" type="submit">Preparar acesso Cloudflare D1</button>
+</form><p id="d1-setup-feedback" role="status" aria-live="polite"></p></div>
+<div class="panel"><h2>Validar novo login sem perder o atual</h2>
+<p>Depois do cadastro, teste o login usando seu próprio e-mail e a nova senha. Isso não altera o login Supabase em uso.</p>
+<form id="d1-auth-login" autocomplete="off">
+<label>E-mail da conta administrativa<input name="email" type="email" maxlength="160" autocomplete="username" required></label>
+<label>Senha Cloudflare de testes<input name="password" type="password" autocomplete="new-password" required></label>
+<div class="actions"><button class="primary" type="submit">Testar login Cloudflare</button><button id="d1-auth-logout" type="button">Encerrar sessão D1</button></div>
+</form><p id="d1-login-feedback" role="status" aria-live="polite"></p></div></section>
 </main><section id="auth-wall" class="auth">Conferindo autorização administrativa...</section></body></html>
