@@ -161,6 +161,17 @@ test("gateway e proxy mantêm autenticação atual intacta",()=>{
  assert.match(gateway,/if\(route\[0\]==="migration-auth" && route.length===2\)/);
  assert.ok(gateway.indexOf('if(route[0]==="migration-auth"')<gateway.indexOf("if (!ready(env))"));
  assert.match(gateway,/if \(route\[0\]==="auth"/);
- assert.match(proxy,/"migration-auth":new Set\(\["setup","login","logout","me"\]\)/);
+ assert.match(proxy,/"migration-auth":new Set\(\["setup","login","logout","me","capabilities"\]\)/);
  assert.match(proxy,/url.hostname!=="homologacao.saluz-admin.pages.dev"/);
+});
+
+test("canário KDF isolado consulta somente suporte criptográfico sem credenciais",async()=>{
+ const state=database();
+ const r=await onD1AuthRequest({request:req("capabilities"),env:envFor(state),route:"capabilities"});
+ assert.equal(r.status,200);
+ const result=await r.json();
+ assert.equal(result.environment,"staging");
+ assert.equal(typeof result.kdf.supported,"boolean");
+ assert.equal(state.credentials.size,0);
+ assert.equal(state.admins.size,0);
 });
