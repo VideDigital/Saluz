@@ -90,6 +90,10 @@ jobs:
           const showcase=await fetch(base+'/migration-showcase.html',{cache:'no-store'});
           assert.equal(showcase.status,200,'Vitrine D1 nao publicada na homologacao');
           assert.match(await showcase.text(),/Vitrine D1 de testes/);
+          // Diagnóstico sem senha/identidade, exclusivo do preview.
+          const capability=await get('/api/migration-auth/capabilities');
+          assert.equal(capability.environment,'staging');
+          console.log('AUTH_KDF_CAPABILITY='+JSON.stringify(capability.kdf));
           const catalog=await get('/api/migration-catalog');
           assert.equal(catalog.source,'D1 staging');
           assert.equal(catalog.payments_enabled,false);
