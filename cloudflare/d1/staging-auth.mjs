@@ -147,10 +147,27 @@ async function logout({request,env}){
  ).bind(new Date().toISOString(),await sha(raw)).run();
  return response({ok:true},200,{"set-cookie":cookie("",0)});
 }
+// Diagnóstico sem contas/senhas ou escrita; só na homologação.
+// Confirma se o runtime permite o custo de derivação aprovado.
+async function passwordKdfCapability(){
+ try {
+  const salt=new Uint8Array(16),key=await crypto.subtle.importKey(
+   "raw",enc.encode("canario-publico-sem-senha-real"),"PBKDF2",false,["deriveBits"]);
+  const bits=await crypto.subtle.deriveBits({name:"PBKDF2",salt,iterations:ITERATIONS,hash:"SHA-256"},key,256);
+  return {supported:bits.byteLength===32};
+ }catch(e){
+  return {supported:false,reason:e?.name==="NotSupportedError"?"not_supported":
+    e?.name==="OperationError"?"operation_error":"runtime_error"};
+ }
+}
 export async function onD1AuthRequest({request,env,route,verifyLegacyAdmin}){
  if(!requestAllowed(request,env))return response({error:"Indisponível"},404);
  const method=request.method;
- if(!["login","logout","me","setup"].includes(route))return response({error:"Não encontrado"},404);
+ if(!["login","logout","me","setup","capabilities"].includes(route))return response({error:"Não encontrado"},404);
+ if(route==="capabilities"){
+  if(method!=="GET")return response({error:"Método inválido"},405);
+  return response({environment:"staging",kdf:await passwordKdfCapability()});
+ }
  if(route==="me"){
    if(method!=="GET")return response({error:"Método inválido"},405);
    try{const user=await currentSession(env.SALUZ_D1_PREVIEW,request);

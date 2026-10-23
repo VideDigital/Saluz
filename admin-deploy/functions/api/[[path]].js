@@ -1,5 +1,5 @@
 /* SALUZ Control: proxy same-origin limitado ao backend SALUZ, sem chaves no navegador. */
-const METHODS={auth:new Set(["login","logout","me"]),admin:new Set(["orders","upload","products","metrics","site-content","store-health","payment-integration"]),status:new Set([""]), "migration-admin":new Set(["products","content","storage","upload"]), "migration-media":new Set([""]), "migration-auth":new Set(["setup","login","logout","me"])};
+const METHODS={auth:new Set(["login","logout","me"]),admin:new Set(["orders","upload","products","metrics","site-content","store-health","payment-integration"]),status:new Set([""]), "migration-admin":new Set(["products","content","storage","upload"]), "migration-media":new Set([""]), "migration-auth":new Set(["setup","login","logout","me","capabilities"])};
 export async function onRequest({request,env}){
   const target=String(env.ADMIN_API_ORIGIN||"");
   if(!["https://usesaluz.com.br","https://homologacao.saluz-loja.pages.dev"].includes(target))
@@ -15,7 +15,7 @@ export async function onRequest({request,env}){
     if(url.hostname!=="homologacao.saluz-admin.pages.dev"||
        target!=="https://homologacao.saluz-loja.pages.dev")
       return new Response("Rota indisponível",{status:404});
-    if(!((endpoint==="me"&&request.method==="GET")||
+    if(!((["me","capabilities"].includes(endpoint)&&request.method==="GET")||
          (["setup","login","logout"].includes(endpoint)&&request.method==="POST")))
       return new Response("Method not allowed",{status:405});
   }
