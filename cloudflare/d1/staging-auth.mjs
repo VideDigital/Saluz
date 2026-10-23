@@ -101,6 +101,8 @@ async function setup({request,env,verifyLegacyAdmin}){
    return response({error:"Cadastro administrativo em conflito. Exige revisão manual."},409);
  const existing=await db.prepare("SELECT credential_version FROM saluz_auth_credentials WHERE user_id=?").bind(verified.id).first();
  if(existing&&payload.confirm_reset!==true)return response({error:"Acesso já preparado. Confirme redefinição para substituir."},409);
+ const capability=await passwordKdfCapability();
+ if(!capability.supported)return response({error:"Esta configuração de senha não é compatível com a Cloudflare neste ambiente. Nenhuma senha foi alterada; mantenha o acesso atual enquanto preparamos autenticação alternativa."},503);
  const salt=hex(crypto.getRandomValues(new Uint8Array(16)));
  const hashed=await kdf(password,salt);
  const now=new Date().toISOString();
