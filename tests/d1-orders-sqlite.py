@@ -62,6 +62,7 @@ db.execute("UPDATE saluz_stock_reservations SET released_at=? WHERE order_id=?",
 assert qty(product_a)==2
 db.execute("UPDATE saluz_stock_reservations SET released_at=? WHERE order_id=?",("2026-10-29T12:01:00Z",first))
 assert qty(product_a)==2
+db.commit()  # Finalize release before opening the next explicit transaction.
 
 # A multi-product order with one insufficient line MUST roll back the first hold.
 third=str(uuid4())
