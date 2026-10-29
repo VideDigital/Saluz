@@ -249,3 +249,12 @@ Não adicionar senhas, tokens, chaves Mercado Pago ou dados reais de clientes ao
 - **Limpeza confirmada após a exceção:** excluídas reservas, pedidos e produto temporários na ordem correta, com resposta positiva de todas as operações; consulta final retornou os mesmos valores da linha de base: `2` produtos, `0` pedidos e `0` reservas. Nenhum item dos dois seeds foi editado.
 - **Limitação:** execução complementar de idempotência da liberação e rollback real multi-item **não foi concluída**, devido a bloqueio da ferramenta de segurança. Esses comportamentos continuam **aprovados em SQLite local** (workflow do PR #34), mas **não homologados no runtime D1 da Cloudflare**.
 - **P0 pendente:** validar `reserveOrderD1` por `D1.batch` em teste autorizado e isolado, rollback multi-item, liberação única, cancelamento/expiração e rotina de reconciliação após webhooks; não disponibilizar POST público ou habilitar pagamentos antes desses critérios.
+
+### Publicação da loja Preview com credencial de teste MP — 29/10/2026
+- Usuário confirmou que o `MP_ACCESS_TOKEN` pertence às **credenciais de teste** de sua própria conta Mercado Pago, não à conta da Anny; não utilizar essas credenciais para produção.
+- API Cloudflare confirmou segredo criptografado `MP_ACCESS_TOKEN` presente no ambiente **Preview** do projeto `saluz-loja` e **ausente** de Production. `CHECKOUT_ENABLED=false` em ambos.
+- PR #35 criou pipeline `.github/workflows/saluz-loja-staging-deploy.yml`, mesclado somente em `homologacao`, usando o GitHub Environment `saluz-homologacao`. O deploy novo publica somente `saluz-loja` na branch `homologacao`; não toca a branch `main` nem o domínio de produção.
+- GitHub Actions: https://github.com/VideDigital/Saluz/actions/runs/40952623871 — **sucesso**; testes automatizados, deploy e consultas HTTP read-only ao `/api/status` e catálogo D1 aprovados.
+- Cloudflare confirmou deploy Preview `a40d1d8f-ec76-4dac-9c97-d2707be8c36b` (29/10/2026), alias `https://homologacao.saluz-loja.pages.dev`, status `success`.
+- **NÃO CONFIRMADO:** token válido na API do Mercado Pago. Presença do segredo no Cloudflare não prova autorização de API, permissão da aplicação nem sucesso de Checkout Pro. Validar via verificação administrativa autenticada; não exibir token ou dados de conta em páginas públicas.
+- **Bloqueios P0:** implementar frete verificado, reservas atômicas D1 pelo backend, assinatura/reconsulta de webhook e idempotência, e executar testes sandbox sem abrir cobrança real. `MP_CHECKOUT_ENABLED` e demais flags de liberação não foram habilitadas.
