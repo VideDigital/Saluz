@@ -135,3 +135,10 @@ Não adicionar senhas, tokens, chaves Mercado Pago ou dados reais de clientes ao
 4. Frete, Mercado Pago sandbox e webhook; manter checkout desabilitado até regras comerciais e aceite da cliente.
 
 **Registro:** atualização documental da `main`, sem alterar banco, mídia, secrets, DNS ou pagamento.
+
+### Homologação do painel — teste de edição confirmado em 29/10/2026
+- Usuário autorizado acessou o painel de homologação e visualizou 7 produtos do catálogo D1; tela de edição do produto `produto de teste— Kit Autocuidado` exibiu campos, variação e prévia sem erro aparente.
+- Foi alterada **apenas a descrição** do produto e gravada pelo painel; o usuário confirmou persistência após atualizar a página (F5).
+- Consulta autenticada e **somente leitura** ao D1 de STAGING confirmou `description = "Teste de edição do produto no banco D1 da SALUZ."`, `revision = 3`. Portanto, **edição de descrição e leitura persistente estão homologadas para esse produto específico**.
+- **Pendente:** restaurar a descrição de teste; verificar demais campos, upload/visualização de imagens, publicação/ocultação, concorrência e controle de acesso em testes autenticados separados.
+- Não houve modificação de dados realizada diretamente pelo assistente; o teste de escrita foi efetuado pelo usuário no painel da homologação. Nenhum pagamento ou pedido foi liberado.
