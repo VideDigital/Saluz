@@ -72,16 +72,28 @@ jobs:
       - name: Confirmar URL e comportamento estático sem autenticação
         run: |
           python3 - <<'PY'
+          import time
           import urllib.request
-          url = "https://homologacao.saluz-admin.pages.dev/admin.html"
-          req = urllib.request.Request(url, headers={"User-Agent": "saluz-deploy-check/1"})
-          with urllib.request.urlopen(req, timeout=30) as response:
-              html = response.read().decode("utf-8")
-              assert response.status == 200
-              assert "admin.js?v=20261029-expired-session" in html, "Novo HTML ainda não servido"
-          with urllib.request.urlopen("https://homologacao.saluz-admin.pages.dev/admin.js", timeout=30) as response:
-              js = response.read().decode("utf-8")
-              assert response.status == 200
-              assert "invalidateAdminSession" in js and "ensureAdminResponse" in js
+          from urllib.error import HTTPError, URLError
+          base = "https://homologacao.saluz-admin.pages.dev"
+          headers = {"User-Agent": "Mozilla/5.0 (compatible; SALUZ-Staging-Check/1.0)",
+                     "Accept": "text/html,application/javascript,*/*"}
+          def get(path):
+              last_error = None
+              for attempt in range(4):
+                  try:
+                      request = urllib.request.Request(base + path, headers=headers)
+                      with urllib.request.urlopen(request, timeout=30) as response:
+                          assert response.status == 200
+                          return response.read().decode("utf-8")
+                  except (HTTPError, URLError) as error:
+                      last_error = error
+                      if attempt < 3:
+                          time.sleep(3)
+              raise RuntimeError(f"Staging endpoint {path} unavailable") from last_error
+          html = get("/admin.html")
+          assert "admin.js?v=20261029-expired-session" in html, "Novo HTML ainda não servido"
+          js = get("/admin.js")
+          assert "invalidateAdminSession" in js and "ensureAdminResponse" in js
           print("Staging admin HTML/JS atualizado e acessível. Próximo teste: login real e expiração de sessão.")
           PY
