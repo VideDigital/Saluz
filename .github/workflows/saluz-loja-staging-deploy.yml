@@ -1,0 +1,89 @@
+name: SALUZ | Publicar loja somente na homologação
+
+on:
+  push:
+    branches: [homologacao]
+    paths:
+      - '.github/workflows/saluz-loja-staging-deploy.yml'
+      - 'functions/**'
+      - 'cloudflare/d1/**'
+      - 'cloudflare/storage/**'
+      - 'loja.js'
+      - 'loja.html'
+      - 'saluz-shell.js'
+      - 'colecao.js'
+      - 'admin.html'
+      - 'tests/mercado-pago-orders.test.mjs'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: saluz-staging-store-only
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/homologacao'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: saluz-homologacao
+    env:
+      CLOUDFLARE_ACCOUNT_ID: f84d79f13ae0a665e5046ebeb21ffddd
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Conferir credencial de deploy sem exibir o valor
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "::error::Secret CLOUDFLARE_API_TOKEN ausente no ambiente saluz-homologacao"
+            exit 1
+          fi
+      - name: Validar testes de segurança e transações
+        run: |
+          node --check functions/api/\[\[path\]\].js
+          node --test tests/*.test.mjs
+          python3 tests/d1-orders-sqlite.py
+      - name: Preparar arquivos públicos sem copiar documentação nem segredos
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import shutil
+          output=Path("saluz-public")
+          output.mkdir()
+          extensions={".html",".css",".js",".svg",".png",".jpg",".jpeg",".webp",".ico",".txt",".woff2",".xml"}
+          for f in Path(".").iterdir():
+              if f.is_file() and (f.suffix.lower() in extensions or f.name in {"_headers","_redirects"}):
+                  shutil.copy2(f,output/f.name)
+          for required in ("index.html","loja.html","saluz-shell.js","admin.html","_headers"):
+              assert (output/required).is_file(),f"Asset público ausente: {required}"
+          assert Path("functions/api/[[path]].js").is_file()
+          print("Arquivos públicos prontos; Cloudflare Pages Functions serão compiladas na raiz.")
+          PY
+      - name: Deploy exclusivo saluz-loja branch homologacao
+        run: |
+          npx --yes wrangler@4 pages deploy ./saluz-public --project-name saluz-loja --branch homologacao
+      - name: Verificar estado público sem autenticação e sem cobrança
+        run: |
+          python3 - <<'PY'
+          import json,urllib.request,time
+          base="https://homologacao.saluz-loja.pages.dev"
+          for path in ("/api/status","/api/products?source=d1&page=1&limit=1"):
+              for retry in range(5):
+                  try:
+                      req=urllib.request.Request(base+path,headers={"User-Agent":"Mozilla/5.0 (SALUZ staging smoke)","Accept":"application/json"})
+                      with urllib.request.urlopen(req,timeout=25) as response:
+                          assert response.status==200
+                          data=json.load(response)
+                          assert data.get("checkout_enabled") is False if path=="/api/status" else data.get("configured") is True
+                      print("Staging GET OK",path)
+                      break
+                  except Exception:
+                      if retry==4:raise
+                      time.sleep(3)
+          print("Pagamento segue desativado; testes de conexão MP exigem login autorizado.")
+          PY
