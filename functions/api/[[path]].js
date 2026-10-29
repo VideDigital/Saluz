@@ -493,6 +493,12 @@ export async function onRequest({request,env}) {
         return account?.id&&account?.email?{id:account.id,email:account.email}:null;
       }});
   }
+  // Somente cotação read-only no D1 da homologação. Nenhuma cobrança ou reserva
+  // é exposta via HTTP até frete, Webhook e segurança estarem aprovados.
+  if(route[0]==="migration-orders"&&route[1]==="quote"&&route.length===2){
+    const orders=await import("../../cloudflare/d1/orders.mjs");
+    return orders.quoteRequestD1({request,env});
+  }
   if (!ready(env)) {
     if (request.method==="GET" && (route[0]==="products" || route[0]==="status"))
       return output({products:[],configured:false,checkout_enabled:false});
