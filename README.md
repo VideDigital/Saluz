@@ -188,3 +188,12 @@ Não adicionar senhas, tokens, chaves Mercado Pago ou dados reais de clientes ao
 5. **P1 — Aquisição:** validar Search Console, sitemap, robots, metatags, eventos e indexação somente após liberação operacional.
 
 **Registro documental:** 29/10/2026, alinhamento cruzado com arquivos das branches `main` e `homologacao`. Nenhum produto, banco, segredo, deploy ou pagamento modificado por esta documentação.
+
+
+### Diagnóstico adicional — falha 401 no cadastro oculto (29/10/2026)
+- Painel de homologação D1 retornou `Acesso administrativo necessário` durante `Salvar produto` (rascunho `teste 1`, sem foto, inativo).
+- Query somente leitura ao STAGING confirmou **7 produtos**, nenhum `teste 1` cadastrado; a gravação não ocorreu.
+- O erro é devolvido por `isAdmin` na API protegida, antes de validar o cadastro; ausência de imagem em rascunho oculto não é a causa do 401.
+- A autenticação atual usa cookie HTTPOnly com JWT Supabase, expiração limitada ao prazo do token (máximo 3600 segundos) e sem refresh automático implementado no painel. **Possível expiração de sessão, ainda não comprovada**; outras hipóteses são cookie não encaminhado/persistido, revogação ou falha de autorização.
+- **Mitigação em teste:** abrir uma nova aba do mesmo domínio de homologação para login, mantendo aberta a aba com formulário, depois repetir Salvar; caso falhe, coletar status de `GET /api/auth/me`, sem enviar credenciais.
+- **Pendência P0:** UX de 401 com preservação do formulário, opção de reautenticar e proteção contra reenvio duplicado. **Issue:** https://github.com/VideDigital/Saluz/issues/31. Não desativar autorização para contornar o problema.
