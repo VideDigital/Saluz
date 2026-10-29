@@ -21,6 +21,8 @@ on:
       - 'cloudflare/d1/0003_staging_auth.sql'
       - 'admin-deploy/**'
       - '.github/workflows/saluz-cloudflare-migration-tests.yml'
+      - '.github/workflows/saluz-admin-staging-deploy.yml'
+      - '.github/scripts/build-saluz-admin-preview.py'
 permissions:
   contents: read
 jobs:
@@ -49,6 +51,8 @@ jobs:
         run: node --test tests/*.test.mjs
       - name: Validar reservas de estoque atomicamente no SQLite
         run: python3 tests/d1-orders-sqlite.py
+      - name: Validar empacotamento do painel sem segredos
+        run: python3 .github/scripts/build-saluz-admin-preview.py "$RUNNER_TEMP/saluz-admin-check"
       - name: Validar schema em SQLite limpo e seeds somente DEV
         run: |
           python3 - <<'PY'
