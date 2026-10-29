@@ -143,3 +143,12 @@ Não adicionar senhas, tokens, chaves Mercado Pago ou dados reais de clientes ao
 - **Pendente:** restaurar a descrição de teste; verificar demais campos, upload/visualização de imagens, publicação/ocultação, concorrência e controle de acesso em testes autenticados separados.
 - Não houve modificação de dados realizada diretamente pelo assistente; o teste de escrita foi efetuado pelo usuário no painel da homologação. Nenhum pagamento ou pedido foi liberado.
 - Reversão confirmada em 29/10 via consulta D1 STAGING: descrição do Kit Autocuidado passou a `DESCRIÇÃO TESTE` (`revision=4`); a descrição de teste temporária foi removida. Mantido apenas em homologação.
+
+
+### Homologação do upload KV — 29/10/2026
+- No painel de homologação (`homologacao.saluz-admin.pages.dev`) o usuário escolheu uma imagem de teste e visualizou a prévia no formulário de produto. **Não houve confirmação de salvamento da alteração no produto.**
+- Consulta autenticada **somente leitura** à conta Cloudflare da cliente confirmou novo registro `saluz_media` no D1 STAGING, com filename `Convite_City_2027_SP_Japan_1080x1080.png`, codificado em WebP com **104.936 bytes**, e chave correspondente encontrada no namespace `saluz-staging-media-kv`.
+- Consulta D1 confirmou que o upload recém-feito **não está registrado como foto principal do Kit Autocuidado**. O teste deve ser cancelado sem salvar para preservar o produto.
+- O arquivo de teste permanece fisicamente no KV e com metadados ativos no D1, mesmo sem associação ao produto. **Pendência P2:** planejar limpeza segura de mídia não vinculada, com revisão de referências e retenção; não excluir automaticamente.
+- **Validado:** upload e gravação KV + metadados D1 + prévia no navegador. **Pendente:** associar foto a produto de teste com salvamento controlado, reabrir, carregar via API pública, conferir qualidade e variante, política de limpeza.
+- Link de conversa de reunião fornecido pelo usuário: `https://chatgpt.com/share/6ae380fc-b228-83e9-98de-07897b34bc3b`; acesso ao conteúdo **não confirmado**. Não tratar ata anterior de 14/10 como conteúdo dessa reunião sem validação.
