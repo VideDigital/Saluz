@@ -142,3 +142,4 @@ Não adicionar senhas, tokens, chaves Mercado Pago ou dados reais de clientes ao
 - Consulta autenticada e **somente leitura** ao D1 de STAGING confirmou `description = "Teste de edição do produto no banco D1 da SALUZ."`, `revision = 3`. Portanto, **edição de descrição e leitura persistente estão homologadas para esse produto específico**.
 - **Pendente:** restaurar a descrição de teste; verificar demais campos, upload/visualização de imagens, publicação/ocultação, concorrência e controle de acesso em testes autenticados separados.
 - Não houve modificação de dados realizada diretamente pelo assistente; o teste de escrita foi efetuado pelo usuário no painel da homologação. Nenhum pagamento ou pedido foi liberado.
+- Reversão confirmada em 29/10 via consulta D1 STAGING: descrição do Kit Autocuidado passou a `DESCRIÇÃO TESTE` (`revision=4`); a descrição de teste temporária foi removida. Mantido apenas em homologação.
