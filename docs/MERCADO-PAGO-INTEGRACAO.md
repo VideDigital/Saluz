@@ -41,3 +41,22 @@ A API está preparada, mas sem rota operacional de cobrança até existir o flux
 
 ## Desvinculação da VIDE
 Credenciais, titularidade do Mercado Pago, GitHub, Cloudflare, Supabase e domínio devem ficar com a Anny. Revogar o acesso da VIDE somente depois de uma publicação totalmente funcional usando credenciais e permissões controladas pela cliente.
+
+
+## Verificação da credencial de teste — 29/10/2026
+
+A aplicação de teste do desenvolvedor (VIDE), **não pertencente à Anny**, está configurada apenas no ambiente **Preview** do Pages `saluz-loja`. A variável `MP_ACCESS_TOKEN` é um **Secret** criptografado; não há token no ambiente de produção. A flag `CHECKOUT_ENABLED` continua `false` nos dois ambientes.
+
+Verificar a conexão **após autenticar-se no painel de homologação**:
+
+```
+GET https://homologacao.saluz-admin.pages.dev/api/admin/payment-integration?probe=1
+```
+
+A mesma rota da área administrativa usa a autorização atual do Supabase (validada no backend antes da ação). A consulta **não está disponível** na produção e não cria pedido nem pagamento. A Function chama somente `GET https://api.mercadopago.com/v1/payment_methods` com `Authorization: Bearer <secret>` no servidor. Nunca incluir o segredo no navegador, GitHub, prints ou logs.
+
+Resposta mínima: `connection_status` pode ser `verified_read_only`, `rejected`, `not_configured`, `blocked`, `unavailable` ou `unexpected_response`; `checkout_enabled:false` é invariável. Nenhum token, e-mail, identificação da conta ou meio de pagamento é retornado.
+
+**Importante:** `verified_read_only` só significa que a API aceitou a credencial para consultar métodos de pagamento; não confirma funcionamento da API Orders, da reserva de estoque, dos webhooks, nem autorização para pagamentos reais. Executar teste real de compra simulada somente após revisar as dependências obrigatórias do checkout.
+
+Referência: https://www.mercadopago.com.br/developers/pt/reference/online-payments/checkout-api/payment-methods/get

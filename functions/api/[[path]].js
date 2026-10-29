@@ -354,6 +354,15 @@ async function storeHealth(env) {
 }
 async function adminAction(request,env,parts) {
   if(parts[1]==="payment-integration"&&parts.length===2&&request.method==="GET"){
+    const probe=new URL(request.url).searchParams.get("probe");
+    if(probe!==null){
+      // Called only after /api/admin/* passes existing Supabase admin authorization.
+      // Deliberately no public health check or token details in the response.
+      if(probe!=="1")return error("Verificação inválida",400);
+      const {probeMercadoPagoTestCredential}=await import("./mp-credential-probe.mjs");
+      const checked=await probeMercadoPagoTestCredential({request,env});
+      return output(checked.result,checked.httpStatus);
+    }
     // Estado de ativação privado. Não retorna chaves, emails ou tokens.
     return output({provider:"mercado_pago",integration:"checkout_pro_orders",
       credentials_configured:!!env.MP_ACCESS_TOKEN,
