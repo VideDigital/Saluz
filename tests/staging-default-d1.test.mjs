@@ -55,7 +55,9 @@ test("Arquivos HTML utilizam versão nova para evitar cache desatualizado",()=>{
   for(const script of ["saluz-shell.js","colecao.js","loja.js","home-vitrine.js","admin.js"]){
    if(html.includes("./"+script)){
     count++;
-    assert.ok(html.includes("./"+script+"?v=20261022-d1-default"),name+" precisa atualizar "+script);
+    const expected=script==="admin.js"&&name==="admin.html"?
+     "20261029-expired-session":"20261022-d1-default";
+    assert.ok(html.includes("./"+script+"?v="+expected),name+" precisa atualizar "+script);
    }
   }
  }
