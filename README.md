@@ -152,3 +152,39 @@ Não adicionar senhas, tokens, chaves Mercado Pago ou dados reais de clientes ao
 - O arquivo de teste permanece fisicamente no KV e com metadados ativos no D1, mesmo sem associação ao produto. **Pendência P2:** planejar limpeza segura de mídia não vinculada, com revisão de referências e retenção; não excluir automaticamente.
 - **Validado:** upload e gravação KV + metadados D1 + prévia no navegador. **Pendente:** associar foto a produto de teste com salvamento controlado, reabrir, carregar via API pública, conferir qualidade e variante, política de limpeza.
 - Link de conversa de reunião fornecido pelo usuário: `https://chatgpt.com/share/6ae380fc-b228-83e9-98de-07897b34bc3b`; acesso ao conteúdo **não confirmado**. Não tratar ata anterior de 14/10 como conteúdo dessa reunião sem validação.
+
+---
+
+## ALINHAMENTO RECUPERADO — conversa de 28/10/2026 (pagamentos, painel e migração)
+
+**Origem:** histórico textual da conversa de trabalho enviado pelo responsável VIDE em 29/10; referência compartilhada: https://chatgpt.com/share/6ae380fc-b228-83e9-98de-07897b34bc3b. Este histórico **não constitui ata de aprovação formal da Anny**. Diferenciar solicitações do responsável, propostas do assistente e implementação demonstrada no GitHub. Tarifas citadas na conversa são referências históricas, não taxas contratadas/verificadas na conta real.
+
+### Decisões e solicitações de escopo
+
+| Tema | Origem / decisão | Situação verificada em 29/10 |
+| --- | --- | --- |
+| Provedor principal | **Recomendação técnica VIDE:** Mercado Pago Checkout Pro direto no site próprio; não contratar Nuvemshop somente por pagamentos; não integrar simultaneamente três provedores | Adaptador inicial da Orders API presente em homologação; checkout e cobranças reais permanecem **desativados** |
+| Pagamentos online | Planejamento: Pix + cartão de crédito na primeira fase; débito tradicional de múltiplos bancos exige validação específica antes de qualquer promessa | **Pendente** confirmar com Anny a cobertura obrigatória de débito, modalidades/operadoras, taxas da sua conta e testes do provedor. PicPay/PagBank são alternativas, não integrações aprovadas |
+| Taxas | A conversa apresentou valores de referência e simulações; taxas variam conforme contrato, meio e prazo, além de custos de parcelamento | **Não fixar números na aplicação nem tratar valores da conversa como vigentes/contratados.** Validar tabela efetiva na conta da Anny |
+| Simulador financeiro | **Solicitação expressa VIDE:** calculadora no painel com valor bruto, provedor, Pix/crédito/débito, parcelas, prazo, desconto e líquido; taxas editáveis | **Implementado no código** `admin.html` + `saluz-admin-extras.js` em `main` e `homologacao`: aba `Simular taxas`, perfis configuráveis, comparação, percentual e valor fixo. Perfis salvos **somente no navegador (localStorage)**; funcionamento real, UX mobile e persistência não homologados. Não sincroniza taxas do Mercado Pago |
+| Profissionalização do painel | **Solicitação expressa VIDE:** melhorar layout, dashboard, dados de clientes, pedidos, financeiro e relatórios | Estruturas e abas existentes no código; **não homologado como gestão completa D1**. Clientes são derivados de pedidos; não afirmar CRM persistente separado, faturamento real ou métricas de vendas reais |
+| Acesso administrativo | Histórico relatou erro intermitente e correção de confirmação de sessão; usuário posteriormente conseguiu acessar e editar no painel | Login legado continua no Supabase Auth; homologar sessões e planejar alternativa segura (Cloudflare Access com validação de autorização no backend). Não copiar senhas para D1 ou enfraquecer hash |
+| Pedidos/estoque | Base transacional D1: cotação com preço consultado no servidor, reserva atômica por variação e rollback | Código e triggers de `0004_stock_reservations.sql` identificados; DEV/STAGING confirmados; **não liberado para checkout** e sem validação E2E de compra |
+| Busca orgânica | **Escopo técnico já registrado antes desta conversa**, não explicitamente discutido no histórico colado: Search Console, sitemap, robots, SEO básico | Pendente de configuração/verificação; não informar como decisão tomada na conversa de 28/10 |
+
+### Critérios para implementação de Mercado Pago
+- Conta recebedora, titularidade, tokens e webhooks da **SALUZ/Anny**, exclusivamente em secrets Cloudflare (nunca no GitHub); não armazenar PAN/CVV.
+- Checkout deve calcular preço e frete no servidor, confirmar estoque com reserva transacional e ser idempotente.
+- Verificar autenticidade do webhook, reconsultar o pagamento no provedor e reconciliar valor, moeda, recebedor, pedido e status antes de marcar como pago.
+- Não publicar débito para **qualquer** banco ou bandeira sem testes contratuais. Pix não é tecnicamente sinônimo de cartão de débito.
+- Confirmar frete, política comercial, privacidade, reembolsos, validade da reserva, monitoramento, backup e aceite final.
+- **Não alterar** `CHECKOUT_ENABLED=false`, flags de cobrança, credenciais ou endpoints comerciais com base apenas neste alinhamento.
+
+### Ordem de execução ajustada
+1. **P0 — Homologação:** terminar teste de edição, upload e associação de foto a produto de teste no D1/KV, com limpeza segura e reversão. Já houve validação parcial de login, catálogo, edição de descrição e upload com prévia; falta associar e verificar foto persistente.
+2. **P0 — Segurança/infra:** autenticação administrativa definitiva, restauração/backup e reserva D1 testada em cenários reais de concorrência/rollback.
+3. **P0 — Venda:** decidir com Anny débito obrigatório versus Pix, políticas de frete e prazo; integrar Mercado Pago sandbox e webhooks, depois testar jornada completa sem cobranças reais.
+4. **P1 — Painel:** testar `Simular taxas`; melhorar dashboard, clientes/pedidos, relatórios e experiência mobile sem inventar receita histórica.
+5. **P1 — Aquisição:** validar Search Console, sitemap, robots, metatags, eventos e indexação somente após liberação operacional.
+
+**Registro documental:** 29/10/2026, alinhamento cruzado com arquivos das branches `main` e `homologacao`. Nenhum produto, banco, segredo, deploy ou pagamento modificado por esta documentação.
