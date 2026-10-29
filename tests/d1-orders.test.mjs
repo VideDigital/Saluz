@@ -60,3 +60,10 @@ test("pontos de entrada pagos permanecem desativados e nenhum D1 é inserido dir
  const shop=readFileSync("loja.js","utf8");
  assert.doesNotMatch(shop,/MP_ACCESS_TOKEN/);
 });
+
+test("a UI usa endpoint D1 somente na homologação; produção mantém a rota atual",()=>{
+ const source=readFileSync("loja.js","utf8");
+ assert.match(source,/window\.saluzD1PreviewEnabled\?"\/api\/migration-orders\/quote":"\/api\/checkout\/quote"/);
+ const gateway=readFileSync("functions/api/[[path]].js","utf8");
+ assert.ok(gateway.indexOf('if(route[0]==="migration-orders"')<gateway.indexOf("if (!ready(env))"));
+});

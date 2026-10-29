@@ -306,7 +306,7 @@ async function refreshPaymentPreview(){
  $("payment-preview-total").textContent="A confirmar";
  const rawCep=$("payment-preview-cep").value.trim();
  try{
-   const response=await fetch("/api/checkout/quote",{
+   const response=await fetch(window.saluzD1PreviewEnabled?"/api/migration-orders/quote":"/api/checkout/quote",{
      method:"POST",headers:{"content-type":"application/json"},
      body:JSON.stringify({items:bag.map(({id,color,size,quantity})=>({id,color,size,quantity})),postal_code:rawCep})
    });
