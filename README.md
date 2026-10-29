@@ -216,3 +216,10 @@ Não adicionar senhas, tokens, chaves Mercado Pago ou dados reais de clientes ao
 - **Verificação após o deploy:** GitHub Actions run `40941545942` concluiu com sucesso, incluindo consulta HTTP aos HTML e JS efetivamente publicados. Tentativa anterior `40941330730` havia falhado no smoke por HTTP 403 ao ler JS sem cabeçalho User-Agent adequado, apesar do deploy Cloudflare ter sido realizado; checagem corrigida sem alteração de autenticação.
 - **Pendente P0:** o responsável deve testar no navegador: entrar no painel em duas abas; sair na primeira; voltar à segunda e observar retorno automático ao login. Também testar após sessão expirar naturalmente, sem expor senha nem reduzir validade dos tokens em produção. A issue #31 permanece aberta até aceite.
 - **Segurança:** Supabase Auth ainda ativo; não houve alterações no banco de produção, checkout, Mercado Pago, frete, DNS ou secrets. Deploy `saluz-loja` não foi acionado pelo novo pipeline.
+
+### Homologação manual — encerramento entre abas (29/10/2026)
+- O usuário confirmou no Chrome que o procedimento de abrir o painel em duas abas, clicar **Sair** em uma e retornar à outra funcionou: a outra aba passou a exigir novo login.
+- **Aprovado por teste manual:** invalidação compartilhada entre abas e retorno à tela de login no painel Cloudflare de homologação, após deploy `0cc1b0cb-7c06-4ffb-8da7-9b9a5575ea01` (fluxo operacional relatado pelo responsável).
+- **Ainda não testado diretamente:** expiração espontânea do JWT durante uma edição, perda de conexão, revogação externa e recuperação do formulário sob autenticação expirada. Não confundir o teste de logout manual entre abas com teste de expiração automática.
+- A issue #31 permanece para os cenários restantes; não liberar produção apenas com o teste entre abas.
+- Próxima prioridade P0: definir e homologar autenticação definitiva do painel, protegendo APIs no servidor; em paralelo validar reserva/rollback de estoque D1 e o fluxo de frete/pagamentos bloqueado.
