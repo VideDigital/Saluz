@@ -87,6 +87,14 @@ async function api(path,opts={}){
   throw new Error("Sessão encerrada. Entre novamente.");
  return b;
 }
+// Shared by product uploads and the editor/campaign modules, which use their own fetch.
+async function ensureAdminResponse(response){
+ if(response.status===401){
+  await invalidateAdminSession();
+  throw new Error("Sessão expirada. Entre novamente.");
+ }
+ return response;
+}
 function message(t){$("action-message").textContent=t||"";}
 let authRequestId=0;
 let loginSubmitting=false;
@@ -123,8 +131,10 @@ async function checkSession(){
    }
  }catch(err){
    if(requestId!==authRequestId || loginSubmitting || logoutRequest)return;
+   // A timeout or offline connection does not prove authentication is invalid.
+   // Protected server endpoints continue to enforce access on every request.
    if(!$("dashboard").classList.contains("hidden"))
-    await invalidateAdminSession("Sua sessão não pôde ser confirmada. Entre novamente. Alterações não salvas não foram aplicadas.");
+    message("Não foi possível conferir a sessão. Verifique sua conexão; uma nova checagem será feita.");
    else showLogin("Não foi possível verificar a sessão. Confira sua conexão e tente entrar.");
  }
 }
@@ -539,11 +549,13 @@ async function uploadPhoto(file){
    headers:{"content-type":"image/webp","x-saluz-media-purpose":"product","x-saluz-filename":file.name.slice(0,140)},
    body:compressed
   });
+  await ensureAdminResponse(response);
   const data=await response.json().catch(()=>({}));
   if(!response.ok||!data.url)throw new Error(data.error||"Falha no upload KV de homologação.");
   return data.url;
  }
  const res=await fetch("/api/admin/upload",{method:"POST",credentials:"same-origin",headers:{"content-type":file.type},body:file});
+ await ensureAdminResponse(res);
  const data=await res.json().catch(()=>({}));
  if(!res.ok)throw new Error(data.error||"Não foi possível enviar a foto.");
  return data.url;
