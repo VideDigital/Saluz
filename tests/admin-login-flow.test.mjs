@@ -47,11 +47,22 @@ function harness({deny=false,breakDashboard=false,holdInitialSession=false}={}){
    if(path==="auth/logout")return {ok:true};
    throw new Error("Unexpected API call: "+path);
  }
- const handler=new Function("$","api","FormData","console","changeTab","message",authBlock+"; return {checkSession};")(
+ // The UI regression harness injects a logout adapter; the real HTTP 401
+ // and cookie cleanup flow is exercised separately in admin-session-expiry.test.mjs.
+ async function invalidateAdminSession(reason){
+   element("dashboard").classList.add("hidden");
+   element("login-screen").classList.remove("hidden");
+   element("login-message").textContent=reason;
+   form.reset();
+ }
+ const handler=new Function("$","api","FormData","console","changeTab","message",
+   "invalidateAdminSession","logoutRequest","adminSessionInvalidated",
+   authBlock+"; return {checkSession};")(
    element,api,function MockFormData(f){this.get=k=>f.data[k]},
    {error(){},warn(){}},
    ()=>{if(breakDashboard)throw new Error("UI render failure");},
-   msg=>messages.push(msg)
+   msg=>messages.push(msg),
+   invalidateAdminSession,null,false
  );
  const submit=()=>form.handlers.submit({preventDefault(){},currentTarget:form});
  return {element,handler,submit,form,button,messages,
