@@ -112,7 +112,7 @@ export async function reserveOrderD1({db,orderId,cart,customer,shippingCents,shi
  const orderSql="INSERT INTO saluz_orders(id,"+keys.join(",")+
   ",items,subtotal_cents,shipping_cents,payment_method,status,payment_provider,payment_state,"+
   "stock_reserved_at,stock_reservation_expires_at,created_at,updated_at) VALUES("+
-  Array(1+keys.length+12).fill("?").join(",")+")";
+  Array(1+keys.length+11).fill("?").join(",")+")";
  const itemSnapshot=quoted.items.map(x=>({...x}));
  const values=[orderId,...keys.map(k=>c[k]),JSON.stringify(itemSnapshot),quoted.subtotal_cents,
   shippingCents,"a_definir","aguardando_pagamento","nenhum","nao_iniciado",created,expiry,created,created];
