@@ -196,6 +196,7 @@
   async function request(path,options={}){
     const r=await fetch("/api/"+path,{...options,cache:"no-store",credentials:"same-origin",
       headers:{"content-type":"application/json"}});
+    await ensureAdminResponse(r);
     const data=await r.json().catch(()=>({}));
     if(!r.ok)throw Error(data.error||"Não foi possível conectar ao sistema.");
     return data;

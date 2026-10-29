@@ -96,6 +96,7 @@
       ...options,headers:{"content-type":"application/json"},
       credentials:"same-origin",cache:"no-store"
     });
+    await ensureAdminResponse(response);
     const data=await response.json().catch(()=>({}));
     if(!response.ok)throw new Error(data.error||"Não foi possível salvar. Tente novamente.");
     return data;
