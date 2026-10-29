@@ -61,7 +61,7 @@ Não adicionar senhas, tokens, chaves Mercado Pago ou dados reais de clientes ao
 - Integração de catálogo e conteúdo D1/KV em homologação: PRs #15–#25, com correções de publicação de produtos, coleções, alteração de timestamps e origem de catálogo. Evidência: código e CI; validar jornada real no staging.
 - Base Mercado Pago Orders API e checkout de visualização em homologação: PRs #11 e #14; sem autorização para pagamentos.
 - PR #28: runtime Cloudflare retornou `AUTH_KDF_CAPABILITY={supported:false,reason:'not_supported'}` para PBKDF2 configurado; setup de senha D1 foi bloqueado com segurança. **Manter login atual, não reduzir força do hash.** Avaliar autenticação compatível (ex.: Cloudflare Access/identidade da cliente), sessões e autorização servidor.
-- PR #29 (29/10): cotação via D1 somente na homologação e `0004_stock_reservations.sql` com triggers SQLite/auxiliar transacional contra estoque negativo, preço desatualizado e rollback multi-item. **A migration 0004 ainda requer aplicação controlada DEV/STAGING e testes reais; `reserveOrderD1` não foi exposta em API pública.** Sem frete confirmado e sem pagamentos.
+- PR #29 (29/10): cotação via D1 somente na homologação e `0004_stock_reservations.sql` com triggers SQLite/auxiliar transacional contra estoque negativo, preço desatualizado e rollback multi-item. **Consulta D1 de 29/10 confirmou tabela de reservas e os quatro gatilhos tanto em DEV quanto em STAGING; ainda faltam testes de transações reais/concorrência. `reserveOrderD1` não foi exposta em API pública.** Sem frete confirmado e sem pagamentos.
 - GitHub Actions de migração do PR #29 passou no último run observado, após uma tentativa falha; testes automatizados **não** comprovam funcionamento real das Functions, autenticação, pedidos e arquivos no ambiente da Anny.
 
 ### Checklist priorizado
@@ -69,7 +69,8 @@ Não adicionar senhas, tokens, chaves Mercado Pago ou dados reais de clientes ao
 #### P0 — Bloqueios técnicos/comerciais
 - [ ] Executar e documentar smoke test autenticado de site e painel **em homologação**, incluindo catálogo D1, nova edição de produto, fotos KV, coleções e acesso anônimo negado nas APIs privadas.
 - [ ] Resolver estratégia definitiva de autenticação administrativa na migração D1 sem downgrade criptográfico; testar sessão, recuperação e revogação. Supabase Auth deve permanecer ativo até corte aprovado.
-- [ ] Aplicar de forma controlada a migration D1 `0004_stock_reservations.sql` primeiro em DEV, depois STAGING, com cópia de segurança e rollback; revalidar oversell, reversão de reservas, concorrência e idempotência na Cloudflare real.
+- [x] Confirmar a existência da tabela e dos quatro triggers de `0004_stock_reservations.sql` em DEV/STAGING (consulta D1 29/10).
+- [ ] Validar com backup e rollback documentados os fluxos de reserva, oversell, reversão, concorrência e idempotência na Cloudflare real.
 - [ ] Definir e validar regras reais de frete e entrega; sem frete verificado no servidor não liberar pedido ou pagamento.
 - [ ] Completar integração de pagamentos em ambiente de teste: credenciais próprias da cliente como secrets, webhook autenticado, conciliação de valor/recebedor, idempotência, reserva, expiração, cancelamento e reembolso. **Manter CHECKOUT_ENABLED=false e flags Mercado Pago desativadas.**
 - [ ] Testar backup e restauração de banco e imagens; definir alertas, limites de upload e monitoramento.
@@ -94,7 +95,7 @@ Não adicionar senhas, tokens, chaves Mercado Pago ou dados reais de clientes ao
 - **Não liberado:** pagamentos, pedidos reais, migração final de dados e desvinculação de acessos.
 - **Confirmado por consulta:** Pages da cliente, domínios associados a Pages, D1/KV de DEV/STAGING, PRs e testes registrados.
 - **Implementado mas não validado ponta a ponta:** fluxo D1 para painel/catálogo, cotação/reservas, upload KV e integração de pagamentos.
-- **Próximo marco:** reproduzir a jornada completa em homologação com produto de teste, sem dados pessoais nem cobrança. Resolver o método de autenticação D1 e a migração de reservas antes de planejar corte de backend.
+- **Próximo marco:** reproduzir a jornada completa em homologação com produto de teste, sem dados pessoais nem cobrança. Resolver o método de autenticação D1 e validar o comportamento transacional de reservas antes de planejar corte de backend.
 
 ### Referências principais
 - https://github.com/VideDigital/Saluz/pull/29
@@ -107,3 +108,30 @@ Não adicionar senhas, tokens, chaves Mercado Pago ou dados reais de clientes ao
 
 ### Histórico do check-up
 - 29/10/2026 — Auditoria de código, PRs, Actions e recursos Cloudflare; atualizado estado de migração, segurança, checkout e próximas prioridades. Nenhum pagamento, segredo, banco ou deploy foi alterado por esta atualização documental.
+
+
+### Atualização de homologação — 29/10/2026 (auditoria complementar)
+
+**Evidência direta na Cloudflare da SALUZ:**
+- Loja preview: `homologacao.saluz-loja.pages.dev`; painel preview: `homologacao.saluz-admin.pages.dev`. Deploys da branch `homologacao` em 29/10 com status Cloudflare `success`.
+- Loja, ambiente preview: bindings `SALUZ_D1_PREVIEW` e `SALUZ_MEDIA_PREVIEW`; produção sem esses dois bindings. O proxy do painel preview aponta para `https://homologacao.saluz-loja.pages.dev`; o de produção para `https://usesaluz.com.br`.
+- Flag `CHECKOUT_ENABLED=false` confirmada nas configurações preview e produção da loja; não alterada.
+- DEV: **2 produtos, 0 ativos, 0 pedidos, 0 metadados de mídia e 0 reservas**.
+- STAGING: **7 produtos, 7 ativos, 0 pedidos, 2 metadados de mídia, 0 reservas**.
+- No STAGING, os sete produtos ativos têm pelo menos uma variação, foto principal HTTPS e preço positivo (checagem agregada no D1). **Isso não valida download/renderização real de cada foto, qualidade visual nem veracidade comercial dos dados.**
+- Tabela `saluz_stock_reservations` e triggers `saluz_reservation_validate`, `saluz_reservation_deduct`, `saluz_reservation_release_guard` e `saluz_reservation_release` presentes em DEV e STAGING. **Não executar `0004_stock_reservations.sql` novamente por supor que esteja pendente.**
+
+**Smoke HTTP publicado (GitHub Actions, 29/10):**
+- PR de testes em rascunho: https://github.com/VideDigital/Saluz/pull/30 (branch `test/saluz-staging-smoke-20261029`, destino `homologacao`).
+- Run concluído com sucesso: https://github.com/VideDigital/Saluz/actions/runs/40923371359.
+- **12 verificações HTTP passaram**: HTML da loja e painel (200), status (200 e checkout bloqueado), catálogo D1 (200), vitrine Home (200), conteúdo D1 (200), filtro inválido (400), produto inválido (404), três verificações de API administrativa sem sessão (401), mídia inválida (404). As checagens HTTP são exclusivamente GET, sem dados pessoais ou escrita.
+- Testes locais/CI de sintaxe, adaptadores, reservas SQLite e seed também passaram no mesmo run.
+- **Limite:** smoke acessa o deploy já publicado, não executa login real, não valida interação visual, publicação/edição pelo painel, uploads efetivos nem reserva em Cloudflare sob concorrência. O PR não foi mesclado e nenhum redeploy foi feito por ele.
+
+**Próximas ações ainda obrigatórias (P0):**
+1. Testar login real autorizado da Anny, edição e criação de produto **oculto** em homologação, publicação/ocultação, foto compactada KV e leitura no navegador, com possibilidade de rollback; não usar dados da produção.
+2. Confirmar autorização e segurança da autenticação definitiva; a implementação D1 bloqueou PBKDF2 não suportado — não reduzir segurança criptográfica.
+3. Testar reserva/soltura/concorrência no D1 com dados de teste e backup, sem expor API de pedido real.
+4. Frete, Mercado Pago sandbox e webhook; manter checkout desabilitado até regras comerciais e aceite da cliente.
+
+**Registro:** atualização documental da `main`, sem alterar banco, mídia, secrets, DNS ou pagamento.
