@@ -24,13 +24,67 @@ const statusNames={
  aguardando_pagamento:"Aguardando pagamento",pago_confirmado:"Pago — confirmado",
  em_preparacao:"Em preparação",enviado:"Enviado",cancelado:"Cancelado"
 };
+/* Session security: an expired Supabase token must never leave an unlocked panel.
+ * Never retry a failed POST automatically; that could duplicate a product or order.
+ */
+let adminSessionInvalidated=false;
+let logoutRequest=null;
+async function invalidateAdminSession(reason="Sua sessão expirou. Entre novamente para continuar. Alterações não salvas não foram aplicadas."){
+ if(logoutRequest)return logoutRequest;
+ if(adminSessionInvalidated)return;
+ adminSessionInvalidated=true;
+ authRequestId++;
+ loginSubmitting=false;
+ catalog=[];orders=[];
+ // A protected dialog must not remain visible over the login screen.
+ const dialog=$("product-dialog");
+ if(dialog)dialog.classList.add("hidden");
+ document.body.classList.remove("product-dialog-open");
+ $("product-form")?.reset();
+ $("variant-rows")?.replaceChildren();
+ $("main-preview")?.replaceChildren();
+ $("product-dialog-feedback").textContent="";
+ $("login-form")?.reset();
+ $("orders")?.replaceChildren();
+ $("admin-products")?.replaceChildren();
+ showLogin(reason);
+ const submit=$("login-form")?.querySelector('button[type="submit"]');
+ if(submit)submit.disabled=true;
+ logoutRequest=(async()=>{
+  try {
+   // Logout is public and clears the HttpOnly __Host-saluz_session cookie
+   // through the same-origin admin proxy, even when the old JWT has expired.
+   const response=await fetch("/api/auth/logout",{
+    method:"POST",credentials:"same-origin",cache:"no-store",
+    headers:{"content-type":"application/json"},body:"{}"
+   });
+   if(!response.ok)throw new Error("Não foi possível limpar o cookie remoto.");
+  }catch(error){
+   console.warn("SALUZ: falha ao concluir limpeza remota da sessão",error);
+   showLogin("A sessão não está válida. O encerramento remoto falhou; atualize a página e entre novamente.");
+  }finally{
+   if(submit)submit.disabled=false;
+   logoutRequest=null;
+  }
+ })();
+ return logoutRequest;
+}
 async function api(path,opts={}){
  const routed=saluzD1AdminPreview && /^admin\/products(?:\/|\?|$)/.test(path)
   ?path.replace(/^admin\//,"migration-admin/"):path;
+ if(adminSessionInvalidated && path!=="auth/login" && path!=="auth/me")
+  throw new Error("Sessão encerrada. Entre novamente.");
  const res=await fetch("/api/"+routed,{cache:"no-store",credentials:"same-origin",
    ...opts,headers:{"content-type":"application/json",...(opts.headers||{})}});
  const b=await res.json().catch(()=>({}));
+ // A wrong password at /auth/login is not an expired admin session.
+ if(res.status===401 && path!=="auth/login"){
+  await invalidateAdminSession();
+  throw new Error("Sessão expirada. Entre novamente.");
+ }
  if(!res.ok){const detail=b.error||"Erro de comunicação com o sistema";throw new Error(res.status===503?"Painel em configuração: falta concluir a conexão segura com o Supabase.":detail);}
+ if(adminSessionInvalidated && path!=="auth/login" && path!=="auth/me")
+  throw new Error("Sessão encerrada. Entre novamente.");
  return b;
 }
 function message(t){$("action-message").textContent=t||"";}
@@ -42,6 +96,7 @@ function showLogin(msg){
  $("login-message").textContent=msg||"Acesse com sua conta autorizada.";
 }
 function showDashboard(){
+ adminSessionInvalidated=false;
  $("login-screen").classList.add("hidden");
  $("dashboard").classList.remove("hidden");
  // A conta já foi autenticada. Um erro de renderização jamais pode ser
@@ -54,15 +109,23 @@ function showDashboard(){
  }
 }
 async function checkSession(){
+ if(loginSubmitting||logoutRequest)return;
  const requestId=++authRequestId;
  try {
    const result=await api("auth/me");
-   if(requestId!==authRequestId || loginSubmitting)return;
-   if(result.admin===true)showDashboard();
-   else showLogin("Entre com sua conta administrativa da SALUZ.");
+   if(requestId!==authRequestId || loginSubmitting || logoutRequest)return;
+   if(result.admin===true){
+    if(!adminSessionInvalidated)showDashboard();
+   }else if(!$("dashboard").classList.contains("hidden")){
+    await invalidateAdminSession();
+   }else{
+    showLogin("Entre com sua conta administrativa da SALUZ.");
+   }
  }catch(err){
-   if(requestId!==authRequestId || loginSubmitting)return;
-   showLogin("Não foi possível verificar a sessão. Confira sua conexão e tente entrar.");
+   if(requestId!==authRequestId || loginSubmitting || logoutRequest)return;
+   if(!$("dashboard").classList.contains("hidden"))
+    await invalidateAdminSession("Sua sessão não pôde ser confirmada. Entre novamente. Alterações não salvas não foram aplicadas.");
+   else showLogin("Não foi possível verificar a sessão. Confira sua conexão e tente entrar.");
  }
 }
 function loginErrorMessage(error,stage){
@@ -108,17 +171,11 @@ $("login-form").addEventListener("submit",async event=>{
    }
  }finally{
    if(requestId===authRequestId)loginSubmitting=false;
-   submit.disabled=false;
+   submit.disabled=Boolean(logoutRequest);
    form.removeAttribute("aria-busy");
  }
 });
-$("logout").onclick=async()=>{
- const requestId=++authRequestId;
- try { await api("auth/logout",{method:"POST",body:"{}"}); }
- catch (err) { console.warn("SALUZ: não foi possível concluir o logout remoto",err); }
- if(requestId!==authRequestId)return;
- showLogin("Sessão encerrada. Entre novamente com sua senha.");
-};
+$("logout").onclick=()=>invalidateAdminSession("Sessão encerrada. Entre novamente com sua senha.");
 function changeTab(name){
  if(document.getElementById("product-dialog")&&!document.getElementById("product-dialog").classList.contains("hidden")&&!closeProductDialog())return;
  currentTab=name;
@@ -549,4 +606,11 @@ async function loadReports(){
 $("period").onchange=loadReports;
 addVariantRow();
 updateProductPreview();
+// Detect expired or revoked sessions when the tab is reactivated or remains open.
+document.addEventListener("visibilitychange",()=>{
+ if(document.visibilityState==="visible"&&!$("dashboard").classList.contains("hidden"))checkSession();
+});
+setInterval(()=>{
+ if(document.visibilityState==="visible"&&!$("dashboard").classList.contains("hidden"))checkSession();
+},60000);
 checkSession();
