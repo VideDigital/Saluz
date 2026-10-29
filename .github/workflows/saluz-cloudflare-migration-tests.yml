@@ -17,6 +17,7 @@ on:
       - 'tests/staging-auth.test.mjs'
       - 'tests/d1-orders.test.mjs'
       - 'tests/d1-orders-sqlite.py'
+      - 'tests/staging-quote-smoke.py'
       - 'loja.js'
       - 'cloudflare/d1/0003_staging_auth.sql'
       - 'admin-deploy/**'
@@ -53,6 +54,8 @@ jobs:
         run: python3 tests/d1-orders-sqlite.py
       - name: Validar empacotamento do painel sem segredos
         run: python3 .github/scripts/build-saluz-admin-preview.py "$RUNNER_TEMP/saluz-admin-check"
+      - name: Validar cotação HTTP D1 publicada (nenhuma escrita ou cobrança)
+        run: python3 tests/staging-quote-smoke.py
       - name: Validar schema em SQLite limpo e seeds somente DEV
         run: |
           python3 - <<'PY'
