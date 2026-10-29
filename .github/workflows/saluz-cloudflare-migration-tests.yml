@@ -17,6 +17,7 @@ on:
       - 'tests/staging-auth.test.mjs'
       - 'tests/d1-orders.test.mjs'
       - 'tests/d1-orders-sqlite.py'
+      - 'tests/staging-http-smoke.py'
       - 'loja.js'
       - 'cloudflare/d1/0003_staging_auth.sql'
       - 'admin-deploy/**'
@@ -49,6 +50,8 @@ jobs:
         run: node --test tests/*.test.mjs
       - name: Validar reservas de estoque atomicamente no SQLite
         run: python3 tests/d1-orders-sqlite.py
+      - name: Smoke HTTP da Cloudflare STAGING (somente GET, sem login)
+        run: python3 tests/staging-http-smoke.py
       - name: Validar schema em SQLite limpo e seeds somente DEV
         run: |
           python3 - <<'PY'
