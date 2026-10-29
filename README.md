@@ -41,3 +41,69 @@ Não adicionar senhas, tokens, chaves Mercado Pago ou dados reais de clientes ao
 7. Só então configurar domínio oficial, indexação e ativação comercial.
 
 **Contato informado:** anny.csalustiano@gmail.com; WhatsApp e Instagram ainda aguardam definição.
+
+---
+
+## CHECK-UP OPERACIONAL — 29/10/2026 (Agência VIDE)
+
+> Este diagnóstico registra evidências de repositório, PRs, GitHub Actions e leitura autenticada da conta Cloudflare SALUZ em 29/10/2026. Não equivale a homologação funcional completa no navegador, autorização da cliente nem liberação de cobrança. As informações históricas acima podem estar desatualizadas; usar esta seção como referência de acompanhamento.
+
+### Referências e ambientes
+- Repositório: https://github.com/VideDigital/Saluz (público). Branch `main`: produção; `homologacao`: desenvolvimento/validação da migração. **As branches divergiram**; não fazer merge geral sem revisão de cada mudança.
+- Cloudflare conectada da cliente: dois Pages `saluz-loja` (domínio associado `usesaluz.com.br`) e `saluz-admin` (domínio associado `admin.usesaluz.com.br`). A consulta API confirma os projetos e domínios cadastrados, **não** substitui teste de acesso público, DNS, SSL e funcionamento das Functions.
+- Cloudflare D1: `saluz-dev-db` e `saluz-staging-db` existentes; KV: `saluz-dev-media-kv` e `saluz-staging-media-kv` existentes. **Não foi confirmado banco D1 de produção nem migração de dados reais.**
+- Últimas prévias listadas nos dois projetos Pages estavam marcadas como `success` pela Cloudflare; isso confirma registro de deploy, não as jornadas de compra/painel.
+- Fluxo administrativo atual continua dependente do Supabase Auth; não desativar Supabase até substituição segura, migração validada e aceite.
+- Checklist de desvinculação final da VIDE: https://github.com/VideDigital/Saluz/issues/13 — executar somente após entrega final e teste de autonomia da cliente.
+
+### Implementações constatadas no código/PRs (não confundir com homologação de produção)
+- Páginas da loja, home, coleções, produto, favoritos, sacola, campanhas e painel administrativo existem no repositório.
+- Integração de catálogo e conteúdo D1/KV em homologação: PRs #15–#25, com correções de publicação de produtos, coleções, alteração de timestamps e origem de catálogo. Evidência: código e CI; validar jornada real no staging.
+- Base Mercado Pago Orders API e checkout de visualização em homologação: PRs #11 e #14; sem autorização para pagamentos.
+- PR #28: runtime Cloudflare retornou `AUTH_KDF_CAPABILITY={supported:false,reason:'not_supported'}` para PBKDF2 configurado; setup de senha D1 foi bloqueado com segurança. **Manter login atual, não reduzir força do hash.** Avaliar autenticação compatível (ex.: Cloudflare Access/identidade da cliente), sessões e autorização servidor.
+- PR #29 (29/10): cotação via D1 somente na homologação e `0004_stock_reservations.sql` com triggers SQLite/auxiliar transacional contra estoque negativo, preço desatualizado e rollback multi-item. **A migration 0004 ainda requer aplicação controlada DEV/STAGING e testes reais; `reserveOrderD1` não foi exposta em API pública.** Sem frete confirmado e sem pagamentos.
+- GitHub Actions de migração do PR #29 passou no último run observado, após uma tentativa falha; testes automatizados **não** comprovam funcionamento real das Functions, autenticação, pedidos e arquivos no ambiente da Anny.
+
+### Checklist priorizado
+
+#### P0 — Bloqueios técnicos/comerciais
+- [ ] Executar e documentar smoke test autenticado de site e painel **em homologação**, incluindo catálogo D1, nova edição de produto, fotos KV, coleções e acesso anônimo negado nas APIs privadas.
+- [ ] Resolver estratégia definitiva de autenticação administrativa na migração D1 sem downgrade criptográfico; testar sessão, recuperação e revogação. Supabase Auth deve permanecer ativo até corte aprovado.
+- [ ] Aplicar de forma controlada a migration D1 `0004_stock_reservations.sql` primeiro em DEV, depois STAGING, com cópia de segurança e rollback; revalidar oversell, reversão de reservas, concorrência e idempotência na Cloudflare real.
+- [ ] Definir e validar regras reais de frete e entrega; sem frete verificado no servidor não liberar pedido ou pagamento.
+- [ ] Completar integração de pagamentos em ambiente de teste: credenciais próprias da cliente como secrets, webhook autenticado, conciliação de valor/recebedor, idempotência, reserva, expiração, cancelamento e reembolso. **Manter CHECKOUT_ENABLED=false e flags Mercado Pago desativadas.**
+- [ ] Testar backup e restauração de banco e imagens; definir alertas, limites de upload e monitoramento.
+- [ ] Validar termos, privacidade/LGPD, devolução, prazos e fluxo comercial com Anny, antes de coletar dados pessoais e abrir vendas.
+
+#### P1 — Experiência, autonomia e lançamento
+- [ ] Fazer teste E2E em desktop/mobile: home → categoria → produto → variação → sacola → cotação; incluindo indisponibilidade e estoque.
+- [ ] Testar painel da Anny: login, adicionar/editar/ocultar produto, upload e exclusão segura de mídia, atualizar banners e conteúdo sem a VIDE, consultar relatórios.
+- [ ] Confirmar catálogo e materiais reais aprovados: fotos, preços, estoques, tamanhos/cores, identidade, textos e prioridades de categorias.
+- [ ] Revisar e validar integração de WhatsApp, política de orçamento, links, CTAs e processo de atendimento.
+- [ ] Verificar domínio público e subdomínio admin, DNS/HTTPS, robots, sitemap, Search Console e SEO — **somente liberar indexação/pagamento quando a operação estiver aprovada**.
+- [ ] Revisar tracking de visitas, buscas, cliques, carrinho, intenção de compra e compras confirmadas; não tratar clique como venda.
+- [ ] Revisar qual branch/commit cada Pages deploy serve; exigir testes de homologação antes de alterações de produção.
+
+#### P2 — Entrega e manutenção
+- [ ] Atualizar documentação de arquitetura e retirar inconsistências legadas (README original referencia Supabase e projeto ainda não migrado); preservar histórico.
+- [ ] Treinar Anny e conferir autonomia sem intervenção da VIDE.
+- [ ] Planejar transferência de repositório, pipelines, secrets e revogação completa de acessos VIDE somente após aceite final (issue #13).
+- [ ] Monitorar erros, estoque, mídia, cotas Cloudflare e pedidos após o lançamento.
+
+### Status comercial e decisões
+- **Não liberado:** pagamentos, pedidos reais, migração final de dados e desvinculação de acessos.
+- **Confirmado por consulta:** Pages da cliente, domínios associados a Pages, D1/KV de DEV/STAGING, PRs e testes registrados.
+- **Implementado mas não validado ponta a ponta:** fluxo D1 para painel/catálogo, cotação/reservas, upload KV e integração de pagamentos.
+- **Próximo marco:** reproduzir a jornada completa em homologação com produto de teste, sem dados pessoais nem cobrança. Resolver o método de autenticação D1 e a migração de reservas antes de planejar corte de backend.
+
+### Referências principais
+- https://github.com/VideDigital/Saluz/pull/29
+- https://github.com/VideDigital/Saluz/pull/28
+- https://github.com/VideDigital/Saluz/pull/4
+- https://github.com/VideDigital/Saluz/issues/13
+- `cloudflare/README-migration.md` (branch `homologacao`)
+- `docs/REVISAO-PRE-LANCAMENTO.md`
+- `docs/MERCADO-PAGO-INTEGRACAO.md`
+
+### Histórico do check-up
+- 29/10/2026 — Auditoria de código, PRs, Actions e recursos Cloudflare; atualizado estado de migração, segurança, checkout e próximas prioridades. Nenhum pagamento, segredo, banco ou deploy foi alterado por esta atualização documental.
