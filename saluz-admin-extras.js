@@ -205,6 +205,49 @@
     if(!persist()){profiles=previous;return;}
     resetForm();el("fee-feedback").textContent="Condição salva neste navegador.";renderProfiles();
   }
+  // Authenticated, same-origin payment credential diagnosis; never fetches token in browser.
+  // Calling /auth/me before the probe distinguishes a visible but expired admin tab.
+  async function runMercadoPagoTest(){
+    const button=el("mp-test-connectivity-button");
+    const feedback=el("mp-test-connectivity-feedback");
+    if(!button||!feedback||button.disabled)return;
+    button.disabled=true;
+    feedback.textContent="Conferindo sua sessão administrativa...";
+    try{
+      if(location.hostname!=="homologacao.saluz-admin.pages.dev"){
+        feedback.textContent="Diagnóstico disponível somente na homologação.";
+        return;
+      }
+      const session=await api("auth/me");
+      if(session.admin!==true){
+        await checkSession(); // ends session and hides admin; never call provider on denied auth
+        feedback.textContent="Sua sessão não está válida. Entre novamente para testar.";
+        return;
+      }
+      feedback.textContent="Consultando a API do Mercado Pago em modo somente leitura...";
+      const result=await api("admin/payment-integration?probe=1");
+      const descriptions={
+        verified_read_only:"Conexão validada: o Mercado Pago aceitou a credencial para consulta. Nenhum pagamento foi realizado.",
+        rejected:"Credencial de teste rejeitada pelo Mercado Pago. Confira a configuração no ambiente Preview sem compartilhar o token.",
+        not_configured:"Token de teste não encontrado na homologação. Confira a variável MP_ACCESS_TOKEN.",
+        blocked:"Verificação bloqueada por configuração de ambiente. Checkout não foi ativado.",
+        unavailable:"Serviço de verificação indisponível no momento; nenhuma cobrança foi realizada.",
+        unexpected_response:"O Mercado Pago retornou um formato inesperado. Nenhuma cobrança foi realizada."
+      };
+      feedback.textContent=descriptions[result.connection_status]||
+        "Não foi possível interpretar o estado da conexão. Nenhum pagamento foi realizado.";
+    }catch(err){
+      // The shared admin api() safely invalidates the session on 401.
+      if(document.getElementById("dashboard")?.classList.contains("hidden"))
+        feedback.textContent="Sessão encerrada. Entre novamente no painel para repetir o teste.";
+      else
+        feedback.textContent="Falha na verificação de conexão; confira sua rede e tente novamente.";
+    }finally{
+      button.disabled=false;
+    }
+  }
+  const mpButton=el("mp-test-connectivity-button");
+  if(mpButton)mpButton.addEventListener("click",runMercadoPagoTest);
   // Bind listeners immediately so overview/clients buttons function before opening Financeiro.
   el("overview-refresh").addEventListener("click",loadOverview);
   el("overview-open-orders").addEventListener("click",()=>document.querySelector('[data-tab="orders"]').click());
