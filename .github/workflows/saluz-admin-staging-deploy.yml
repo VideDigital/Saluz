@@ -1,0 +1,87 @@
+name: SALUZ | Publicar painel na homologação (somente admin)
+
+on:
+  push:
+    branches: [homologacao]
+    paths:
+      - '.github/workflows/saluz-admin-staging-deploy.yml'
+      - '.github/scripts/build-saluz-admin-preview.py'
+      - 'admin.html'
+      - 'admin.js'
+      - 'admin.css'
+      - 'admin-deploy/**'
+      - 'saluz-admin-extras.js'
+      - 'saluz-studio.js'
+      - 'saluz-campaigns.js'
+      - 'saluz-mobile.js'
+      - 'saluz-*.css'
+      - '_headers'
+      - 'tests/admin-session-expiry.test.mjs'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: saluz-staging-admin-only
+  cancel-in-progress: false
+
+jobs:
+  deploy-admin:
+    if: github.ref == 'refs/heads/homologacao'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: saluz-homologacao
+    env:
+      CLOUDFLARE_ACCOUNT_ID: f84d79f13ae0a665e5046ebeb21ffddd
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Bloquear implantação sem credencial no ambiente SALUZ
+        shell: bash
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "::error::Configure CLOUDFLARE_API_TOKEN como secret no GitHub Environment saluz-homologacao. Não envie o token por chat."
+            exit 1
+          fi
+
+      - name: Validar autenticação e projeto existente
+        run: |
+          node --check admin.js
+          node --check saluz-studio.js
+          node --check saluz-campaigns.js
+          node --test tests/*.test.mjs
+          python3 tests/d1-orders-sqlite.py
+
+      - name: Criar build publicável com proxy exclusivo do painel
+        env:
+          TARGET_DIR: ${{ runner.temp }}/saluz-admin-staging
+        run: python3 .github/scripts/build-saluz-admin-preview.py "$TARGET_DIR"
+
+      - name: Implantar estritamente no Pages saluz-admin — homologacao
+        working-directory: ${{ runner.temp }}/saluz-admin-staging
+        run: |
+          npx --yes wrangler@4 pages deploy ./public \
+            --project-name saluz-admin \
+            --branch homologacao
+
+      - name: Confirmar URL e comportamento estático sem autenticação
+        run: |
+          python3 - <<'PY'
+          import urllib.request
+          url = "https://homologacao.saluz-admin.pages.dev/admin.html"
+          req = urllib.request.Request(url, headers={"User-Agent": "saluz-deploy-check/1"})
+          with urllib.request.urlopen(req, timeout=30) as response:
+              html = response.read().decode("utf-8")
+              assert response.status == 200
+              assert "admin.js?v=20261029-expired-session" in html, "Novo HTML ainda não servido"
+          with urllib.request.urlopen("https://homologacao.saluz-admin.pages.dev/admin.js", timeout=30) as response:
+              js = response.read().decode("utf-8")
+              assert response.status == 200
+              assert "invalidateAdminSession" in js and "ensureAdminResponse" in js
+          print("Staging admin HTML/JS atualizado e acessível. Próximo teste: login real e expiração de sessão.")
+          PY
