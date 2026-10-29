@@ -17,7 +17,7 @@
 <link rel="stylesheet" href="./saluz-clean.css?v=20261015-clean4">
 <link rel="stylesheet" href="./saluz-product-dialog.css?v=20261015-dialog5">
 <script src="./admin.js?v=20261029-expired-session" defer></script>
-<script src="./saluz-admin-extras.js?v=20261015-pro3" defer></script>
+<script src="./saluz-admin-extras.js?v=20261029-mp-auth-ui" defer></script>
 <script src="./saluz-mobile.js?v=20261015-mobile2" defer></script>
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="./saluz-studio.css?v=1">
@@ -220,6 +220,12 @@
     <section id="tab-finance" class="tab hidden">
       <div class="panel-intro"><div><span class="eyebrow">SIMULADOR DE TAXAS</span><h2>Compare o valor líquido de cada venda</h2><p>Cadastre qualquer provedor e personalize taxas de Pix, crédito, débito e outros meios.</p></div></div>
       <div class="management-notice" role="note"><strong>Simulação independente.</strong> Nenhum pagamento é realizado por esta ferramenta. Confira as taxas no contrato do provedor. Os perfis são salvos somente neste navegador, não na conta SALUZ ou no Supabase.</div>
+      <div class="management-notice" id="mp-test-connectivity" role="region" aria-label="Diagnóstico Mercado Pago de homologação">
+        <strong>Mercado Pago · Conexão de teste</strong>
+        <p>Verifica somente se a credencial do ambiente de homologação é aceita para consultar métodos de pagamento. Não cria pedidos, não movimenta estoque e não cobra valores.</p>
+        <button type="button" class="outline" id="mp-test-connectivity-button">Testar conexão de teste</button>
+        <p id="mp-test-connectivity-feedback" role="status" aria-live="polite">Nenhum teste executado nesta sessão.</p>
+      </div>
       <div class="finance-layout">
         <form id="fee-form" class="panel-surface fee-form">
           <div class="panel-section-header"><h3 id="fee-form-title">Cadastrar uma taxa</h3><button type="button" class="outline" id="fee-cancel" hidden>Cancelar edição</button></div>
