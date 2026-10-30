@@ -194,6 +194,14 @@
     }catch(error){setFeedback(error.message,true);}
   }
   async function request(path,options={}){
+    // Homologação: editores e preços no mesmo D1 da vitrine.
+    // Nenhum fallback ao Supabase caso a API D1 falhe.
+    const preview=typeof saluzD1AdminPreview!=="undefined"&&saluzD1AdminPreview;
+    if(preview&&/^admin\/site-content(?:\/|$)/.test(path))
+      path=path.replace(/^admin\/site-content/,"migration-admin/content");
+    if(preview&&/^admin\/products(?:\/|\?|$)/.test(path))
+      path=path.replace(/^admin\/products/,"migration-admin/products");
+
     const r=await fetch("/api/"+path,{...options,cache:"no-store",credentials:"same-origin",
       headers:{"content-type":"application/json"}});
     await ensureAdminResponse(r);
