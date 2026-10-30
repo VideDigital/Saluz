@@ -59,15 +59,15 @@ test('Focus V4 organiza a navegação e oferece modos de listagem e edição', (
 
 test('Home V6 melhora contraste e indicadores sem simular dados', () => {
   const professional = read('saluz-professional.js');
-  assert.match(html, /saluz-professional\\.js\\?v=20261030-home6/);
+  assert.match(html, /saluz-professional\.js\\?v=20261030-home6/);
   assert.match(styles, /SALUZ Home V6/);
-  assert.match(styles, /#tab-overview \\.saluz-focus-state>\\.management-notice/);
+  assert.match(styles, /\.saluz-focus-state>\.management-notice/);
   assert.match(styles, /background:#fff5e6!important/);
   assert.match(styles, /color:#5a4531!important/);
-  assert.match(styles, /#tab-overview \\.saluz-op-metrics \\.professional-kpi-foot/);
+  assert.match(styles, /#tab-overview \.saluz-op-metrics \.professional-kpi-foot/);
   assert.match(styles, /display:block!important/);
   assert.match(professional, /lowStockCount>0/);
   assert.match(professional, /saluz-home-kpi-attention/);
   assert.match(professional, /Editor ainda em integração/);
-  assert.match(professional, /location\\.hostname==="homologacao\\.saluz-admin\\.pages\\.dev"/);
+  assert.match(professional, /location\.hostname==="homologacao\.saluz-admin\.pages\.dev"/);
 });
