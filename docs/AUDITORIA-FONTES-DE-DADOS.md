@@ -35,3 +35,11 @@ O problema dos zeros no Início tinha causa comprovada no código: `saluz-profes
 - **Validação manual:** entrar em homologação, carregar Produtos e Início e conferir que os totais batem, além de erros de sessão e comportamento mobile.
 
 **Produção:** `usesaluz.com.br` e `admin.usesaluz.com.br` permanecem no sistema anterior até corte aprovado e com plano de rollback.
+
+## Preflight de importação (30/10/2026)
+
+Foi implementado `cloudflare/d1/content-migration-preflight.mjs` para comparar a origem e o destino sem gravar dados. O controle exige origem com algum conteúdo significativo e impede importação quando o destino já possui alterações ou revisão avançada. Os testes cobrem origem vazia, proteção contra sobrescrita e conteúdo válido.
+
+**Bloqueio real identificado:** o projeto Supabase `saluz-homologacao` apresenta `saluz_site_content` com `draft={}`, `published={}`, `revision=0`. O projeto Supabase anterior `Saluz` está INACTIVE e inacessível por consulta neste momento. O D1 Preview também tem `draft={}`, `published={}`, `revision=0`. Portanto, não foi feita a cópia de conteúdos, pois ela apenas perpetuaria dados vazios. A origem verdadeira precisa ser obtida por restauração/acesso autorizado, backup ou exportação validada — sem transformar homologação em produção.
+
+**Pendência:** ampliar o preflight para validar a compatibilidade integral dos campos, mídias e versões; implementar caminho de importação transacional com backup e aprovação antes de gravar. Não conectar os editores ainda. Produção e checkout permanecem inalterados.
