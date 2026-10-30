@@ -1218,3 +1218,288 @@ body.saluz-v3.saluz-minimal.saluz-focus .dashboard [hidden] {display:none!import
   transition:none!important;
  }
 }
+
+
+/* SALUZ Home V6 — foco apenas nos dois blocos da tela inicial.
+   Corrige contraste, espaçamento e legibilidade sem alterar o fluxo de trabalho. */
+body.saluz-v3.saluz-minimal.saluz-focus #tab-overview>.saluz-focus-home-actions {
+  min-height:0!important;
+  padding:23px clamp(19px,2.5vw,30px)!important;
+  margin-bottom:23px!important;
+  gap:14px 22px!important;
+  align-items:center!important;
+  align-content:start!important;
+}
+body.saluz-v3.saluz-minimal.saluz-focus #tab-overview .saluz-focus-home-intro {
+  min-width:220px!important;
+  gap:5px!important;
+  margin:0 auto 0 0!important;
+}
+body.saluz-v3.saluz-minimal.saluz-focus #tab-overview .saluz-focus-home-intro strong {
+  font-size:clamp(20px,1.8vw,25px)!important;
+  line-height:1.23!important;
+}
+body.saluz-v3.saluz-minimal.saluz-focus #tab-overview .saluz-focus-home-intro span {
+  font-size:13px!important;line-height:1.5!important;
+}
+body.saluz-v3.saluz-minimal.saluz-focus #tab-overview .saluz-focus-home-actions .professional-welcome-actions {
+  display:flex!important;
+  flex-direction:row!important;
+  flex-wrap:wrap!important;
+  justify-content:flex-end!important;
+  align-items:center!important;
+  gap:9px!important;
+  width:auto!important;
+  margin:0!important;
+}
+body.saluz-v3.saluz-minimal.saluz-focus #tab-overview .saluz-focus-home-actions .professional-welcome-actions button {
+  min-height:43px!important;
+  padding:11px 17px!important;
+  border-radius:9px!important;
+  font-family:"DM Sans",sans-serif!important;
+  font-size:13px!important;
+  font-weight:700!important;
+  line-height:1.35!important;
+  white-space:nowrap!important;
+  width:auto!important;
+}
+body.saluz-v3.saluz-minimal.saluz-focus #tab-overview .saluz-focus-home-actions .professional-welcome-actions button.primary {
+  background:#f2e6d9!important;
+  border:1px solid #f2e6d9!important;
+  color:#332c2b!important;
+  box-shadow:none!important;
+}
+body.saluz-v3.saluz-minimal.saluz-focus #tab-overview .saluz-focus-home-actions .professional-welcome-actions button.primary:hover {
+  background:#fff7ee!important;
+  border-color:#fff7ee!important;
+  color:#30292a!important;
+}
+body.saluz-v3.saluz-minimal.saluz-focus #tab-overview .saluz-focus-home-actions .professional-welcome-actions button.professional-welcome-link {
+  background:transparent!important;
+  border:1px solid #d0bdb1!important;
+  color:#fff9f2!important;
+  box-shadow:none!important;
+}
+body.saluz-v3.saluz-minimal.saluz-focus #tab-overview .saluz-focus-home-actions .professional-welcome-actions button.professional-welcome-link:hover {
+  background:#ffffff16!important;
+  border-color:#f2e6d9!important;
+  color:#fff!important;
+}
+body.saluz-v3.saluz-minimal.saluz-focus #tab-overview .saluz-focus-home-actions .saluz-focus-state {
+  width:100%!important;
+  flex:0 0 100%!important;
+  margin:0!important;
+  padding:14px 0 0!important;
+  border-top:1px solid #ffffff30!important;
+  min-width:0!important;
+}
+/* V5 set light text assuming a transparent notification.
+   Explicit dark text + tinted background fixes the screenshot contrast regression. */
+body.saluz-v3.saluz-minimal.saluz-focus #tab-overview .saluz-focus-home-actions .saluz-focus-state>.management-notice {
+  display:block!important;
+  width:100%!important;
+  margin:0!important;
+  padding:12px 15px!important;
+  background:#fff5e6!important;
+  color:#5a4531!important;
+  border:1px solid #e7cfae!important;
+  border-left:4px solid #bd8f54!important;
+  border-radius:9px!important;
+  font-size:12.5px!important;
+  line-height:1.55!important;
+  box-shadow:none!important;
+}
+body.saluz-v3.saluz-minimal.saluz-focus #tab-overview .saluz-focus-home-actions .saluz-focus-state>.management-notice strong {
+  color:#684422!important;
+  font-weight:800!important;
+}
+/* KPI section is a lightweight grid rather than a giant nested card. */
+body.saluz-v3.saluz-minimal.saluz-focus #tab-overview .saluz-op-board,
+body.saluz-v3.saluz-minimal.saluz-focus #tab-overview .saluz-op-main,
+body.saluz-v3.saluz-minimal.saluz-focus #tab-overview .saluz-op-metrics {
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  min-width:0!important;
+}
+body.saluz-v3.saluz-minimal.saluz-focus #tab-overview .saluz-op-metrics {
+  padding:0!important;
+}
+body.saluz-v3.saluz-minimal.saluz-focus #tab-overview .saluz-op-metrics>.professional-section-heading {
+  padding:0!important;
+  margin:0 0 13px!important;
+  align-items:center!important;
+  gap:14px!important;
+}
+body.saluz-v3.saluz-minimal.saluz-focus #tab-overview .saluz-op-metrics>.professional-section-heading h2 {
+  color:#302e30!important;
+  font-size:20px!important;
+  line-height:1.3!important;
+  letter-spacing:-.03em!important;
+}
+body.saluz-v3.saluz-minimal.saluz-focus #tab-overview .saluz-op-metrics>.professional-section-heading .outline {
+  min-height:38px!important;
+  padding:9px 13px!important;
+  color:#5a493f!important;
+  font-size:12px!important;
+}
+body.saluz-v3.saluz-minimal.saluz-focus #tab-overview .saluz-op-metrics .professional-kpis {
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:13px!important;
+  margin:0!important;
+}
+body.saluz-v3.saluz-minimal.saluz-focus #tab-overview .saluz-op-metrics .professional-kpi-card {
+  position:relative!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  justify-content:center!important;
+  gap:6px!important;
+  min-width:0!important;
+  min-height:137px!important;
+  padding:22px 19px!important;
+  text-align:left!important;
+  background:#fff!important;
+  border:1px solid #e7ded7!important;
+  border-radius:14px!important;
+  box-shadow:0 2px 9px #342d2d08!important;
+  color:#302e30!important;
+  cursor:pointer!important;
+  transition:border-color .16s ease,box-shadow .16s ease,background .16s ease!important;
+}
+body.saluz-v3.saluz-minimal.saluz-focus #tab-overview .saluz-op-metrics .professional-kpi-card:hover {
+  transform:none!important;
+  border-color:#bfa99a!important;
+  box-shadow:0 5px 14px #342d2d12!important;
+}
+body.saluz-v3.saluz-minimal.saluz-focus #tab-overview .saluz-op-metrics .professional-kpi-symbol {
+  display:grid!important;
+  position:absolute!important;
+  top:17px!important;right:16px!important;
+  width:30px!important;height:30px!important;
+  place-items:center!important;
+  border-radius:9px!important;
+  background:#f5eee8!important;
+  color:#786253!important;
+  font-size:16px!important;
+  line-height:1!important;
+}
+body.saluz-v3.saluz-minimal.saluz-focus #tab-overview .saluz-op-metrics .professional-kpi-value {
+  display:block!important;
+  color:#352c2c!important;
+  font-size:clamp(31px,2.5vw,36px)!important;
+  line-height:1.1!important;
+  letter-spacing:-.06em!important;
+  margin:0 0 7px!important;
+  padding:0!important;
+  font-weight:800!important;
+  font-variant-numeric:tabular-nums!important;
+}
+body.saluz-v3.saluz-minimal.saluz-focus #tab-overview .saluz-op-metrics .professional-kpi-label {
+  display:block!important;
+  color:#403b39!important;
+  font-size:13px!important;
+  font-weight:750!important;
+  line-height:1.4!important;
+  margin:0!important;
+}
+body.saluz-v3.saluz-minimal.saluz-focus #tab-overview .saluz-op-metrics .professional-kpi-foot {
+  display:block!important;
+  grid-column:auto!important;
+  grid-row:auto!important;
+  margin:1px 0 0!important;
+  color:#837973!important;
+  font-size:11.5px!important;
+  font-weight:500!important;
+  line-height:1.35!important;
+}
+body.saluz-v3.saluz-minimal.saluz-focus #tab-overview .saluz-op-metrics .professional-kpi-card.saluz-home-kpi-attention {
+  background:#fffaf4!important;
+  border-color:#e5c6a4!important;
+}
+body.saluz-v3.saluz-minimal.saluz-focus #tab-overview .saluz-op-metrics .professional-kpi-card.saluz-home-kpi-attention .professional-kpi-symbol {
+  background:#f8e5ce!important;
+  color:#895324!important;
+}
+body.saluz-v3.saluz-minimal.saluz-focus #tab-overview .saluz-op-metrics .professional-kpi-card.saluz-home-kpi-attention .professional-kpi-value {
+  color:#88532b!important;
+}
+body.saluz-v3.saluz-minimal.saluz-focus #tab-overview .saluz-op-metrics .professional-kpi-card[aria-disabled="true"] {
+  cursor:default!important;
+  background:#fbfaf8!important;
+}
+body.saluz-v3.saluz-minimal.saluz-focus #tab-overview .saluz-op-metrics .professional-kpi-card[aria-disabled="true"]:hover {
+  border-color:#e7ded7!important;
+  box-shadow:0 2px 9px #342d2d08!important;
+}
+body.saluz-v3.saluz-minimal.saluz-focus #tab-overview .saluz-op-metrics #overview-health-caption {
+  margin:12px 2px 0!important;
+  color:#756d66!important;
+  font-size:11px!important;
+  line-height:1.5!important;
+}
+body.saluz-v3.saluz-minimal.saluz-focus #tab-overview .saluz-op-source {
+  margin:3px 2px 0!important;
+  color:#7b716b!important;
+  font-size:11px!important;
+}
+@media(max-width:1100px) {
+ body.saluz-v3.saluz-minimal.saluz-focus #tab-overview .saluz-op-metrics .professional-kpis {
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ }
+}
+@media(max-width:780px) {
+ body.saluz-v3.saluz-minimal.saluz-focus #tab-overview>.saluz-focus-home-actions {
+  padding:20px 17px!important;
+  gap:12px!important;
+ }
+ body.saluz-v3.saluz-minimal.saluz-focus #tab-overview .saluz-focus-home-intro {
+  width:100%!important;
+  min-width:0!important;
+ }
+ body.saluz-v3.saluz-minimal.saluz-focus #tab-overview .saluz-focus-home-actions .professional-welcome-actions {
+  width:100%!important;
+  justify-content:flex-start!important;
+  gap:9px!important;
+ }
+ body.saluz-v3.saluz-minimal.saluz-focus #tab-overview .saluz-focus-home-actions .professional-welcome-actions button {
+  flex:1 1 auto!important;
+  min-width:0!important;
+  padding:12px 14px!important;
+ }
+ body.saluz-v3.saluz-minimal.saluz-focus #tab-overview .saluz-op-metrics .professional-kpi-card {
+  min-height:126px!important;
+  padding:17px 15px!important;
+ }
+ body.saluz-v3.saluz-minimal.saluz-focus #tab-overview .saluz-op-metrics .professional-kpi-symbol {
+  top:12px!important;right:12px!important;
+  width:27px!important;height:27px!important;
+ }
+}
+@media(max-width:430px) {
+ body.saluz-v3.saluz-minimal.saluz-focus #tab-overview .saluz-focus-home-actions .professional-welcome-actions button {
+  flex:1 1 100%!important;
+ }
+ body.saluz-v3.saluz-minimal.saluz-focus #tab-overview .saluz-op-metrics .professional-kpis {
+  gap:9px!important;
+ }
+ body.saluz-v3.saluz-minimal.saluz-focus #tab-overview .saluz-op-metrics .professional-kpi-card {
+  min-height:123px!important;
+  padding:14px 12px!important;
+ }
+ body.saluz-v3.saluz-minimal.saluz-focus #tab-overview .saluz-op-metrics .professional-kpi-value {
+  font-size:29px!important;
+ }
+ body.saluz-v3.saluz-minimal.saluz-focus #tab-overview .saluz-op-metrics .professional-kpi-label {
+  font-size:12px!important;
+ }
+ body.saluz-v3.saluz-minimal.saluz-focus #tab-overview .saluz-op-metrics .professional-kpi-foot {
+  font-size:10.5px!important;
+ }
+}
+@media(prefers-reduced-motion:reduce) {
+ body.saluz-v3.saluz-minimal.saluz-focus #tab-overview .saluz-op-metrics .professional-kpi-card {
+  transition:none!important;
+ }
+}

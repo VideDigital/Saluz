@@ -137,6 +137,22 @@
         key==="active"?"Produtos publicados":
         key==="lowStock"?"De 1 a 5 unidades":d1Banner?"Editor ainda no legado":"Campanhas disponíveis");
       card.append(number,main,footer);
+      // V6: somente na homologação, indicar com clareza o que cada número significa.
+      // Os valores, filtros, listeners e fontes de dados permanecem inalterados.
+      if(location.hostname==="homologacao.saluz-admin.pages.dev"){
+        const lowStockCount=Number(numbers.lowStock)||0;
+        const helpText={
+          total:"Total no catálogo",
+          active:"Produtos publicados",
+          lowStock:lowStockCount>0?"Requer atenção":"Estoque em dia",
+          banners:d1Banner?"Editor ainda em integração":"Campanhas disponíveis"
+        };
+        footer.textContent=helpText[key];
+        if(key==="lowStock"&&lowStockCount>0){
+          card.classList.add("saluz-home-kpi-attention");
+          card.setAttribute("aria-label",displayLabel+": "+lowStockCount+". Requer atenção.");
+        }
+      }
       if(d1Banner){
         card.setAttribute("aria-disabled","true");
         card.title="Editor de campanhas ainda não migrou para D1. Indicador apenas informativo.";
