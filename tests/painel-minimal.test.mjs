@@ -59,7 +59,7 @@ test('Focus V4 organiza a navegação e oferece modos de listagem e edição', (
 
 test('Home V6 melhora contraste e indicadores sem simular dados', () => {
   const professional = read('saluz-professional.js');
-  assert.match(html, /saluz-professional\.js\\?v=20261030-home6/);
+  assert.ok(html.includes('saluz-professional.js?v=20261030-home6'));
   assert.match(styles, /SALUZ Home V6/);
   assert.match(styles, /\.saluz-focus-state>\.management-notice/);
   assert.match(styles, /background:#fff5e6!important/);
