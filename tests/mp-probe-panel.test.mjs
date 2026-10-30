@@ -99,7 +99,7 @@ test("interface fornece diagnóstico somente após autenticação no painel",()=
  const html=readFileSync("admin.html","utf8");
  assert.match(html,/id="mp-test-connectivity-button"/);
  assert.match(html,/id="mp-test-connectivity-feedback"/);
- assert.match(html,/saluz-admin-extras\.js\?v=20261030-mp-network/);
+ assert.match(html,/saluz-admin-extras\.js\?v=20261030-mp-verified/);
  assert.ok(html.indexOf('id="mp-test-connectivity"')>html.indexOf('id="tab-finance"'));
  const gateway=readFileSync("functions/api/[[path]].js","utf8");
  assert.ok(gateway.indexOf('if (!(await isAdmin(request,env)))')<gateway.indexOf("return await adminAction(request,env,route)"));
