@@ -5,7 +5,7 @@
  const overview=document.getElementById("tab-overview");
  const sidebar=document.querySelector("#dashboard .sidebar");
  if(!overview||!sidebar||overview.querySelector(".saluz-op-head"))return;
- document.body.classList.add("saluz-v3");
+
  const make=(tag,className,value)=>{
   const node=document.createElement(tag);
   if(className)node.className=className;
@@ -28,6 +28,7 @@
  const guide=overview.querySelector(":scope > .saluz-guide");
  // Abort before moving anything if essential nodes are not present.
  if(![welcome,actions,notice,metricHeading,kpis,caption,shortcutHeading,dashboardGrid,shortcuts,attention,orders,assurance,guide].every(Boolean))return;
+ document.body.classList.add("saluz-v3");
  const opHead=make("section","saluz-op-head");
  opHead.setAttribute("aria-labelledby","saluz-op-title");
  const left=make("div","saluz-op-copy");
