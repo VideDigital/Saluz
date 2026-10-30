@@ -1,5 +1,5 @@
 /* SALUZ Control: proxy same-origin limitado ao backend SALUZ, sem chaves no navegador. */
-const METHODS={auth:new Set(["login","logout","me"]),admin:new Set(["orders","upload","products","metrics","site-content","store-health","payment-integration"]),status:new Set([""]), "migration-admin":new Set(["products","content","storage","upload"]), "migration-media":new Set([""]), "migration-auth":new Set(["setup","login","logout","me","capabilities"])};
+const METHODS={auth:new Set(["login","logout","me"]),admin:new Set(["orders","upload","products","metrics","site-content","store-health","payment-integration"]),status:new Set([""]), "migration-admin":new Set(["products","content","storage","upload","store-health"]), "migration-media":new Set([""]), "migration-auth":new Set(["setup","login","logout","me","capabilities"])};
 export async function onRequest({request,env}){
   const target=String(env.ADMIN_API_ORIGIN||"");
   if(!["https://usesaluz.com.br","https://homologacao.saluz-loja.pages.dev"].includes(target))
@@ -19,6 +19,12 @@ export async function onRequest({request,env}){
          (["setup","login","logout"].includes(endpoint)&&request.method==="POST")))
       return new Response("Method not allowed",{status:405});
   }
+  // D1 resumo: available only on the staging admin hostname, never via production.
+  if(section==="migration-admin"&&endpoint==="store-health"&&
+    (url.hostname!=="homologacao.saluz-admin.pages.dev"||
+     target!=="https://homologacao.saluz-loja.pages.dev"||
+     request.method!=="GET"||parts.length!==3))
+    return new Response("Rota indisponível",{status:404});
   if(section==="migration-media"&&request.method!=="GET")return new Response("Method not allowed",{status:405});
   if(section==="migration-admin"&&!(["GET","POST","PATCH","PUT"].includes(request.method)))return new Response("Method not allowed",{status:405});
   if(section==="status"&&request.method!=="GET")return new Response("Method not allowed",{status:405});
