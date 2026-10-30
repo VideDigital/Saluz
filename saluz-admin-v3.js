@@ -73,6 +73,12 @@
  const state=overview.querySelector(".saluz-op-info strong");
  if(state)state.textContent="Homologação — pagamentos desativados.";
  // Keep the old legal text available in a less prominent sidebar help.
+ // In the remaining sections, prioritize the work area and put explanations below.
+ for(const tabId of ["campaigns","studio","reports"]){
+  const tab=document.getElementById("tab-"+tabId);
+  const help=tab?.querySelector(":scope > .saluz-guide");
+  if(help)tab.append(help);
+ }
  const navTitle=sidebar.querySelector(".nav-group-label");
  if(navTitle)navTitle.textContent="OPERAR A LOJA";
  // Contextual semantics from existing source only; never synthesize counts.
