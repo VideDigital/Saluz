@@ -50,4 +50,9 @@ test('Focus V4 organiza a navegação e oferece modos de listagem e edição', (
   assert.match(styles, /saluz-focus-editing \.market-catalog/);
   assert.match(styles, /saluz-focus-fee-settings/);
   assert.ok(html.includes('saluz-minimal.js?v=20261030-focus4'));
+  assert.ok(html.includes('saluz-minimal.css?v=20261030-atelier5'));
+  assert.match(styles, /SALUZ Atelier V5/);
+  assert.match(styles, /body\.saluz-v3\.saluz-minimal\.saluz-focus/);
+  assert.match(styles, /--atelier-coffee/);
+  assert.match(styles, /\.mobile-bottom-nav/);
 });
