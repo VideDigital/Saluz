@@ -231,11 +231,29 @@
         rejected:"Credencial de teste rejeitada pelo Mercado Pago. Confira a configuração no ambiente Preview sem compartilhar o token.",
         not_configured:"Token de teste não encontrado na homologação. Confira a variável MP_ACCESS_TOKEN.",
         blocked:"Verificação bloqueada por configuração de ambiente. Checkout não foi ativado.",
+        rate_limited:"Mercado Pago limitou temporariamente as consultas. Aguarde antes de tentar novamente.",
+        provider_error:"Servidor do Mercado Pago apresentou falha. Tente novamente depois.",
+        request_rejected:"Mercado Pago recusou a requisição. Verifique o código HTTP abaixo para orientar o diagnóstico.",
+        timeout:"Consulta excedeu o prazo de resposta. A ligação pode estar lenta ou indisponível.",
+        transport_error:"Falha na comunicação entre a Cloudflare e o Mercado Pago ou na preparação da requisição.",
+        runtime_error:"Falha interna da verificação na Cloudflare; revisar diagnóstico técnico.",
         unavailable:"Serviço de verificação indisponível no momento; nenhuma cobrança foi realizada.",
-        unexpected_response:"O Mercado Pago retornou um formato inesperado. Nenhuma cobrança foi realizada."
+        unexpected_response:"Resposta inesperada do Mercado Pago; conferir formato ou status HTTP."
       };
-      feedback.textContent=descriptions[result.connection_status]||
-        "Não foi possível interpretar o estado da conexão. Nenhum pagamento foi realizado.";
+      const http=Number.isInteger(result.provider_http_status)&&
+        result.provider_http_status>=400&&result.provider_http_status<=599
+        ?" HTTP "+result.provider_http_status+".":"";
+      const diagnosticCodes=new Set([
+        "provider_auth_rejected","missing_test_secret","unsafe_environment_flags",
+        "provider_timeout_http","provider_rate_limited","provider_server_error",
+        "provider_request_error","unexpected_provider_status","invalid_provider_json",
+        "provider_read_accepted","request_timed_out","network_or_request_error","unexpected_fetch_exception"
+      ]);
+      const code=diagnosticCodes.has(result.diagnostic_code)
+        ?" Diagnóstico: "+result.diagnostic_code+".":"";
+      feedback.textContent=(descriptions[result.connection_status]||
+        "Não foi possível interpretar o estado da conexão.")+http+code+
+        " Nenhum pagamento foi realizado.";
     }catch(err){
       // The shared admin api() safely invalidates the session on 401.
       if(document.getElementById("dashboard")?.classList.contains("hidden"))
