@@ -16,9 +16,9 @@ test("prova conexão usando somente GET em API oficial com token exclusivamente 
   calls++;
   assert.equal(url,"https://api.mercadopago.com/v1/payment_methods");
   assert.equal(init.method,"GET");
-  assert.equal(init.redirect,"error");
-  assert.equal(init.headers.authorization,"Bearer CREDENCIAL_TESTE_FICTICIA");
-  assert.match(init.headers.accept,/application\/json/);
+  assert.equal(init.redirect,"manual");
+  assert.equal(init.headers.get("authorization"),"Bearer CREDENCIAL_TESTE_FICTICIA");
+  assert.match(init.headers.get("accept"),/application\/json/);
   assert.equal(init.body,undefined);
   return response(200);
  };
@@ -117,6 +117,62 @@ test("nunca inclui código de resposta do provedor em resultados que não recebe
  assert.equal(result.result.diagnostic_code,"invalid_provider_json");
  assert.ok(!Object.hasOwn(result.result,"provider_http_status"));
  assert.doesNotMatch(JSON.stringify(result),/PROVIDER_CONTENT/);
+});
+test("segredo copiado com espaços nas bordas é normalizado antes de enviar",async()=>{
+ let count=0;
+ const safe={...env,MP_ACCESS_TOKEN:"  CREDENCIAL_TESTE_FICTICIA  \n"};
+ const result=await probeMercadoPagoTestCredential({
+  request:request(),env:safe,fetchFn:async(url,init)=>{
+    count++;
+    assert.equal(init.headers.get("authorization"),"Bearer CREDENCIAL_TESTE_FICTICIA");
+    return response(200);
+  }
+ });
+ assert.equal(count,1);
+ assert.equal(result.result.connection_status,"verified_read_only");
+});
+test("quebra de linha ou caracteres de controle internos são bloqueados sem fetch",async()=>{
+ for(const raw of ["ABC\nDEF","ABC\tDEF","ABC DEF","ABC\rDEF","  "]){
+  let count=0;
+  const r=await probeMercadoPagoTestCredential({
+    request:request(),env:{...env,MP_ACCESS_TOKEN:raw},
+    fetchFn:async()=>{count++;return response(200);}
+  });
+  assert.equal(count,0);
+  assert.equal(r.result.connection_status,"invalid_credential_format");
+  assert.equal(r.result.diagnostic_code,"secret_contains_invalid_whitespace");
+  assert.equal(r.result.checkout_enabled,false);
+  assert.doesNotMatch(JSON.stringify(r),/ABC|DEF/);
+ }
+});
+test("redirecionamento externo não é seguido com Bearer",async()=>{
+ let calls=0;
+ const result=await probeMercadoPagoTestCredential({
+   request:request(),env,fetchFn:async(_,opts)=>{
+    calls++;
+    assert.equal(opts.redirect,"manual");
+    return {status:302,ok:false,headers:{location:"https://invalid.example/path"}};
+   }
+ });
+ assert.equal(calls,1);
+ assert.equal(result.result.connection_status,"provider_redirect");
+ assert.equal(result.result.diagnostic_code,"provider_redirect_not_followed");
+ assert.doesNotMatch(JSON.stringify(result),/invalid/);
+});
+test("TypeError faz uma sondagem anônima somente leitura para distinguir alcance externo",async()=>{
+ const calls=[];
+ const result=await probeMercadoPagoTestCredential({
+   request:request(),env,fetchFn:async(url,options)=>{
+    calls.push({url,hasBearer:!!options.headers?.get?.("authorization"),method:options.method,redirect:options.redirect});
+    if(calls.length===1)throw new TypeError("Bearer CREDENCIAL_TESTE_FICTICIA");
+    return response(401,{secret:"DO_NOT_PRINT"});
+   }
+ });
+ assert.deepEqual(calls.map(x=>x.hasBearer),[true,false]);
+ assert.ok(calls.every(x=>x.method==="GET"&&x.redirect==="manual"));
+ assert.equal(result.result.connection_status,"transport_error");
+ assert.equal(result.result.diagnostic_code,"provider_reachable_auth_request_failed");
+ assert.doesNotMatch(JSON.stringify(result),/CREDENCIAL_TESTE_FICTICIA|DO_NOT_PRINT/);
 });
 test("probe só é acessível depois de validação de administrador na rota existente",()=>{
  const gateway=readFileSync("functions/api/[[path]].js","utf8");
