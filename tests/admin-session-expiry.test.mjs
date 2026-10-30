@@ -10,7 +10,7 @@ assert.ok(begin>=0&&end>begin,"Session guard source not found");
 const guardSource=source.slice(begin,end);
 
 function buildHarness(respond){
- const calls=[],elements=new Map();
+ const calls=[],changes=[],elements=new Map();
  const makeElement=()=>({
   classList:{
    values:new Set(),
@@ -36,16 +36,17 @@ function buildHarness(respond){
   document:{body:{classList:makeElement().classList}},
   console:{warn(){}},
   fetch:async (url,options)=>{calls.push({url,method:options?.method||"GET",credentials:options?.credentials});return respond(url,options);},
-  changeTab(){},
+  changeTab(name){changes.push(name);},
  };
  const script=`const saluzD1AdminPreview=true;
  let catalog=[{id:"old"}],orders=[{id:"old"}];
  ${guardSource}
  globalThis.testApi=api;
  globalThis.testSession=checkSession;
- globalThis.testInvalidate=invalidateAdminSession;`;
+ globalThis.testInvalidate=invalidateAdminSession;
+ globalThis.testShowDashboard=showDashboard;`;
  vm.runInNewContext(script,sandbox);
- return {calls,elements,sandbox};
+ return {calls,changes,elements,sandbox};
 }
 
 test("401 em cadastro D1 faz logout, fecha modal, limpa dados e não reenvia o POST",async()=>{
@@ -108,4 +109,30 @@ test("duas respostas 401 concorrentes só limpam a sessão uma vez",async()=>{
  ]);
  assert.ok(results.every(r=>r.status==="rejected"));
  assert.equal(calls.filter(c=>c.url==="/api/auth/logout").length,1);
+});
+
+test("retornar à aba do navegador e revalidar sessão preserva a seção atual",async()=>{
+ const {changes,elements,sandbox,calls}=buildHarness(url=>{
+  if(url==="/api/auth/me")return {status:200,ok:true,json:async()=>({admin:true})};
+  throw Error("Endpoint inesperado "+url);
+ });
+ await sandbox.testSession(); // first valid login/initial view
+ assert.deepEqual(changes,["overview"]);
+ assert.ok(!elements.get("dashboard").classList.contains("hidden"));
+ changes.push("finance"); // user clicked Simular taxas; active tab is finance
+ await sandbox.testSession(); // browser visibilitychange / 60-second session timer
+ await sandbox.testSession();
+ assert.deepEqual(changes,["overview","finance"],"não deve chamar changeTab ao revalidar sessão ativa");
+ assert.equal(calls.filter(x=>x.url==="/api/auth/me").length,3);
+ assert.ok(!elements.get("dashboard").classList.contains("hidden"));
+});
+test("somente o login ou a abertura inicial seleciona Início",()=>{
+ const {changes,elements,sandbox}=buildHarness(()=>{throw Error("não consultar")});
+ sandbox.testShowDashboard();
+ assert.deepEqual(changes,["overview"]);
+ sandbox.testShowDashboard();
+ assert.deepEqual(changes,["overview"]);
+ elements.get("dashboard").classList.add("hidden");
+ sandbox.testShowDashboard();
+ assert.deepEqual(changes,["overview","overview"]);
 });
