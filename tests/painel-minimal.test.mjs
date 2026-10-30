@@ -66,6 +66,10 @@ test('Home V6 melhora contraste e indicadores sem simular dados', () => {
   assert.match(styles, /color:#5a4531!important/);
   assert.match(styles, /#tab-overview \.saluz-op-metrics \.professional-kpi-foot/);
   assert.match(styles, /display:block!important/);
+  assert.match(styles, /#tab-overview \.saluz-focus-home-actions \.professional-welcome-actions button\.primary/);
+  assert.match(styles, /#tab-overview \.saluz-op-metrics \.professional-kpi-card/);
+  assert.match(styles, /@media\(max-width:430px\)/);
+  assert.match(professional, /key==="lowStock"&&lowStockCount>0/);
   assert.match(professional, /lowStockCount>0/);
   assert.match(professional, /saluz-home-kpi-attention/);
   assert.match(professional, /Editor ainda em integração/);
