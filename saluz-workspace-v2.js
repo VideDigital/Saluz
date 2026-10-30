@@ -46,10 +46,20 @@
  place("orders",[".orders-toolbar","#orders"]);
  place("customers",[".customer-summary",".panel-filter","#customers-list"]);
  const finance=$("#tab-finance");
- if(finance){
-   const guide=finance.querySelector(":scope > .saluz-guide");
-   const saved=finance.querySelector(":scope > .fee-saved");
-   if(guide&&saved)saved.after(guide);
+ if(finance&&!finance.querySelector(".saluz-finance-shell")){
+  const guide=finance.querySelector(":scope > .saluz-guide");
+  const layout=finance.querySelector(":scope > .finance-layout");
+  const mp=finance.querySelector(":scope > #mp-test-connectivity");
+  if(guide&&layout&&mp){
+   const shell=document.createElement("div");shell.className="saluz-finance-shell";
+   const side=document.createElement("aside");side.className="saluz-finance-side";
+   side.setAttribute("aria-label","Integração e orientações das taxas");
+   const marker=document.createComment("saluz-finance-position");
+   finance.insertBefore(marker,mp);
+   side.append(mp,guide);
+   shell.append(layout,side);
+   marker.replaceWith(shell);
+  }
  }
  const studio=$("#tab-studio");
  if(studio){
