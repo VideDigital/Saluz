@@ -5,7 +5,7 @@ import vm from "node:vm";
 const html=readFileSync("admin.html","utf8");
 const script=readFileSync("saluz-workspace-v2.js","utf8");
 const styles=[
- "saluz-layout-v2.css","saluz-home-v2.css","saluz-modules-v2.css"
+ "saluz-layout-v2.css","saluz-home-v2.css","saluz-modules-v2.css","saluz-finance-v2.css"
 ];
 test("novo layout carrega depois das camadas anteriores, em todas as abas",()=>{
  const last=html.indexOf("saluz-admin-calm-guide.css?v=20261030-calm1");
@@ -54,4 +54,17 @@ test("a reestruturação fica restrita a homologação e não publica novas func
  assert.match(workflow,/saluz-workspace-v2\.js/);
  for(const path of styles.concat("saluz-workspace-v2.js"))assert.ok(build.includes('"'+path+'"'),"asset ausente do pacote: "+path);
  assert.match(workflow,/branches: \[homologacao\]/);
+});
+
+test("Simular taxas usa duas colunas e preserva formulários e consulta segura",()=>{
+ const css=readFileSync("saluz-finance-v2.css","utf8");
+ assert.match(css,/saluz-finance-shell/);
+ assert.match(css,/saluz-finance-side/);
+ assert.match(css,/grid-template-columns:1fr/);
+ assert.match(script,/const mp=finance\.querySelector/);
+ assert.match(script,/side\.append\(mp,guide\)/);
+ assert.ok(html.includes('id="fee-form"'));
+ assert.ok(html.includes('id="mp-test-connectivity"'));
+ assert.ok(html.includes('id="fee-results"'));
+ assert.doesNotMatch(script,/\/v1\/orders|fetch\(/);
 });
