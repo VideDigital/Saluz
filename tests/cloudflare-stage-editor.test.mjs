@@ -40,12 +40,30 @@ test("revisão de produto evita sobrescrita silenciosa",async()=>{
  assert.equal(r.status,409);
 });
 test("rascunho editorial não é publicado automaticamente",async()=>{
- let q="";
- const db={prepare(sql){q=sql;return {bind(){return {run:async()=>({meta:{changes:1}})}}}}};
+ const sqls=[],row={draft:{},published:{hero_title:"Publicado anteriormente"},
+  revision:0,updated_at:null,published_at:null};
+ const db={prepare(sql){
+  sqls.push(sql);
+  return {
+   first:async()=>({...row,draft:JSON.stringify(row.draft),published:JSON.stringify(row.published)}),
+   bind(...values){return {run:async()=>{
+     assert.match(sql,/SET draft=/);
+     assert.doesNotMatch(sql,/SET published/);
+     assert.equal(values.at(-1),0);
+     row.draft=JSON.parse(values[0]);row.updated_at=values[1];row.revision++;
+     return {meta:{changes:1}};
+   }};}
+  };
+ }};
  const r=await onAdminRequest({request:build("content",{method:"PUT",headers:{"content-type":"application/json"},body:JSON.stringify({revision:0,draft:{hero_title:"Teste"}})}),
   env:{SALUZ_D1_PREVIEW:db,SALUZ_MEDIA_PREVIEW:{get(){}}},route:"content",validateProduct:validProduct});
- assert.equal(r.status,200);assert.equal((await r.json()).published,false);
- assert.ok(q.includes("SET draft"));assert.ok(!q.includes("SET published"));
+ assert.equal(r.status,200);
+ const body=await r.json();
+ assert.equal(body.content.draft.hero_title,"Teste");
+ assert.equal(body.content.published.hero_title,"Publicado anteriormente");
+ assert.equal(body.content.revision,1);
+ assert.ok(sqls.some(q=>q.includes("SET draft=")));
+ assert.ok(sqls.every(q=>!q.includes("SET published")));
 });
 test("proxy e gateway exigem autenticação antes de chamar o laboratório",async()=>{
  const source=(await readFile(new URL("../functions/api/[[path]].js",import.meta.url),"utf8"));

@@ -8,7 +8,7 @@ const categories=new Set(["Nécessaires","Porta-joias","Organizadores de maquiag
 const uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const headers={"content-type":"application/json; charset=utf-8","cache-control":"no-store","x-robots-tag":"noindex, nofollow","x-content-type-options":"nosniff"};
 const response=(body,status=200)=>new Response(JSON.stringify(body),{status,headers});
-const allowedFields=new Set(["hero_title","hero_description","hero_image_url","promo_title","promo_description","promo_image_url","contact_email","instagram_url","whatsapp_number","banners"]);
+import {handleStagingContent} from "./staging-content.mjs";
 function stage(request,env){
  return new URL(request.url).hostname==="homologacao.saluz-loja.pages.dev"&&!!env.SALUZ_D1_PREVIEW?.prepare&&!!env.SALUZ_MEDIA_PREVIEW?.get;
 }
@@ -66,19 +66,8 @@ export async function onAdminRequest({request,env,route,validateProduct}){
      if(changed.meta?.changes!==1)return response({error:"Produto alterado por outra sessão ou não encontrado"},409);
      return response({product:product(await db.prepare("SELECT * FROM saluz_products WHERE id=?").bind(id).first())});
    }
-   if(route==="content"&&method==="GET"){
-     const r=await db.prepare("SELECT draft,published,revision,updated_at,published_at FROM saluz_site_content WHERE id=1").first();
-     return response({content:{draft:JSON.parse(r.draft),published:JSON.parse(r.published),revision:r.revision,updated_at:r.updated_at,published_at:r.published_at},source:"D1 staging"});
-   }
-   if(route==="content"&&method==="PUT"){
-     const b=await json(request);
-     if(!Number.isSafeInteger(b.revision)||!b.draft||typeof b.draft!=="object"||Array.isArray(b.draft))return response({error:"Rascunho ou versão inválidos"},400);
-     if(Object.keys(b.draft).length>70||JSON.stringify(b.draft).length>16000)return response({error:"Conteúdo muito grande"},400);
-     // Stage content is never automatically published. Review individual structured keys before the live cutover.
-     const changed=await db.prepare("UPDATE saluz_site_content SET draft=?,revision=revision+1,updated_at=? WHERE id=1 AND revision=?")
-       .bind(JSON.stringify(b.draft),new Date().toISOString(),b.revision).run();
-     if(changed.meta?.changes!==1)return response({error:"Versão desatualizada"},409);
-     return response({saved:true,published:false});
+   if(route==="content"||route==="content/publish"||route==="content/discard"){
+     return handleStagingContent({request,db,route});
    }
    if(route==="storage"&&method==="GET"){
      const counts=await db.prepare("SELECT COUNT(*) files,COALESCE(SUM(byte_size),0) bytes FROM saluz_media WHERE lifecycle='active'").first();

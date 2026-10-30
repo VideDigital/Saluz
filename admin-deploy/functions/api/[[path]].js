@@ -20,6 +20,14 @@ export async function onRequest({request,env}){
       return new Response("Method not allowed",{status:405});
   }
   // D1 resumo: available only on the staging admin hostname, never via production.
+  // The D1 content editor contract is Preview-only and never forwarded to live.
+  if(section==="migration-admin"&&endpoint==="content"){
+    const validRoute=(parts.length===3&&["GET","PUT"].includes(request.method))||
+      (parts.length===4&&["publish","discard"].includes(parts[3])&&request.method==="POST");
+    if(url.hostname!=="homologacao.saluz-admin.pages.dev"||
+       target!=="https://homologacao.saluz-loja.pages.dev"||!validRoute)
+      return new Response("Rota indisponível",{status:404});
+  }
   if(section==="migration-admin"&&endpoint==="store-health"&&
     (url.hostname!=="homologacao.saluz-admin.pages.dev"||
      target!=="https://homologacao.saluz-loja.pages.dev"||
