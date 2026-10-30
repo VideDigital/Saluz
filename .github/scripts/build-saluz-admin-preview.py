@@ -38,7 +38,7 @@ def build(output: Path) -> None:
         raise RuntimeError(f"Missing required public assets: {sorted(absent)}")
 
     admin_html = (output / "public/admin.html").read_text(encoding="utf-8")
-    if "./admin.js?v=20261029-expired-session" not in admin_html:
+    if "./admin.js?v=20261030-tab-return" not in admin_html:
         raise RuntimeError("admin.html does not reference the tested session-fix build")
     admin_js = (output / "public/admin.js").read_text(encoding="utf-8")
     if "invalidateAdminSession" not in admin_js or "ensureAdminResponse" not in admin_js:
