@@ -77,3 +77,9 @@ body.saluz-v3 .saluz-workspace-split .saluz-workspace-side .saluz-guide{
  body.saluz-v3 .sidebar.mobile-menu-open .tabs{display:flex!important}
  body.saluz-v3 .workspace-head{border:0!important;padding:10px 0!important}
 }
+
+/* Segurança visual do login: não mostrar dashboard oculto no celular. */
+body.saluz-v3 .dashboard.hidden{display:none!important}
+body.saluz-v3 .sidebar .tabs button[data-tab=studio]:not(.selected):before{display:none!important}
+body.saluz-v3 .sidebar .tabs>a{color:#c6c6e7!important}
+body.saluz-v3 .sidebar .tabs>a:hover{color:#fff!important}
