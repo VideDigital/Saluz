@@ -267,3 +267,5 @@ body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-list-open:focus-visi
   padding:13px!important
  }
 }
+
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple #campaign-save[hidden]{display:none!important}
