@@ -129,6 +129,9 @@ jobs:
               "saluz-professional.js","saluz-admin-v3.js","saluz-v3-theme.css","admin.js"
           )}
           html=get(base, "/admin.html")
+          assert get(base, "/") == html, "A raiz do painel ainda não abre a administração"
+          assert 'saluz-admin-polish.css?v=20261030-panel1' in html, "Camada visual profissional ausente"
+          assert 'SALUZ-ADMIN-POLISH-V1' in get(base, "/saluz-admin-polish.css"), "CSS profissional não publicado"
           for name,reference in current_refs.items():
               assert reference in html, "Arquivo desatualizado no deploy: "+name
           assert 'saluz-campaigns-simple.js?v=20261030-simple1' in html, "Editor fácil não está no HTML"
