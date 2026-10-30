@@ -57,3 +57,35 @@ Não adicionar senhas, tokens, chaves Mercado Pago ou dados reais de clientes ao
 - O domínio oficial \`admin.usesaluz.com.br\` **não será promovido** até validação do fluxo de login, navegação, edição de banner, upload, rascunho/publicação e mobile.
 
 **Situação:** alterações de código para homologação; confirmar resultado do workflow e o visual autenticado antes de considerar concluído. Checkout, pagamentos e captação real de dados continuam sujeitos à liberação e validação separadas. Não guardar credenciais no repositório.
+
+## Checkup de UX — reformulação minimalista (30/10/2026)
+
+**Objetivo:** deixar todas as áreas do painel simples de operar, sem modificar banco, autenticação, catálogo, pagamentos, estoque, URLs de API ou regras de publicação.
+
+**Escopo de código:** `saluz-minimal.css` + `saluz-minimal.js` carregados ao final de `admin.html`. O JavaScript só executa em `homologacao.saluz-admin.pages.dev` e apenas quando a composição v3 estiver ativa. O arquivo de build do admin já copia todos os arquivos .css e .js da raiz. **Produção não recebe a reformulação.**
+
+**Entregas da interface:**
+- Menu branco enxuto, menos divisórias, cabeçalho mais leve, paleta discreta vinho/cinza e estados focados.
+- Início com ações rápidas, indicadores reais e pendências; ajuda explicativa sob demanda.
+- Produtos, pedidos e clientes sem coluna permanente de ajuda; formulários, filtros e regras originais preservados.
+- Cadastro de produtos com link de foto e prévia recolhidos; upload e variações permanecem disponíveis.
+- Campanhas com botão de salvar banner e publicação visíveis; duplicação, exclusão, reorganização da lista e descarte agrupados em menus expansíveis. **Salvar banner e publicar na loja são ações diferentes.**
+- Visual da loja com edição guiada e links de imagens opcionais recolhidos; rascunho e publicação permanecem separados.
+- Simulador de taxas prioriza o cálculo; diagnóstico de Mercado Pago fica em opções técnicas.
+- Ajustes responsivos para celular, foco visível, uso de `details/summary` e suporte a movimento reduzido.
+
+**Verificação manual obrigatória após o deploy (não substituída pela revisão de código):**
+1. Entrar e sair com conta autorizada; testar sessão expirada e acesso negado.
+2. Percorrer as 8 abas no computador e no celular; abrir todos os menus de ajuda e opções adicionais.
+3. Criar/editar produto de teste; escolher imagem, usar URL opcional, alterar variação/estoque, conferir prévia e salvar; verificar listagem.
+4. Criar banner de teste, fazer upload, salvar rascunho e verificar que **não está publicado**. Depois revisar o conjunto de mudanças e testar publicação controlada no ambiente de homologação.
+5. Testar o reordenamento de banners e o botão 'Salvar a ordem' dentro de 'Organizar ou desfazer alterações'.
+6. Em Visual da loja, alterar texto de teste, salvar rascunho, verificar prévia, publicar apenas no staging e testar desfazer.
+7. Validar filtros de pedidos e clientes, exportação de catálogo, simulador de taxas e navegação mobile.
+8. Confirmar que nada mudou em `admin.usesaluz.com.br` e `usesaluz.com.br`.
+
+**Condição para promoção:** aprovação visual e funcional da cliente/Agência Vide, autenticação e operações D1 testadas, comportamento de rascunho vs. publicação validado. Não ativar checkout ou pagamentos reais neste trabalho.
+
+**Rollback imediato:** remover de `admin.html` os links `saluz-minimal.css` e `saluz-minimal.js` e executar deploy da homologação. Os módulos originais continuam intactos.
+
+**Pendências P1:** validação autenticada/mobile no staging; confirmar persistência de produtos, banners e conteúdo D1; revisão de termos/privacidade, checkout e integração de pagamentos antes de operação real.

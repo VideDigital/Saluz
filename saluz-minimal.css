@@ -1,0 +1,337 @@
+/* SALUZ Minimal / Homologação - 30.10.2026
+   Uma camada única de apresentação sobre o painel existente.
+   Preserva IDs, inputs, listeners, APIs, permissões e estados de publicação.
+   Remover o link e o script de admin.html para reversão imediata. */
+
+body.saluz-v3.saluz-minimal {
+  --minimal-bg:#f7f7f8;
+  --minimal-ink:#292832;
+  --minimal-muted:#777780;
+  --minimal-accent:#6d5065;
+  --minimal-accent-hover:#563e50;
+  --minimal-line:#e8e6e9;
+  --minimal-soft:#f8f5f7;
+  --saluz-surface:var(--minimal-bg);
+  --saluz-line:var(--minimal-line);
+  background:var(--minimal-bg)!important;
+  color:var(--minimal-ink)!important;
+}
+body.saluz-v3.saluz-minimal .dashboard {
+  grid-template-columns:208px minmax(0,1fr)!important;
+  background:var(--minimal-bg)!important;
+}
+body.saluz-v3.saluz-minimal .sidebar {
+  position:sticky;top:0;height:100dvh;align-self:start;overflow-y:auto;
+  background:#fff!important;border-right:1px solid var(--minimal-line)!important;
+  box-shadow:none!important;color:var(--minimal-ink)!important;
+  gap:16px!important;padding:18px 11px!important;
+}
+body.saluz-v3.saluz-minimal .sidebar-top {padding:3px 8px 16px!important;border-bottom:1px solid var(--minimal-line)}
+body.saluz-v3.saluz-minimal .sidebar-logo,
+body.saluz-v3.saluz-minimal .sidebar-logo .admin-brand-name {color:var(--minimal-ink)!important}
+body.saluz-v3.saluz-minimal .sidebar-logo .admin-brand-mark {
+  background:var(--minimal-accent)!important;color:#fff!important;
+  box-shadow:none!important;border-radius:10px!important
+}
+body.saluz-v3.saluz-minimal .sidebar-logo small {color:var(--minimal-muted)!important}
+body.saluz-v3.saluz-minimal .sidebar .tabs {gap:3px!important}
+body.saluz-v3.saluz-minimal .sidebar .nav-group-label {
+  color:#929099!important;font-size:9px!important;letter-spacing:.11em!important;
+  padding:13px 12px 5px!important
+}
+body.saluz-v3.saluz-minimal .sidebar .tabs button,
+body.saluz-v3.saluz-minimal .sidebar .tabs button[data-tab=studio] {
+  color:#5f5d68!important;background:transparent!important;
+  min-height:41px!important;padding:9px 11px!important;font-size:12.5px!important;
+  font-weight:600!important;gap:10px!important;border-radius:9px!important
+}
+body.saluz-v3.saluz-minimal .sidebar .tabs button:hover {
+  color:#433140!important;background:#f7f3f6!important
+}
+body.saluz-v3.saluz-minimal .sidebar .tabs button.selected,
+body.saluz-v3.saluz-minimal .sidebar .tabs button[data-tab=studio].selected {
+  color:#5a4054!important;background:#f2eaef!important;font-weight:750!important
+}
+body.saluz-v3.saluz-minimal .sidebar .tabs button.selected:before {display:none!important}
+body.saluz-v3.saluz-minimal .sidebar .tabs button svg.admin-nav-svg {
+  stroke:#8a8289!important;width:17px!important;height:17px!important
+}
+body.saluz-v3.saluz-minimal .sidebar .tabs button.selected svg.admin-nav-svg {stroke:#6d5065!important}
+body.saluz-v3.saluz-minimal .sidebar-bottom {
+  margin-top:auto!important;border-top:1px solid var(--minimal-line)!important;
+  padding:14px 8px 0!important;gap:10px!important
+}
+body.saluz-v3.saluz-minimal .sidebar-bottom :is(strong,small,a,button) {color:#5d5660!important}
+body.saluz-v3.saluz-minimal .admin-account-avatar {background:#f1e9ee!important;color:#705066!important}
+body.saluz-v3.saluz-minimal .workspace {
+  background:var(--minimal-bg)!important;max-width:1510px!important;
+  padding:25px clamp(18px,3vw,42px) 70px!important
+}
+body.saluz-v3.saluz-minimal .workspace-head {
+  min-height:0!important;margin:0 0 20px!important;padding:0 0 17px!important;
+  border-bottom:1px solid var(--minimal-line)!important;gap:18px!important
+}
+body.saluz-v3.saluz-minimal .workspace-head h1 {
+  font-size:clamp(22px,2vw,28px)!important;color:var(--minimal-ink)!important;
+  letter-spacing:-.035em!important;margin:3px 0!important
+}
+body.saluz-v3.saluz-minimal .workspace-heading .eyebrow {font-size:9px!important;color:#8d828a!important}
+body.saluz-v3.saluz-minimal .workspace-section-desc {
+  font-size:12px!important;color:var(--minimal-muted)!important;margin:3px 0 0!important
+}
+body.saluz-v3.saluz-minimal .workspace-tools {gap:9px!important}
+body.saluz-v3.saluz-minimal .admin-global-search {
+  border:1px solid var(--minimal-line)!important;background:#fff!important;
+  box-shadow:none!important;max-width:255px!important
+}
+body.saluz-v3.saluz-minimal .workspace-head .admin-store-state {
+  color:#74695b!important;background:#f7f4ee!important;border:1px solid #ede7dd!important;
+  box-shadow:none!important
+}
+body.saluz-v3.saluz-minimal .panel-open-store,
+body.saluz-v3.saluz-minimal .primary,
+body.saluz-v3.saluz-minimal #tab-campaigns #campaign-publish {
+  background:var(--minimal-accent)!important;border-color:var(--minimal-accent)!important;
+  color:#fff!important;border-radius:9px!important;box-shadow:none!important;
+  font-weight:700!important;transition:background .15s ease!important
+}
+body.saluz-v3.saluz-minimal :is(.primary,.panel-open-store,#campaign-publish):hover {
+  background:var(--minimal-accent-hover)!important;border-color:var(--minimal-accent-hover)!important
+}
+body.saluz-v3.saluz-minimal .outline {
+  background:#fff!important;color:#5e4a59!important;border:1px solid #ded9df!important;
+  border-radius:9px!important;box-shadow:none!important
+}
+body.saluz-v3.saluz-minimal .outline:hover {background:#faf7f9!important;border-color:#c5b7c1!important}
+body.saluz-v3.saluz-minimal .workspace :is(input,select,textarea) {
+  border:1px solid #dddbe0!important;border-radius:9px!important;
+  box-shadow:none!important;color:var(--minimal-ink)!important;background:#fff!important
+}
+body.saluz-v3.saluz-minimal .workspace :is(input,select,textarea):focus-visible,
+body.saluz-v3.saluz-minimal :is(button,a,summary):focus-visible {
+  outline:2px solid #906a84!important;outline-offset:2px!important
+}
+body.saluz-v3.saluz-minimal :is(.panel-surface,.product-list,.professional-kpi-card,.order-card,.customer-summary-card,.market-catalog,.market-editor-area,.studio-card,.reports-chart,.saluz-op-head,.saluz-op-metrics,.saluz-op-task-panel,.professional-attention,.finance-layout .panel-surface) {
+  border:1px solid var(--minimal-line)!important;background:#fff!important;
+  border-radius:12px!important;box-shadow:none!important
+}
+body.saluz-v3.saluz-minimal .saluz-workspace-split,
+body.saluz-v3.saluz-minimal #tab-products .saluz-workspace-split,
+body.saluz-v3.saluz-minimal #tab-orders .saluz-workspace-split,
+body.saluz-v3.saluz-minimal #tab-customers .saluz-workspace-split {
+  grid-template-columns:minmax(0,1fr)!important;gap:0!important
+}
+body.saluz-v3.saluz-minimal .saluz-workspace-main {min-width:0!important}
+body.saluz-v3.saluz-minimal .saluz-workspace-side:empty,
+body.saluz-v3.saluz-minimal .saluz-op-guide:empty {display:none!important}
+body.saluz-v3.saluz-minimal .saluz-op-board,
+body.saluz-v3.saluz-minimal .saluz-finance-shell {
+  grid-template-columns:minmax(0,1fr)!important;gap:14px!important
+}
+body.saluz-v3.saluz-minimal .saluz-op-head {
+  padding:20px 23px!important;gap:16px!important;background:#fff!important
+}
+body.saluz-v3.saluz-minimal .saluz-op-kicker,
+body.saluz-v3.saluz-minimal .professional-kicker,
+body.saluz-v3.saluz-minimal .easy-page-title .eyebrow {color:#927f8c!important}
+body.saluz-v3.saluz-minimal .saluz-op-title {color:var(--minimal-ink)!important;font-size:23px!important}
+body.saluz-v3.saluz-minimal .saluz-op-subtitle {font-size:12px!important;color:var(--minimal-muted)!important}
+body.saluz-v3.saluz-minimal .saluz-op-info {margin:0 0 12px!important}
+body.saluz-v3.saluz-minimal .saluz-op-info .management-notice {
+  background:#fbf9f4!important;border:1px solid #eee7d8!important;
+  border-radius:9px!important;color:#6c6255!important
+}
+body.saluz-v3.saluz-minimal .saluz-op-metrics,
+body.saluz-v3.saluz-minimal .saluz-op-task-panel {padding:18px!important}
+body.saluz-v3.saluz-minimal .saluz-op-aside {display:block!important}
+body.saluz-v3.saluz-minimal .saluz-op-aside .professional-attention {padding:18px!important}
+body.saluz-v3.saluz-minimal .saluz-op-metrics .professional-kpi-symbol {background:#f6f0f4!important;color:#77556d!important}
+body.saluz-v3.saluz-minimal .saluz-op-task-panel .easy-shortcuts button {
+  background:#fbfafb!important;border:1px solid var(--minimal-line)!important;
+  border-radius:9px!important;box-shadow:none!important
+}
+body.saluz-v3.saluz-minimal .saluz-op-task-panel .easy-shortcuts button:hover {background:#f8f1f5!important;border-color:#d7c7d1!important}
+body.saluz-v3.saluz-minimal .saluz-op-task-panel .easy-shortcuts button>span {background:#f3edf1!important;color:#795771!important}
+body.saluz-v3.saluz-minimal #tab-overview>.overview-more {
+  margin:14px 0!important;background:#fff!important;border-color:var(--minimal-line)!important
+}
+body.saluz-v3.saluz-minimal .tab>.easy-page-title,
+body.saluz-v3.saluz-minimal #tab-customers>.panel-intro,
+body.saluz-v3.saluz-minimal #tab-finance>.panel-intro {
+  margin:0 0 16px!important;padding:0 0 13px!important;border-bottom:1px solid var(--minimal-line)!important
+}
+body.saluz-v3.saluz-minimal .tab :is(.easy-page-title,.panel-intro) h2 {
+  font-size:22px!important;color:var(--minimal-ink)!important
+}
+body.saluz-v3.saluz-minimal .tab :is(.easy-page-title,.panel-intro) p {
+  font-size:12px!important;color:var(--minimal-muted)!important
+}
+body.saluz-v3.saluz-minimal .saluz-min-help {
+  display:block!important;margin:16px 0 0!important;background:#fff!important;
+  border:1px solid var(--minimal-line)!important;border-radius:10px!important;overflow:hidden
+}
+body.saluz-v3.saluz-minimal .saluz-min-help>summary {
+  cursor:pointer;list-style:none;color:#695462!important;
+  font-size:12px!important;font-weight:700!important;padding:13px 16px!important
+}
+body.saluz-v3.saluz-minimal .saluz-min-help>summary::-webkit-details-marker {display:none}
+body.saluz-v3.saluz-minimal .saluz-min-help>summary:after {content:"+";float:right;color:#977e8e;font-size:18px;line-height:14px}
+body.saluz-v3.saluz-minimal .saluz-min-help[open]>summary:after {content:"−"}
+body.saluz-v3.saluz-minimal .saluz-min-help>.saluz-guide {
+  display:block!important;margin:0!important;border:0!important;border-top:1px solid var(--minimal-line)!important;
+  border-radius:0!important;padding:15px!important;background:#fff!important;
+  width:100%!important;max-width:none!important;box-shadow:none!important
+}
+body.saluz-v3.saluz-minimal .saluz-min-help .saluz-guide-head {display:flex!important;align-items:flex-start}
+body.saluz-v3.saluz-minimal .saluz-min-help .saluz-guide-symbol {display:none!important}
+body.saluz-v3.saluz-minimal .saluz-min-help .saluz-guide-title {font-size:14px!important}
+body.saluz-v3.saluz-minimal .saluz-min-help .saluz-guide-desc {font-size:12px!important}
+body.saluz-v3.saluz-minimal .saluz-min-more {
+  display:inline-block!important;border:1px solid var(--minimal-line)!important;border-radius:8px!important;
+  background:#fff!important;padding:0!important;max-width:100%;font-size:12px!important
+}
+body.saluz-v3.saluz-minimal .saluz-min-more>summary {
+  cursor:pointer;padding:10px 13px;list-style:none;font-weight:700;color:#6e5868
+}
+body.saluz-v3.saluz-minimal .saluz-min-more>summary::-webkit-details-marker {display:none}
+body.saluz-v3.saluz-minimal .saluz-min-more[open] {display:block!important;max-width:100%}
+body.saluz-v3.saluz-minimal .saluz-min-more-content {
+  display:flex;gap:9px;align-items:center;flex-wrap:wrap;padding:11px 12px;
+  border-top:1px solid var(--minimal-line)!important
+}
+body.saluz-v3.saluz-minimal .saluz-min-more-content>* {max-width:100%!important}
+body.saluz-v3.saluz-minimal .saluz-dev-tools {
+  margin:12px 0 2px;border-top:1px solid var(--minimal-line);padding-top:10px;font-size:11px
+}
+body.saluz-v3.saluz-minimal .saluz-dev-tools>summary {cursor:pointer;color:#817780;font-weight:650;padding:8px 10px}
+body.saluz-v3.saluz-minimal .saluz-dev-tools>.saluz-migration-link {
+  margin:0!important;display:block!important;border:0!important;background:#faf8f9!important;
+  padding:10px 12px!important;font-size:11px!important
+}
+body.saluz-v3.saluz-minimal .product-dialog-window {box-shadow:0 15px 55px #30252f30!important;border-color:#e6e2e6!important}
+body.saluz-v3.saluz-minimal .product-dialog-header {padding:15px 22px!important}
+body.saluz-v3.saluz-minimal .product-dialog-header h2 {color:var(--minimal-ink)!important}
+body.saluz-v3.saluz-minimal .product-dialog .product-preview {border-radius:10px!important}
+body.saluz-v3.saluz-minimal .product-dialog .saluz-min-more {margin-top:4px}
+body.saluz-v3.saluz-minimal .studio-steps {display:none!important}
+body.saluz-v3.saluz-minimal #tab-studio .studio-nav {margin-bottom:15px!important;gap:7px!important}
+body.saluz-v3.saluz-minimal #tab-studio .studio-nav button {
+  background:#fff!important;color:#665c65!important;border:1px solid var(--minimal-line)!important;
+  border-radius:8px!important;font-size:12px!important;box-shadow:none!important
+}
+body.saluz-v3.saluz-minimal #tab-studio .studio-nav button.selected {
+  color:#65495d!important;background:#f4ecf1!important;border-color:#decbd7!important
+}
+body.saluz-v3.saluz-minimal #tab-studio .studio-card {
+  padding:clamp(16px,2vw,24px)!important
+}
+body.saluz-v3.saluz-minimal #tab-studio .studio-actions {gap:10px!important;align-items:center!important}
+body.saluz-v3.saluz-minimal #tab-studio .studio-publish,
+body.saluz-v3.saluz-minimal #tab-studio .studio-save {
+  border-radius:9px!important
+}
+body.saluz-v3.saluz-minimal #tab-campaigns .market-guide {display:none!important}
+body.saluz-v3.saluz-minimal #tab-campaigns .market-status-row {
+  padding:12px 16px!important;margin:0 0 12px!important;border-color:var(--minimal-line)!important;
+  background:#fff!important
+}
+body.saluz-v3.saluz-minimal #tab-campaigns .market-top-actions {
+  margin:12px 0!important;padding:0!important
+}
+body.saluz-v3.saluz-minimal #tab-campaigns .market-layout {
+  grid-template-columns:minmax(210px,280px) minmax(0,1fr)!important;gap:13px!important
+}
+body.saluz-v3.saluz-minimal #tab-campaigns .market-editor-form {padding:18px!important}
+body.saluz-v3.saluz-minimal #tab-campaigns .market-easy-image {
+  background:#faf9fa!important;border-color:var(--minimal-line)!important
+}
+body.saluz-v3.saluz-minimal #tab-campaigns .market-publish-bar {
+  position:static!important;box-shadow:none!important;border-color:var(--minimal-line)!important;
+  padding:15px!important;border-radius:11px!important
+}
+body.saluz-v3.saluz-minimal #tab-campaigns .market-editor-actions,
+body.saluz-v3.saluz-minimal #tab-campaigns .market-publish-actions {
+  display:flex!important;gap:9px!important;align-items:center!important;flex-wrap:wrap
+}
+body.saluz-v3.saluz-minimal #tab-finance .saluz-finance-side {
+  position:static!important;width:100%!important
+}
+body.saluz-v3.saluz-minimal #tab-finance .saluz-finance-shell .saluz-min-more {
+  display:block!important;max-width:100%!important
+}
+body.saluz-v3.saluz-minimal #tab-finance #mp-test-connectivity {
+  margin:0!important;padding:16px!important;background:#fff!important;
+  border:0!important;box-shadow:none!important
+}
+body.saluz-v3.saluz-minimal #tab-reports .stat,
+body.saluz-v3.saluz-minimal #tab-reports .reports-chart {background:#fff!important;border-color:var(--minimal-line)!important}
+body.saluz-v3.saluz-minimal .dashboard [hidden] {display:none!important}
+@media(max-width:1100px) {
+ body.saluz-v3.saluz-minimal #tab-campaigns .market-layout {
+   grid-template-columns:minmax(0,1fr)!important
+ }
+ body.saluz-v3.saluz-minimal .saluz-op-head {flex-wrap:wrap!important}
+}
+@media(max-width:780px) {
+ body.saluz-v3.saluz-minimal .dashboard {display:block!important}
+ body.saluz-v3.saluz-minimal .sidebar {
+   position:relative;height:auto;overflow:visible;
+   padding:0 14px!important;border-right:0!important;
+   border-bottom:1px solid var(--minimal-line)!important
+ }
+ body.saluz-v3.saluz-minimal .sidebar-top {padding:10px 0!important;border:0!important}
+ body.saluz-v3.saluz-minimal .sidebar .tabs {
+   background:#fff!important;border-top:1px solid var(--minimal-line)!important;
+   padding:8px 0!important
+ }
+ body.saluz-v3.saluz-minimal .sidebar.mobile-menu-open .tabs {display:flex!important}
+ body.saluz-v3.saluz-minimal .sidebar .tabs button {width:100%;justify-content:flex-start}
+ body.saluz-v3.saluz-minimal .mobile-menu-toggle {
+   background:#faf7f9!important;color:#644a5e!important;border:1px solid var(--minimal-line)!important
+ }
+ body.saluz-v3.saluz-minimal .workspace {
+   padding:18px 14px calc(100px + env(safe-area-inset-bottom))!important
+ }
+ body.saluz-v3.saluz-minimal .workspace-head {
+   align-items:stretch!important;gap:8px!important;margin-bottom:14px!important
+ }
+ body.saluz-v3.saluz-minimal .workspace-tools .admin-global-search {
+   max-width:100%!important;width:100%!important
+ }
+ body.saluz-v3.saluz-minimal .saluz-op-head {padding:17px!important}
+ body.saluz-v3.saluz-minimal .saluz-op-metrics .professional-kpis {
+   grid-template-columns:repeat(2,minmax(0,1fr))!important
+ }
+ body.saluz-v3.saluz-minimal .saluz-op-task-panel .easy-shortcuts {
+   grid-template-columns:1fr!important
+ }
+ body.saluz-v3.saluz-minimal #tab-campaigns .market-publish-bar {
+   display:flex!important;align-items:stretch!important;flex-direction:column!important
+ }
+ body.saluz-v3.saluz-minimal #tab-campaigns .market-publish-actions {
+   flex-direction:column;align-items:stretch!important
+ }
+ body.saluz-v3.saluz-minimal #tab-campaigns .market-publish-actions>.primary,
+ body.saluz-v3.saluz-minimal #tab-campaigns .market-publish-actions>.saluz-min-more {
+   width:100%!important
+ }
+ body.saluz-v3.saluz-minimal .saluz-min-more-content {flex-direction:column;align-items:stretch}
+ body.saluz-v3.saluz-minimal .mobile-bottom-nav {
+   background:#fff!important;border-top:1px solid var(--minimal-line)!important
+ }
+ body.saluz-v3.saluz-minimal .mobile-bottom-nav button.selected {
+   color:#765069!important;background:#f6edf3!important
+ }
+}
+@media(max-width:450px) {
+ body.saluz-v3.saluz-minimal .saluz-op-metrics .professional-kpis {
+   grid-template-columns:minmax(0,1fr)!important
+ }
+ body.saluz-v3.saluz-minimal #tab-studio .studio-nav {overflow-x:auto;flex-wrap:nowrap!important}
+ body.saluz-v3.saluz-minimal #tab-studio .studio-nav button {
+   white-space:nowrap!important;flex:0 0 auto!important
+ }
+}
+@media(prefers-reduced-motion:reduce) {
+ body.saluz-v3.saluz-minimal :is(button,a) {transition:none!important}
+}
