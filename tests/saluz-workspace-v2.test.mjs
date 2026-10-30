@@ -34,7 +34,7 @@ test("Início deixa de empilhar duas faixas de apresentação e mantém dados re
  assert.match(css,/professional-welcome-actions/);
  assert.match(css,/professional-kpis/);
  assert.match(css,/professional-dashboard-grid/);
- assert.match(script,/este resumo usa a integração atual/);
+ assert.match(script,/Produtos e estoque: D1 de homologação/);
  assert.doesNotMatch(script,/R\$\s*[0-9]/);
  assert.doesNotMatch(script,/fetch\(|CHECKOUT_ENABLED|MP_ACCESS_TOKEN|localStorage|sessionStorage/);
 });
