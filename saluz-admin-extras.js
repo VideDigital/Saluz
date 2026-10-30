@@ -227,7 +227,7 @@
       feedback.textContent="Consultando a API do Mercado Pago em modo somente leitura...";
       const result=await api("admin/payment-integration?probe=1");
       const descriptions={
-        verified_read_only:"Conexão validada: o Mercado Pago aceitou a credencial para consulta. Nenhum pagamento foi realizado.",
+        verified_read_only:"Conexão validada: o Mercado Pago aceitou a credencial para consulta.",
         rejected:"Credencial de teste rejeitada pelo Mercado Pago. Confira a configuração no ambiente Preview sem compartilhar o token.",
         not_configured:"Token de teste não encontrado na homologação. Confira a variável MP_ACCESS_TOKEN.",
         blocked:"Verificação bloqueada por configuração de ambiente. Checkout não foi ativado.",

@@ -83,3 +83,11 @@ Referência: https://www.mercadopago.com.br/developers/pt/reference/online-payme
 O JSON de diagnóstico contém somente `connection_status`, `diagnostic_code` de lista fixa, `checkout_enabled:false` e, quando houve resposta de erro do provedor, **apenas o código HTTP numérico** `provider_http_status`. Nunca são devolvidos token, cabeçalhos, payload do provedor, e-mail, dados da conta, stack ou URLs internas.
 
 **Próxima decisão:** repetir o teste e registrar somente categoria/código HTTP. Não trocar credencial antes de identificar a categoria. Manter `CHECKOUT_ENABLED=false` e nenhuma rota de pagamento ativa.
+
+## Resultado do teste autenticado — 30/10/2026
+
+**Evidência informada pelo usuário (captura do painel de homologação):** mensagem `Conexão validada: o Mercado Pago aceitou a credencial para consulta`, com `diagnostic_code: provider_read_accepted`. Isso corresponde a `connection_status: verified_read_only` no backend. A aplicação de teste conseguiu consultar o endpoint somente leitura `GET /v1/payment_methods` pelo Workers/Pages usando o Secret de Preview. Nenhum pedido, reserva, pagamento ou cobrança foi executado nessa verificação.
+
+**Conclusão restrita:** token de teste aceito nesta consulta; chamadas à Orders API, permissões específicas para iniciar checkout, redirecionamento, assinatura de webhook, conciliação de pagamentos e cancelamentos ainda não foram validadas. Não usar credencial pessoal do desenvolvedor para produção, pertencente à Anny. `CHECKOUT_ENABLED=false` e `MP_CHECKOUT_ENABLED` não devem ser ativados até haver segurança ponta a ponta.
+
+**Melhoria de UX:** após a confirmação, a mensagem duplicada `Nenhum pagamento foi realizado` foi reduzida para uma única ocorrência no painel; esse ajuste não modifica backend ou checkout.
