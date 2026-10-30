@@ -17,7 +17,7 @@ test("novo layout carrega depois das camadas anteriores, em todas as abas",()=>{
   pos=current;
   assert.ok(readFileSync(path,"utf8").length>1800);
  }
- assert.ok(html.indexOf('saluz-workspace-v2.js?v=20261030-layout2')>html.indexOf('saluz-admin-guide.js?v=20261030-calm1'));
+ assert.ok(html.indexOf('saluz-workspace-v2.js?v=20261030-d1-health')>html.indexOf('saluz-admin-guide.js?v=20261030-calm1'));
  new vm.Script(script);
 });
 test("o limite de largura que desperdiçava tela foi explicitamente removido",()=>{
