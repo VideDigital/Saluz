@@ -1,0 +1,35 @@
+/* SALUZ Calm — camada visual final para todas as abas. */
+:root{
+ --saluz-ink:#252947;--saluz-muted:#657089;--saluz-accent:#654db2;
+ --saluz-panel:#fff;--saluz-bg:#f8f9fd;--saluz-border:#e5e8f1;--saluz-soft:#f1effc;
+ --coffee:#252947;--paper:#fff;--cream:#f8f9fd;--line:#e5e8f1;
+ --muted:#657089;--admin-accent:#654db2;--pro-bg:#f8f9fd;
+ --pro-border:#e5e8f1;--pro-ink:#252947;--pro-muted:#657089;
+}
+body{background:var(--saluz-bg)!important;color:var(--saluz-ink)!important}
+.dashboard{background:var(--saluz-bg)!important}
+.workspace{background:var(--saluz-bg)!important;padding:26px clamp(20px,2.6vw,42px) 64px!important}
+.workspace-head{background:transparent!important;box-shadow:none!important;border:0!important;
+ border-radius:0!important;padding:6px 2px 17px!important;min-height:0!important;margin-bottom:16px!important}
+.workspace-head h1{color:#25284d!important;font-size:clamp(27px,2.3vw,34px)!important}
+.workspace-heading .eyebrow{color:#71669e!important}
+.workspace-section-desc{font-size:13px!important;line-height:1.5!important;color:#636e86!important}
+.admin-global-search{background:#fff!important;border-color:#e2e5ef!important;box-shadow:0 2px 9px #29244705!important}
+.admin-global-search input::placeholder{color:#8a91a3!important}
+.admin-store-state{background:#fffaf1!important;border-color:#f1dfb9!important}
+.panel-open-store,.primary{background:#6451b5!important;border-color:#6451b5!important;box-shadow:0 5px 14px #6451b51c!important}
+.panel-open-store:hover,.primary:hover{background:#513ea0!important;border-color:#513ea0!important}
+.outline{border-color:#d6d0ed!important;color:#56449b!important;box-shadow:none!important}
+.outline:hover{border-color:#aaa0dc!important;background:#f7f5ff!important}
+.sidebar{background:#fff!important;color:#343e58!important;border-right:1px solid #eaeaf1!important;box-shadow:4px 0 22px #29244704!important}
+.sidebar .tabs button{color:#4d5872!important}
+.sidebar .tabs button:hover{color:#544297!important;background:#f7f5fd!important}
+.sidebar .tabs button.selected,.sidebar .tabs button[data-tab=studio].selected{color:#503d99!important;background:#f0ecfc!important}
+.sidebar .tabs button.selected:before{background:#7157c5!important}
+.sidebar .tabs button.selected svg.admin-nav-svg{stroke:#634eb5!important}
+.sidebar .tabs button svg.admin-nav-svg{stroke:#78839c}
+.nav-group-label{color:#858ca0!important}
+.sidebar-bottom{border-color:#eaeaf1!important}
+.sidebar-logo .admin-brand-mark{background:#6851b5!important;box-shadow:0 4px 11px #6851b51a!important}
+.tab{max-width:1600px}
+.tab h2,.tab h3{color:#262b4c}
