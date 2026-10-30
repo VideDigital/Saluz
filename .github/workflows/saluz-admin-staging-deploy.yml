@@ -75,8 +75,8 @@ jobs:
           npx --yes wrangler@4 pages deploy ./public \
             --project-name saluz-admin \
             --branch homologacao 2>&1 | tee "$RUNNER_TEMP/saluz-admin-publish.log"
-          deployed_url="$(grep -oE 'https://[0-9a-f]{8}\\.saluz-admin\\.pages\\.dev' "$RUNNER_TEMP/saluz-admin-publish.log" | head -n 1 || true)"
-          if [[ ! "$deployed_url" =~ ^https://[0-9a-f]{8}\\.saluz-admin\\.pages\\.dev$ ]]; then
+          deployed_url="$(grep -oE 'https://[0-9a-f]{8}\.saluz-admin\.pages\.dev' "$RUNNER_TEMP/saluz-admin-publish.log" | head -n 1 || true)"
+          if [[ ! "$deployed_url" =~ ^https://[0-9a-f]{8}\.saluz-admin\.pages\.dev$ ]]; then
             echo "::error::Não foi possível identificar a URL imutável do deploy de homologação."
             exit 1
           fi
@@ -96,7 +96,7 @@ jobs:
           # The immutable deploy URL uniquely identifies the files just uploaded.
           # The public branch alias may temporarily resolve to the previous deploy.
           base = os.environ["DEPLOY_URL"].rstrip("/")
-          assert re.fullmatch(r"https://[0-9a-f]{8}\\.saluz-admin\\.pages\\.dev", base), "Invalid immutable deploy URL"
+          assert re.fullmatch(r"https://[0-9a-f]{8}\.saluz-admin\.pages\.dev", base), "Invalid immutable deploy URL"
           alias = "https://homologacao.saluz-admin.pages.dev"
           headers = {"User-Agent": "SALUZ-Preview-CI/1.0",
                      "Accept": "text/html,application/javascript,*/*",
