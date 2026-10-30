@@ -17,6 +17,7 @@ REQUIRED_FILES = {
     "admin.html", "admin.js", "admin.css", "saluz-admin-extras.js",
     "saluz-studio.js", "saluz-campaigns.js", "saluz-mobile.js",
     "saluz-campaigns-simple.js", "saluz-campaigns-simple.css",
+    "saluz-admin-polish.css",
     "saluz-product-dialog.css", "_headers",
     "saluz-admin-calm.css", "saluz-admin-calm-components.css",
     "saluz-admin-calm-guide.css", "saluz-admin-guide.js",
@@ -43,6 +44,12 @@ def build(output: Path) -> None:
     absent = REQUIRED_FILES - {p.name for p in (output / "public").iterdir()}
     if absent:
         raise RuntimeError(f"Missing required public assets: {sorted(absent)}")
+
+    # The admin project must never serve the storefront at its root URL.
+    # Copying the admin page preserves relative assets and query parameters.
+    shutil.copy2(output / "public/admin.html", output / "public/index.html")
+    if (output / "public/index.html").read_bytes() != (output / "public/admin.html").read_bytes():
+        raise RuntimeError("Admin root must match the restricted admin entrypoint")
 
     admin_html = (output / "public/admin.html").read_text(encoding="utf-8")
     if "./admin.js?v=20261030-tab-return" not in admin_html:

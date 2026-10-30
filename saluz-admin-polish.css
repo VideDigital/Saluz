@@ -1,0 +1,146 @@
+/* SALUZ-ADMIN-POLISH-V1 | apresentação apenas, sem alterar dados ou APIs.
+   Aplique após as camadas antigas; remover após futura consolidação do CSS. */
+:root {
+ --panel-bg:#f8f7f6;
+ --panel-ink:#292b35;
+ --panel-soft:#6b7280;
+ --panel-accent:#705264;
+ --panel-accent-hover:#5e4554;
+ --panel-border:#e6e4e5;
+ --panel-focus:#9d7a8c;
+}
+body {background:var(--panel-bg);font-family:"DM Sans",Arial,sans-serif}
+.login {background:radial-gradient(ellipse at 50% 0,#f0e9ed 0,transparent 55%),var(--panel-bg)}
+.login-brand{font-weight:700;letter-spacing:.12em;color:var(--panel-ink)}
+.login-card{
+ border:1px solid var(--panel-border);border-radius:18px;background:#fff;
+ box-shadow:0 18px 56px #292b3510;max-width:460px
+}
+.login-card h1{font-family:"DM Sans",Arial,sans-serif;font-weight:750;
+ font-size:clamp(30px,5vw,38px);letter-spacing:-.04em;color:var(--panel-ink)}
+.login-card p{color:var(--panel-soft)}
+.login-card input{border-radius:10px;min-height:48px;border-color:#d9d9dc}
+.login button[type=submit]{min-height:48px;border-radius:10px;
+ background:var(--panel-accent);border-color:var(--panel-accent);
+ font-weight:700;align-items:center}
+.login button[type=submit]:hover{background:var(--panel-accent-hover)}
+.login .store-link{color:#635866;font-weight:600;font-size:13px}
+body.saluz-v3{--saluz-surface:var(--panel-bg);--saluz-text:var(--panel-ink);
+ --saluz-line:var(--panel-border);--saluz-violet:var(--panel-accent);
+ background:var(--panel-bg)!important;color:var(--panel-ink)!important}
+body.saluz-v3 .dashboard{grid-template-columns:242px minmax(0,1fr)!important}
+body.saluz-v3 .sidebar{
+ background:#29262e!important;padding:23px 13px 17px!important;
+ box-shadow:none!important;border-right:1px solid #39323c!important
+}
+body.saluz-v3 .sidebar-top{padding:0 8px 15px!important}
+body.saluz-v3 .sidebar-logo .admin-brand-mark{background:#705264!important;
+ color:#fff!important;border-radius:11px!important;box-shadow:none!important}
+body.saluz-v3 .sidebar .nav-group-label{color:#a9a1aa!important;
+ font-size:10px!important;font-weight:700!important}
+body.saluz-v3 .sidebar .tabs{gap:4px!important}
+body.saluz-v3 .sidebar .tabs button{
+ min-height:44px!important;border-radius:9px!important;color:#d4cdd4!important;
+ font-size:13px!important;font-weight:600!important;
+ justify-content:flex-start!important;gap:11px!important;
+ padding:11px 13px!important;transition:background .15s ease,color .15s ease
+}
+body.saluz-v3 .sidebar .tabs button:hover{background:#3c353f!important;color:#fff!important}
+body.saluz-v3 .sidebar .tabs button.selected,
+body.saluz-v3 .sidebar .tabs button[data-tab=studio].selected{
+ background:#51404e!important;color:#fff!important;font-weight:750!important
+}
+body.saluz-v3 .sidebar .tabs button.selected:before{background:#cdaab8!important}
+body.saluz-v3 .sidebar .tabs button svg.admin-nav-svg{stroke:#bcb0be!important;flex-shrink:0}
+body.saluz-v3 .sidebar .tabs button.selected svg.admin-nav-svg{stroke:#fff!important}
+body.saluz-v3 .sidebar-bottom{border-top:1px solid #49424a!important}
+body.saluz-v3 .workspace{background:var(--panel-bg)!important;
+ padding:26px clamp(22px,3vw,48px) 68px!important;max-width:1580px!important}
+body.saluz-v3 .workspace-head{
+ border-bottom:1px solid var(--panel-border)!important;
+ min-height:76px!important;margin-bottom:23px!important;align-items:center!important
+}
+body.saluz-v3 .workspace-head h1{
+ font-family:"DM Sans",Arial,sans-serif!important;font-weight:750!important;
+ letter-spacing:-.04em!important;font-size:clamp(23px,2.5vw,28px)!important;
+ color:var(--panel-ink)!important
+}
+body.saluz-v3 .workspace-heading .eyebrow{letter-spacing:.10em!important;color:#78717a!important}
+body.saluz-v3 .workspace-section-desc{color:var(--panel-soft)!important;font-size:13px!important}
+body.saluz-v3 .primary,body.saluz-v3 .panel-open-store,
+body.saluz-v3 #tab-campaigns #campaign-publish{
+ background:var(--panel-accent)!important;border-color:var(--panel-accent)!important;
+ border-radius:9px!important;color:#fff!important;box-shadow:none!important;
+ font-weight:700!important
+}
+body.saluz-v3 .primary:hover,body.saluz-v3 .panel-open-store:hover,
+body.saluz-v3 #tab-campaigns #campaign-publish:hover{
+ background:var(--panel-accent-hover)!important;border-color:var(--panel-accent-hover)!important
+}
+body.saluz-v3 .outline{border-radius:9px!important;border-color:#dcd8dd!important;
+ color:#594456!important;background:#fff!important;font-weight:650!important}
+body.saluz-v3 .outline:hover{border-color:#ad9bac!important;background:#fbf9fb!important}
+body.saluz-v3 .workspace :is(input,select,textarea){
+ border-color:#dcdde1;border-radius:9px;color:var(--panel-ink);
+ background:#fff;box-shadow:none
+}
+body.saluz-v3 .workspace :is(input,select,textarea):focus-visible,
+body.saluz-v3 .workspace :is(button,a,summary):focus-visible,
+.login :is(input,button,a):focus-visible{
+ outline:3px solid var(--panel-focus)!important;outline-offset:2px!important
+}
+body.saluz-v3 :is(.panel-surface,.product-list,.professional-kpi-card,.order-card,
+ .customer-summary-card,.market-editor-area,.studio-card,.reports-chart){
+ border:1px solid var(--panel-border)!important;border-radius:12px!important;
+ background:#fff!important;box-shadow:none!important
+}
+body.saluz-v3 .saluz-op-head{
+ border-radius:15px!important;border:1px solid var(--panel-border)!important;
+ box-shadow:none!important
+}
+body.saluz-v3 .saluz-op-task-panel{border-color:var(--panel-border)!important}
+body.saluz-v3 .saluz-op-task-panel .easy-shortcuts button:hover{
+ border-color:#c3b5bf!important;background:#f9f6f8!important
+}
+body.saluz-v3 .admin-store-state{
+ background:#f6f4f0!important;color:#655e56!important;
+ border-color:#e6dfd7!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-easy-kicker{
+ color:var(--panel-accent)!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-main-upload{
+ border-color:#c9b6c2!important;color:var(--panel-accent)!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-list-card.is-selected{
+ background:#f8f3f6!important;border-color:#c9b9c6!important
+}
+body.saluz-v3 .saluz-migration-link{opacity:.72;font-size:12px!important}
+@media(max-width:980px){
+ body.saluz-v3 .workspace-head{flex-wrap:wrap!important;gap:10px!important}
+ body.saluz-v3 .workspace-tools{flex-wrap:wrap!important}
+}
+@media(max-width:780px){
+ body.saluz-v3 .dashboard{display:block!important}
+ body.saluz-v3 .sidebar{padding:0 14px!important}
+ body.saluz-v3 .sidebar-top{padding:12px 0!important}
+ body.saluz-v3 .sidebar .tabs{gap:5px!important}
+ body.saluz-v3 .workspace{
+  padding:16px 14px calc(104px + env(safe-area-inset-bottom))!important
+ }
+ body.saluz-v3 .workspace-head{padding:8px 0 14px!important}
+ body.saluz-v3 .workspace-head h1{font-size:24px!important}
+ body.saluz-v3 .mobile-bottom-nav{padding-bottom:env(safe-area-inset-bottom)!important}
+ body.saluz-v3 .market-layout{min-width:0!important}
+ body.saluz-v3 .saluz-op-head{padding:17px!important}
+}
+@media(max-width:480px){
+ .login{padding:70px 15px 26px}
+ .login-card{padding:28px 22px;border-radius:14px}
+ body.saluz-v3 .workspace-tools .admin-global-search{max-width:100%!important}
+ body.saluz-v3 .market-editor-actions{flex-wrap:wrap!important}
+ body.saluz-v3 .market-editor-actions>*{max-width:100%!important}
+}
+@media(prefers-reduced-motion:reduce){
+ body.saluz-v3 .sidebar .tabs button{transition:none!important}
+}

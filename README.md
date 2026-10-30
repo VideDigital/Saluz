@@ -41,3 +41,19 @@ Não adicionar senhas, tokens, chaves Mercado Pago ou dados reais de clientes ao
 7. Só então configurar domínio oficial, indexação e ativação comercial.
 
 **Contato informado:** anny.csalustiano@gmail.com; WhatsApp e Instagram ainda aguardam definição.
+
+
+## Checkup do painel administrativo — 30/10/2026
+
+**Cenário:** a loja pública é \`https://usesaluz.com.br/\` (Cloudflare Pages \`saluz-loja\`) e o painel possui domínio próprio \`https://admin.usesaluz.com.br/\` (Pages \`saluz-admin\`). A versão de testes usa \`https://homologacao.saluz-admin.pages.dev/\`. Não confundir os projetos.
+
+**Problema identificado no código:** o builder do projeto \`saluz-admin\` copiava a home \`index.html\` da loja para o artefato do painel. Isso fazia a raiz do projeto administrativo poder servir a vitrine, em vez do login de gestão.
+
+**Correção preparada em homologação:**
+- O build coloca o conteúdo de \`admin.html\` como \`index.html\` do **pacote de deploy administrativo**, sem alterar a home original da loja no GitHub.
+- Camada \`saluz-admin-polish.css\` unifica cabeçalho, menu, botões, formulário, foco acessível e responsividade, sem alterar APIs, banco, preços, estoque nem autenticação.
+- Teste automatizado confirma que o pacote usa o login administrativo na raiz, preserva a API e carrega o CSS; smoke da Cloudflare verifica a rota \`/\` e o arquivo CSS na versão implantada.
+- A URL para avaliação após a implantação é \`https://homologacao.saluz-admin.pages.dev/\`. O editor simplificado de campanhas só funciona no hostname de homologação (modo D1).
+- O domínio oficial \`admin.usesaluz.com.br\` **não será promovido** até validação do fluxo de login, navegação, edição de banner, upload, rascunho/publicação e mobile.
+
+**Situação:** alterações de código para homologação; confirmar resultado do workflow e o visual autenticado antes de considerar concluído. Checkout, pagamentos e captação real de dados continuam sujeitos à liberação e validação separadas. Não guardar credenciais no repositório.
