@@ -32,6 +32,7 @@ test("botão testa sessão antes do endpoint privado, nenhum token é exposto",a
  assert.deepEqual(obj.calls,["auth/me","admin/payment-integration?probe=1"]);
  assert.match(obj.feedback.textContent,/Conexão validada/);
  assert.match(obj.feedback.textContent,/Nenhum pagamento foi realizado/);
+ assert.equal((obj.feedback.textContent.match(/Nenhum pagamento foi realizado/g)||[]).length,1);
  assert.equal(obj.button.disabled,false);
  assert.doesNotMatch(script,/MP_ACCESS_TOKEN\s*[:=]\s*['"][^'"]+/);
 });
