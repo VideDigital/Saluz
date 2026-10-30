@@ -115,3 +115,12 @@ Não adicionar senhas, tokens, chaves Mercado Pago ou dados reais de clientes ao
 - Esta camada exige `body.saluz-v3.saluz-minimal.saluz-focus`; a classe `saluz-focus` é habilitada pela experiência somente no hostname de homologação. **Nunca validar produção com base apenas em testes estáticos.**
 - Validação pendente: conferir desktop/mobile com login de homologação, títulos, foco, menus, cards, tabelas, modais, listagem de banners e formulários. Comparar com a produção para confirmar isolamento visual. Checkout não habilitado.
 - Rollback: reverter o commit do Atelier V5 na branch de homologação. Os módulos funcionais continuam intactos.
+
+## Home V6 — refino dos cards (30/10/2026)
+
+- Corrigido o **contraste** do aviso de homologação no topo. Não há mais texto claro sobre fundo bege.
+- Reduzido o espaçamento do bloco escuro e forçados estilos dos dois botões com hierarquia visual consistente.
+- Cards com menor densidade visual, números e legendas legíveis, ajuda contextual restaurada e fonte real preservada.
+- Estoque baixo recebe destaque somente quando o contador é maior que zero; no ambiente D1, o card de banners explica que a integração do editor ainda está em andamento.
+- Mudança limitada à home de homologação. Não altera autenticação, banco, checkout, preços, scripts de publicação ou o painel em produção.
+- **Revisão manual após deploy:** abrir login, home desktop/mobile, botões de produto/campanhas, clique nos KPIs, aviso e dados D1. É proibido tratar dados da homologação como pedidos pagos.
