@@ -18,7 +18,7 @@ test("editores só direcionam conteúdo à migração quando preview D1 estiver 
 });
 test("CSS e HTML preservados, scripts com nova versão para evitar cache",()=>{
  assert.match(admin,/saluz-studio\.js\?v=20261030-d1-editor/);
- assert.match(admin,/saluz-campaigns\.js\?v=20261030-d1-editor/);
+ assert.match(admin,/saluz-campaigns\.js\?v=20261030-simple1/);
 });
 test("backend e proxy de conteúdo protegidos na homologação com versão e publicação explícita",()=>{
  const proxy=readFileSync("admin-deploy/functions/api/[[path]].js","utf8");
