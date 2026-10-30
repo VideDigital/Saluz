@@ -125,20 +125,27 @@
     grid.replaceChildren();
     const numbers={...data.counts,banners:data.activeBanners};
     for(const [key,label,icon,tone] of kpiConfigs){
+      const d1Banner=key==="banners"&&data.source==="D1 staging";
+      const displayLabel=d1Banner?"Banners no D1":label;
       const card=safe("button","professional-kpi-card professional-kpi-"+tone);
       card.type="button";
-      card.setAttribute("aria-label",label+": "+String(numbers[key]??0));
+      card.setAttribute("aria-label",displayLabel+": "+String(numbers[key]??0));
       card.append(safe("span","professional-kpi-symbol",icon));
       const number=safe("strong","professional-kpi-value",Number(numbers[key]||0).toLocaleString("pt-BR"));
-      const main=safe("span","professional-kpi-label",label);
+      const main=safe("span","professional-kpi-label",displayLabel);
       const footer=safe("span","professional-kpi-foot",key==="total"?"Itens no catálogo":
         key==="active"?"Produtos publicados":
-        key==="lowStock"?"De 1 a 5 unidades":"Campanhas disponíveis");
+        key==="lowStock"?"De 1 a 5 unidades":d1Banner?"Editor ainda no legado":"Campanhas disponíveis");
       card.append(number,main,footer);
-      card.addEventListener("click",()=>{
-        if(key==="banners")detailAction("campaigns");
-        else detailAction("products",key==="lowStock"?"low":key==="active"?"active":"all");
-      });
+      if(d1Banner){
+        card.setAttribute("aria-disabled","true");
+        card.title="Editor de campanhas ainda não migrou para D1. Indicador apenas informativo.";
+      }else{
+        card.addEventListener("click",()=>{
+          if(key==="banners")detailAction("campaigns");
+          else detailAction("products",key==="lowStock"?"low":key==="active"?"active":"all");
+        });
+      }
       grid.append(card);
     }
     const source=data.source==="D1 staging"
