@@ -141,9 +141,12 @@
       });
       grid.append(card);
     }
+    const source=data.source==="D1 staging"
+      ?"Fonte: banco D1 de homologação (mesmo catálogo da vitrine de testes)."
+      :"Fonte: integração anterior (Supabase).";
     el("overview-health-caption").textContent=data.truncated?
-      "Resumo parcial: o catálogo excedeu 2.000 itens. Continue pelo gerenciamento de produtos.":
-      "Última consulta: "+new Date(data.updatedAt).toLocaleString("pt-BR")+". Valores do catálogo e das campanhas cadastradas.";
+      "Resumo parcial: o catálogo excedeu 2.000 itens. "+source:
+      "Última consulta: "+new Date(data.updatedAt).toLocaleString("pt-BR")+". "+source;
     const attention=el("overview-attention-list");attention.replaceChildren();
     const items=[];
     if(data.unpublished)items.push({icon:"✎",title:"Alterações aguardando publicação",subtitle:"Há um rascunho não publicado em Aparência e links ou Campanhas.",tab:"studio"});
@@ -174,7 +177,11 @@
     loading=true;
     if(force)el("overview-health-caption").textContent="Atualizando informações...";
     try{
-      const res=await fetch("/api/admin/store-health",{credentials:"same-origin",cache:"no-store"});
+      // Respect the identical D1 toggle used by the Products editor.
+      // Never fall back to Supabase if a D1 staging query fails.
+      const d1Preview=typeof saluzD1AdminPreview!=="undefined"&&saluzD1AdminPreview;
+      const endpoint=d1Preview?"/api/migration-admin/store-health":"/api/admin/store-health";
+      const res=await fetch(endpoint,{credentials:"same-origin",cache:"no-store"});
       const data=await res.json().catch(()=>({}));
       if(!res.ok)throw Error(data.error||"Erro na consulta");
       renderHealth(data);
