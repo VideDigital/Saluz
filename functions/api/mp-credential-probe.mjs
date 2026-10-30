@@ -9,17 +9,18 @@
  */
 const STAGING_HOST="homologacao.saluz-loja.pages.dev";
 const METHODS_URL="https://api.mercadopago.com/v1/payment_methods";
+const diagnostic=(status,code,http)=>({httpStatus:200,result:{connection_status:status,diagnostic_code:code,...(Number.isInteger(http)&&http>=400&&http<=599?{provider_http_status:http}:{}),checkout_enabled:false}});
 
 export async function probeMercadoPagoTestCredential({request,env,fetchFn=fetch}){
   const url=new URL(request.url);
   if(url.hostname!==STAGING_HOST||url.protocol!=="https:"||request.method!=="GET")
     return {httpStatus:404,result:{error:"Verificação indisponível"}};
   if(!env?.MP_ACCESS_TOKEN)
-    return {httpStatus:200,result:{connection_status:"not_configured",checkout_enabled:false}};
+    return diagnostic("not_configured","missing_test_secret");
   // Do not send credentials when an accidental production environment is configured
   // as preview. The access token is a server-only Cloudflare secret.
   if(env.MP_ENVIRONMENT==="production"||env.CHECKOUT_ENABLED==="true"||env.MP_CHECKOUT_ENABLED==="true")
-    return {httpStatus:200,result:{connection_status:"blocked",checkout_enabled:false}};
+    return diagnostic("blocked","unsafe_environment_flags");
   try{
     const response=await fetchFn(METHODS_URL,{
       method:"GET",
@@ -31,15 +32,20 @@ export async function probeMercadoPagoTestCredential({request,env,fetchFn=fetch}
       signal:AbortSignal.timeout(8000)
     });
     if(response.status===401||response.status===403)
-      return {httpStatus:200,result:{connection_status:"rejected",checkout_enabled:false}};
-    if(!response.ok)
-      return {httpStatus:200,result:{connection_status:"unavailable",checkout_enabled:false}};
+      return diagnostic("rejected","provider_auth_rejected",response.status);
+    if(response.status===408||response.status===504)return diagnostic("timeout","provider_timeout_http",response.status);
+    if(response.status===429)return diagnostic("rate_limited","provider_rate_limited",response.status);
+    if(response.status>=500&&response.status<=599)return diagnostic("provider_error","provider_server_error",response.status);
+    if(response.status>=400&&response.status<=499)return diagnostic("request_rejected","provider_request_error",response.status);
+    if(!response.ok)return diagnostic("unexpected_response","unexpected_provider_status");
     // Require the documented array structure, not merely HTTP 200 from a proxy.
     const body=await response.json().catch(()=>null);
     if(!Array.isArray(body))
-      return {httpStatus:200,result:{connection_status:"unexpected_response",checkout_enabled:false}};
-    return {httpStatus:200,result:{connection_status:"verified_read_only",checkout_enabled:false}};
-  }catch{
-    return {httpStatus:200,result:{connection_status:"unavailable",checkout_enabled:false}};
+      return diagnostic("unexpected_response","invalid_provider_json");
+    return diagnostic("verified_read_only","provider_read_accepted");
+  }catch(e){
+    if(e?.name==="TimeoutError"||e?.name==="AbortError")return diagnostic("timeout","request_timed_out");
+    if(e?.name==="TypeError")return diagnostic("transport_error","network_or_request_error");
+    return diagnostic("runtime_error","unexpected_fetch_exception");
   }
 }

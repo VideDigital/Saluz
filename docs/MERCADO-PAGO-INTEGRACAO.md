@@ -60,3 +60,26 @@ Resposta mínima: `connection_status` pode ser `verified_read_only`, `rejected`,
 **Importante:** `verified_read_only` só significa que a API aceitou a credencial para consultar métodos de pagamento; não confirma funcionamento da API Orders, da reserva de estoque, dos webhooks, nem autorização para pagamentos reais. Executar teste real de compra simulada somente após revisar as dependências obrigatórias do checkout.
 
 Referência: https://www.mercadopago.com.br/developers/pt/reference/online-payments/checkout-api/payment-methods/get
+
+
+## Diagnóstico seguro ampliado — 30/10/2026
+
+**Motivo:** uma consulta à API resultou em `unavailable` no painel sem indicar se foi HTTP do provedor, timeout ou falha de transporte. Isso não confirma credencial inválida.
+
+**Como testar:** abrir `https://homologacao.saluz-admin.pages.dev/admin.html?d1=1`, entrar com conta admin, ir em **Simular taxas → Mercado Pago · Conexão de teste → Testar conexão de teste**.
+
+**Categorias retornadas ao administrador autenticado:**
+- `verified_read_only`: Mercado Pago aceitou GET de métodos de pagamento; não implica Orders API validada.
+- `rejected`: HTTP 401/403, autenticação ou autorização rejeitada.
+- `request_rejected`: demais HTTP 4xx, como HTTP 400, sem divulgar corpo da resposta.
+- `rate_limited`: HTTP 429.
+- `provider_error`: HTTP 5xx, exceto 504.
+- `timeout`: timeout de rede/cancelamento ou HTTP 408/504.
+- `transport_error`: problema de transporte ou preparação de requisição.
+- `runtime_error`: exceção não categorizada da execução.
+- `unexpected_response`: HTTP/formato JSON inesperado.
+- `not_configured` ou `blocked`: segredo ausente ou ambiente inseguro.
+
+O JSON de diagnóstico contém somente `connection_status`, `diagnostic_code` de lista fixa, `checkout_enabled:false` e, quando houve resposta de erro do provedor, **apenas o código HTTP numérico** `provider_http_status`. Nunca são devolvidos token, cabeçalhos, payload do provedor, e-mail, dados da conta, stack ou URLs internas.
+
+**Próxima decisão:** repetir o teste e registrar somente categoria/código HTTP. Não trocar credencial antes de identificar a categoria. Manter `CHECKOUT_ENABLED=false` e nenhuma rota de pagamento ativa.

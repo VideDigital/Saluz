@@ -62,11 +62,29 @@ test("o botão preserva status negativo sem expor dados da credencial",async()=>
  assert.match(obj.feedback.textContent,/Credencial de teste rejeitada/);
  assert.equal(obj.button.disabled,false);
 });
+test("interface distingue HTTP rejeitado, indisponibilidade do provedor e timeout",async()=>{
+ for(const [status,code,http,textExpected] of [
+  ["request_rejected","provider_request_error",400,/HTTP 400/],
+  ["rate_limited","provider_rate_limited",429,/limitou/],
+  ["provider_error","provider_server_error",503,/HTTP 503/],
+  ["timeout","request_timed_out",undefined,/excedeu/],
+  ["transport_error","network_or_request_error",undefined,/Cloudflare/]
+ ]){
+  const obj=ui({apiFn:async path=>path==="auth/me"?{admin:true}:{
+   connection_status:status,diagnostic_code:code,...(http?{provider_http_status:http}:{}),checkout_enabled:false
+  }});
+  await obj.run();
+  assert.match(obj.feedback.textContent,textExpected);
+  assert.match(obj.feedback.textContent,new RegExp(code));
+  assert.match(obj.feedback.textContent,/Nenhum pagamento foi realizado/);
+  assert.equal(obj.button.disabled,false);
+ }
+});
 test("interface fornece diagnóstico somente após autenticação no painel",()=>{
  const html=readFileSync("admin.html","utf8");
  assert.match(html,/id="mp-test-connectivity-button"/);
  assert.match(html,/id="mp-test-connectivity-feedback"/);
- assert.match(html,/saluz-admin-extras\.js\?v=20261029-mp-auth-ui/);
+ assert.match(html,/saluz-admin-extras\.js\?v=20261030-mp-diagnostics/);
  assert.ok(html.indexOf('id="mp-test-connectivity"')>html.indexOf('id="tab-finance"'));
  const gateway=readFileSync("functions/api/[[path]].js","utf8");
  assert.ok(gateway.indexOf('if (!(await isAdmin(request,env)))')<gateway.indexOf("return await adminAction(request,env,route)"));
