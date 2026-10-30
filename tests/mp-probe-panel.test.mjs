@@ -68,7 +68,7 @@ test("interface distingue HTTP rejeitado, indisponibilidade do provedor e timeou
   ["rate_limited","provider_rate_limited",429,/limitou/],
   ["provider_error","provider_server_error",503,/HTTP 503/],
   ["timeout","request_timed_out",undefined,/excedeu/],
-  ["transport_error","network_or_request_error",undefined,/Cloudflare/]
+  ["transport_error","network_or_request_error",undefined,/comunicação/]
  ]){
   const obj=ui({apiFn:async path=>path==="auth/me"?{admin:true}:{
    connection_status:status,diagnostic_code:code,...(http?{provider_http_status:http}:{}),checkout_enabled:false
