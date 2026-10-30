@@ -79,6 +79,10 @@
       "Última publicação: "+new Date(doc.published_at).toLocaleString("pt-BR"):
       "Nenhum banner publicado pelo editor";
     $("campaign-save").disabled=busy||formDirty||!dataDifferent();
+    // Na experiência simplificada, o botão extra só aparece quando a lista
+    // foi reorganizada, copiada ou teve exclusões ainda não persistidas.
+    const simple=document.getElementById("tab-campaigns")?.classList.contains("saluz-campaigns-simple");
+    if(simple)$("campaign-save").hidden=!dataDifferent()||formDirty||busy;
     $("campaign-publish").disabled=busy||formDirty||dataDifferent()||!publishedDifferent();
     $("campaign-discard").disabled=busy||(!dataDifferent()&&!publishedDifferent()&&!formDirty);
     $("campaign-apply").disabled=busy;
