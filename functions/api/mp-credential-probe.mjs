@@ -26,7 +26,7 @@ export async function probeMercadoPagoTestCredential({request,env,fetchFn=fetch}
   if(typeof env.MP_ACCESS_TOKEN!=="string")
     return diagnostic("invalid_credential_format","secret_not_text");
   const token=env.MP_ACCESS_TOKEN.trim();
-  if(!token||/\\s|[\\x00-\\x1f\\x7f]/.test(token))
+  if(!token||/\s|[\x00-\x1f\x7f]/.test(token))
     return diagnostic("invalid_credential_format","secret_contains_invalid_whitespace");
   // Garante que cabeçalhos inválidos não sejam confundidos com falha de DNS/rede.
   let headers;
