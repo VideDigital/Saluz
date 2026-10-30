@@ -1,0 +1,27 @@
+/* SALUZ Calm — ajustes dos módulos operacionais. */
+.product-list-header h2,.easy-page-title h2,.panel-intro h2{color:#292d51!important}
+.product-list-header,.tab-toolbar,.panel-section-header{gap:12px}
+.product-row{padding:14px 5px!important;gap:13px!important;border-color:#eceef5!important}
+.product-row:hover{background:#fcfbff}
+.product-row-info strong{color:#292d50!important;font-size:14px!important}
+.product-row-info small{color:#67718a!important;font-size:12px!important}
+.product-row-actions button{min-height:37px!important;box-shadow:none!important}
+.product-badge{border-radius:999px!important}
+.product-badge.public{background:#e9f8f1!important;color:#186d50!important}
+.product-badge.warning{background:#fff4e5!important;color:#8a5a22!important}
+.product-badge.sale{background:#fff0ed!important;color:#9f4c36!important}
+.tab-toolbar p,.hint,.panel-intro p,.easy-page-title p{color:#657089!important}
+.order-card{padding:17px!important}
+.order-grid{gap:13px}
+.customer-summary-card{padding:17px!important}
+.customer-summary-card strong{font-size:29px!important;color:#322d62!important}
+.panel-data-row{border-color:#edf0f6!important}
+.market-guide,.market-preview{background:#f8f6fe!important;border-color:#e7e0f6!important}
+.market-view-nav button.selected,.studio-nav button.selected{background:#6754b6!important;border-color:#6754b6!important}
+.studio-number{background:#f0ecff!important;color:#6651b1!important}
+.studio-card .studio-upload-label{background:#faf9ff!important;border-color:#c9bfeb!important}
+.finance-layout .panel-surface,.fee-saved{padding:20px!important}
+.fee-comparison-row{border-color:#e7e9f3!important}
+.stat strong{color:#2d2b56!important}
+.reports-chart{padding:21px!important}
+:focus-visible{outline:3px solid #8571cf!important;outline-offset:2px!important}
