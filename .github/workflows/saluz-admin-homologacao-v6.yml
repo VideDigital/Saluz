@@ -1,0 +1,99 @@
+name: SALUZ | Painel de homologacao - deploy protegido
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [homologacao]
+    paths:
+      - '.github/workflows/saluz-admin-homologacao-v6.yml'
+      - 'admin.html'
+      - 'admin.css'
+      - 'admin.js'
+      - 'saluz-minimal.css'
+      - 'saluz-minimal.js'
+      - 'saluz-professional.js'
+      - 'saluz-admin-v3.js'
+      - 'saluz-admin-extras.js'
+      - 'saluz-studio.js'
+      - 'saluz-campaigns.js'
+      - '.github/scripts/build-saluz-admin-preview.py'
+      - 'tests/painel-minimal.test.mjs'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: saluz-admin-preview-safe
+  cancel-in-progress: false
+
+jobs:
+  deploy-admin:
+    if: github.ref == 'refs/heads/homologacao'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: saluz-homologacao
+    env:
+      CLOUDFLARE_ACCOUNT_ID: f84d79f13ae0a665e5046ebeb21ffddd
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+    steps:
+      - name: Obter codigo exato da homologacao
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Garantir ambiente e credenciais antes de qualquer deploy
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "${GITHUB_REF}" = 'refs/heads/homologacao'
+          test -n "${CLOUDFLARE_API_TOKEN}" || { echo '::error::Configure CLOUDFLARE_API_TOKEN no ambiente saluz-homologacao'; exit 1; }
+          test "${CLOUDFLARE_ACCOUNT_ID}" = 'f84d79f13ae0a665e5046ebeb21ffddd'
+      - name: Validar sintaxe, isolamento e comportamento
+        run: |
+          set -euo pipefail
+          node --check admin.js
+          node --check saluz-professional.js
+          node --check saluz-minimal.js
+          node --check saluz-admin-v3.js
+          node --check admin-deploy/functions/api/\[\[path\]\].js
+          node --test tests/*.test.mjs
+      - name: Empacotar painel com proxy exclusivo e sem segredos
+        run: |
+          set -euo pipefail
+          python3 .github/scripts/build-saluz-admin-preview.py "$RUNNER_TEMP/saluz-admin-preview"
+          test -f "$RUNNER_TEMP/saluz-admin-preview/public/index.html"
+          test -f "$RUNNER_TEMP/saluz-admin-preview/functions/api/[[path]].js"
+          grep -q 'saluz-minimal.css?v=20261030-home6' "$RUNNER_TEMP/saluz-admin-preview/public/index.html"
+          grep -q 'SALUZ Home V6' "$RUNNER_TEMP/saluz-admin-preview/public/saluz-minimal.css"
+      - name: Publicar somente saluz-admin na branch homologacao
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP/saluz-admin-preview"
+          npx --yes wrangler@4 pages deploy ./public --project-name saluz-admin --branch homologacao
+      - name: Confirmar arquivos V6 no endereco de homologacao
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          const base='https://homologacao.saluz-admin.pages.dev';
+          let good=false, last='';
+          for(let i=0;i<15;i++){
+            try{
+              const nonce=Date.now()+'-'+i;
+              const page=await fetch(base+'/admin.html?ci='+nonce,{cache:'no-store',signal:AbortSignal.timeout(12000)});
+              const html=await page.text();
+              const css=await fetch(base+'/saluz-minimal.css?ci='+nonce,{cache:'no-store',signal:AbortSignal.timeout(12000)});
+              const styles=await css.text();
+              if(page.status===200 && css.status===200 && html.includes('saluz-minimal.css?v=20261030-home6') && html.includes('saluz-professional.js?v=20261030-home6') && styles.includes('SALUZ Home V6')){good=true;break;}
+              last='URL ainda exibe versão anterior ou asset não disponível';
+            }catch(e){last=String(e);}
+            await new Promise(r=>setTimeout(r,2000));
+          }
+          assert.equal(good,true,'Deploy V6 não confirmado no alias de homologação: '+last);
+          const privateApi=await fetch(base+'/api/migration-admin/products',{cache:'no-store'});
+          assert.equal(privateApi.status,401,'API administrativa não deve aceitar sessão ausente');
+          console.log('SALUZ V6 publicado e confirmado em homologação; API protegida.');
+          NODE
