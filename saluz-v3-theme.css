@@ -1,0 +1,79 @@
+/* SALUZ V3 / workspace de operação — camada final de tema. */
+body.saluz-v3{
+ --saluz-surface:#f6f7f9;
+ --saluz-dark:#172039;
+ --saluz-text:#232d43;
+ --saluz-line:#e3e7ed;
+ --saluz-violet:#6552b1;
+ background:var(--saluz-surface)!important;
+ color:var(--saluz-text)!important;
+}
+body.saluz-v3 .dashboard{grid-template-columns:240px minmax(0,1fr)!important;background:var(--saluz-surface)!important}
+body.saluz-v3 .workspace{
+ background:var(--saluz-surface)!important;
+ padding:25px clamp(24px,3vw,50px) 68px!important
+}
+body.saluz-v3 .workspace-head{border-bottom:1px solid var(--saluz-line)!important;min-height:72px!important;margin-bottom:24px!important;padding:5px 0 18px!important}
+body.saluz-v3 .workspace-head h1{font-size:27px!important;color:#1c2840!important}
+body.saluz-v3 .workspace-heading .eyebrow{color:#7d8494!important}
+body.saluz-v3 .workspace-section-desc{font-size:13px!important;color:#737d8e!important}
+body.saluz-v3 .sidebar{
+ background:#19233a!important;border-right:0!important;color:#e8eaf4!important;
+ box-shadow:3px 0 20px #202b3d1b!important;padding:22px 13px 17px!important
+}
+body.saluz-v3 .sidebar-logo,body.saluz-v3 .sidebar-logo .admin-brand-name{color:#fff!important}
+body.saluz-v3 .sidebar-logo .admin-brand-mark{
+ background:#755cc0!important;color:#fff!important;box-shadow:none!important
+}
+body.saluz-v3 .sidebar-logo small{color:#aab3ca!important}
+body.saluz-v3 .nav-group-label{color:#8f9cb5!important;letter-spacing:.12em!important}
+body.saluz-v3 .sidebar .tabs button,
+body.saluz-v3 .sidebar .tabs button[data-tab=studio]{
+ color:#bec8dd!important;border-radius:9px!important;min-height:46px!important;
+ font-weight:600!important
+}
+body.saluz-v3 .sidebar .tabs button svg.admin-nav-svg{stroke:#95a2bd!important}
+body.saluz-v3 .sidebar .tabs button:hover{background:#25334c!important;color:#fff!important}
+body.saluz-v3 .sidebar .tabs button.selected,
+body.saluz-v3 .sidebar .tabs button[data-tab=studio].selected{
+ color:#fff!important;background:#433966!important;font-weight:750!important
+}
+body.saluz-v3 .sidebar .tabs button.selected svg.admin-nav-svg{stroke:#e5ddff!important}
+body.saluz-v3 .sidebar .tabs button.selected:before{background:#c6adff!important}
+body.saluz-v3 .sidebar-bottom{border-top:1px solid #35405a!important}
+body.saluz-v3 .sidebar-bottom a,body.saluz-v3 .sidebar-bottom button{color:#c5cce0!important}
+body.saluz-v3 .sidebar-bottom a:hover,body.saluz-v3 .sidebar-bottom button:hover{
+ background:#2a3650!important;color:#fff!important
+}
+body.saluz-v3 .admin-sidebar-account strong{color:#fff!important}
+body.saluz-v3 .admin-sidebar-account small{color:#b2bdd1!important}
+body.saluz-v3 .admin-account-avatar{background:#493d6c!important;color:#f2ebff!important}
+body.saluz-v3 .panel-surface,body.saluz-v3 .product-list,
+body.saluz-v3 .professional-kpi-card,body.saluz-v3 .order-card,
+body.saluz-v3 .customer-summary-card,body.saluz-v3 .market-editor-area,
+body.saluz-v3 .studio-card,body.saluz-v3 .reports-chart{
+ box-shadow:none!important;background:#fff!important;border:1px solid var(--saluz-line)!important;
+ border-radius:12px!important
+}
+body.saluz-v3 .saluz-guide{box-shadow:none!important;background:#fafbfc!important;border-color:#e6e8f0!important}
+body.saluz-v3 .primary,body.saluz-v3 .panel-open-store{
+ background:#604da6!important;border-color:#604da6!important;box-shadow:none!important
+}
+body.saluz-v3 .outline{
+ background:#fff!important;color:#554997!important;border:1px solid #d9d5e5!important
+}
+body.saluz-v3 .workspace-head .admin-store-state{
+ border-radius:8px!important;background:#fff8e9!important
+}
+body.saluz-v3 .admin-global-search{background:#fff!important;box-shadow:none!important}
+body.saluz-v3 .saluz-workspace-split .saluz-workspace-side .saluz-guide{
+ background:#fff!important;position:relative
+}
+@media(max-width:780px){
+ body.saluz-v3 .dashboard{display:block!important}
+ body.saluz-v3 .sidebar{background:#19233a!important;padding:0 15px!important}
+ body.saluz-v3 .workspace{padding:16px 14px calc(100px + env(safe-area-inset-bottom))!important}
+ body.saluz-v3 .mobile-menu-toggle{background:#312944!important;color:#fff!important;border-color:#5c4e80!important}
+ body.saluz-v3 .sidebar.mobile-menu-open .tabs{display:flex!important}
+ body.saluz-v3 .workspace-head{border:0!important;padding:10px 0!important}
+}
