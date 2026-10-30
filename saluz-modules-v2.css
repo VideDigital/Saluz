@@ -1,0 +1,72 @@
+/* SALUZ V2 — catálogo, atendimento e seções operacionais */
+body.saluz-v2 #tab-products>.easy-page-title{display:flex;align-items:center;justify-content:space-between;gap:18px}
+body.saluz-v2 #tab-products .saluz-workspace-main .product-list{
+ width:100%!important;margin:0!important;padding:20px 21px!important
+}
+body.saluz-v2 #tab-products .product-list-header{padding:0 0 15px!important;border-bottom:1px solid #eaecf3!important}
+body.saluz-v2 #tab-products .product-list-header h2{font-size:23px!important}
+body.saluz-v2 #tab-products .product-tools{
+ padding:16px 0!important;display:grid;grid-template-columns:minmax(200px,1.3fr) minmax(160px,.7fr);gap:15px
+}
+body.saluz-v2 #tab-products .product-row{
+ border-bottom:1px solid #f0eff6!important;padding:14px 0!important
+}
+body.saluz-v2 #tab-products .product-row:hover{background:#fcfbff!important}
+body.saluz-v2 #tab-products .product-row-actions button{min-height:37px!important}
+body.saluz-v2 #tab-products .product-row-info strong{font-size:14px!important}
+body.saluz-v2 #tab-products .product-row-info small{font-size:12px!important}
+body.saluz-v2 #tab-products .product-dialog{z-index:1000}
+body.saluz-v2 #tab-orders .tab-toolbar{
+ display:flex;align-items:center;justify-content:space-between;padding:16px 20px!important;
+ background:#fff;border:1px solid #e5e7f2;border-radius:14px;margin:0 0 18px!important
+}
+body.saluz-v2 #tab-orders .tab-toolbar p{max-width:780px;font-size:13px!important;margin:0!important}
+body.saluz-v2 #tab-orders .orders-toolbar{
+ border:1px solid #e6e8f2;background:#fff;border-radius:14px;padding:18px!important;gap:14px
+}
+body.saluz-v2 #tab-orders .order-grid{
+ grid-template-columns:repeat(2,minmax(0,1fr));gap:14px!important
+}
+body.saluz-v2 #tab-orders .order-card{margin:0!important;min-width:0}
+body.saluz-v2 #tab-customers>.panel-intro{margin-top:8px!important}
+body.saluz-v2 #tab-customers>.management-notice{margin:0 0 17px!important}
+body.saluz-v2 #tab-customers .saluz-workspace-main .customer-summary{margin:0!important}
+body.saluz-v2 #tab-customers .saluz-workspace-main .customer-summary-card{
+ background:#fff!important;border-radius:13px!important;padding:17px!important
+}
+body.saluz-v2 #tab-customers .saluz-workspace-main .panel-filter{
+ padding:18px!important;background:#fff;border:1px solid #e6e8f2;border-radius:13px;margin:0!important
+}
+body.saluz-v2 #tab-customers #customers-list{padding:20px!important}
+body.saluz-v2 #tab-finance .finance-layout{gap:18px!important}
+body.saluz-v2 #tab-finance .finance-layout>.panel-surface{
+ border-radius:16px!important;padding:23px!important
+}
+body.saluz-v2 #tab-finance #mp-test-connectivity{
+ background:linear-gradient(100deg,#f9f7ff,#fff)!important;border:1px solid #e8e3f6!important;
+ border-left:4px solid #6e59bd!important;padding:18px 20px!important;border-radius:13px!important
+}
+body.saluz-v2 #tab-finance #mp-test-connectivity>strong{font-size:15px!important;color:#302b5c!important}
+body.saluz-v2 #tab-finance #mp-test-connectivity p{max-width:890px}
+body.saluz-v2 #tab-reports .stats{grid-template-columns:repeat(4,minmax(0,1fr));gap:15px!important}
+body.saluz-v2 #tab-reports .stat{padding:21px!important;min-height:115px!important}
+body.saluz-v2 #tab-reports .reports-chart{margin-top:18px!important;padding:24px!important}
+body.saluz-v2 #tab-reports .daily-chart{min-height:160px}
+body.saluz-v2 #tab-campaigns .market-catalog,
+body.saluz-v2 #tab-campaigns .market-editor-area{padding:21px!important}
+body.saluz-v2 #tab-campaigns .market-list-card{border-radius:13px!important}
+body.saluz-v2 #tab-campaigns .market-publish-bar{border-radius:13px!important}
+body.saluz-v2 #tab-studio .studio-card,
+body.saluz-v2 #tab-studio .studio-preview-wrap{padding:22px!important}
+body.saluz-v2 #tab-studio .studio-preview{border-radius:15px!important}
+body.saluz-v2 #tab-studio .studio-card-head h3{font-size:20px!important}
+@media(max-width:1450px){
+ body.saluz-v2 #tab-orders .order-grid{grid-template-columns:1fr}
+}
+@media(max-width:780px){
+ body.saluz-v2 #tab-products .product-tools{grid-template-columns:1fr}
+ body.saluz-v2 #tab-products>.easy-page-title{align-items:flex-start;flex-direction:column}
+ body.saluz-v2 #tab-orders .tab-toolbar{flex-wrap:wrap;align-items:flex-start}
+ body.saluz-v2 #tab-customers .customer-summary{grid-template-columns:repeat(2,minmax(0,1fr))}
+ body.saluz-v2 #tab-reports .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+}

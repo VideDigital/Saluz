@@ -1,0 +1,45 @@
+/* V2 finance: simulação principal e integração isolada na lateral. */
+body.saluz-v2 .saluz-finance-shell{
+ display:grid;grid-template-columns:minmax(0,1.5fr) minmax(280px,.78fr);
+ gap:20px;align-items:start;min-width:0;margin:20px 0
+}
+body.saluz-v2 #tab-finance .saluz-finance-shell>.finance-layout{
+ display:grid!important;grid-template-columns:minmax(0,1fr)!important;
+ gap:18px!important;margin:0!important;min-width:0
+}
+body.saluz-v2 .saluz-finance-side{
+ min-width:0;display:grid;gap:17px;position:sticky;top:20px
+}
+body.saluz-v2 .saluz-finance-side #mp-test-connectivity{
+ margin:0!important;padding:20px!important;
+ background:linear-gradient(140deg,#f3f0ff,#fff)!important;
+ border:1px solid #e0daf5!important;border-radius:16px!important
+}
+body.saluz-v2 .saluz-finance-side .saluz-guide{
+ display:flex!important;flex-direction:column!important;gap:14px;
+ margin:0!important
+}
+body.saluz-v2 .saluz-finance-side .saluz-guide-head{align-items:flex-start}
+body.saluz-v2 .saluz-finance-side .saluz-guide-details{
+ width:100%;justify-self:auto
+}
+body.saluz-v2 .saluz-finance-side .saluz-guide-grid{grid-template-columns:1fr!important}
+body.saluz-v2 .saluz-finance-side .saluz-guide-summary{
+ width:100%;white-space:normal;text-align:left
+}
+body.saluz-v2 .saluz-finance-side .saluz-guide-details[open]{
+ border-top:1px solid #e9e4f4!important;padding-top:12px!important
+}
+body.saluz-v2 .saluz-finance-side .saluz-guide-details[open] .saluz-guide-summary{
+ width:100%!important
+}
+body.saluz-v2 #tab-finance .fee-saved{margin-top:18px!important}
+body.saluz-v2 .saluz-data-origin{
+ margin:4px 0 13px;color:#6b617f;font-size:12px;
+ background:#f4f0fc;border-left:3px solid #b5a1d9;
+ border-radius:7px;padding:9px 12px;max-width:100%
+}
+@media(max-width:1190px){
+ body.saluz-v2 .saluz-finance-shell{grid-template-columns:1fr}
+ body.saluz-v2 .saluz-finance-side{position:static}
+}
