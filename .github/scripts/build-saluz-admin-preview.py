@@ -20,7 +20,7 @@ REQUIRED_FILES = {
     "saluz-admin-calm.css", "saluz-admin-calm-components.css",
     "saluz-admin-calm-guide.css", "saluz-admin-guide.js",
     "saluz-layout-v2.css", "saluz-home-v2.css",
-    "saluz-modules-v2.css", "saluz-workspace-v2.js",
+    "saluz-modules-v2.css", "saluz-finance-v2.css", "saluz-workspace-v2.js",
 }
 PROXY = ROOT / "admin-deploy/functions/api/[[path]].js"
 
