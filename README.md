@@ -89,3 +89,19 @@ Não adicionar senhas, tokens, chaves Mercado Pago ou dados reais de clientes ao
 **Rollback imediato:** remover de `admin.html` os links `saluz-minimal.css` e `saluz-minimal.js` e executar deploy da homologação. Os módulos originais continuam intactos.
 
 **Pendências P1:** validação autenticada/mobile no staging; confirmar persistência de produtos, banners e conteúdo D1; revisão de termos/privacidade, checkout e integração de pagamentos antes de operação real.
+
+## Focus V4 — 30/10/2026 (simplificação estrutural)
+
+**Motivo:** a versão minimal anterior reduziu cores e bordas, mas mantinha informação duplicada e editores exibidos junto com listas, dificultando as tarefas mais usadas.
+
+**Mudança de UX:** sem duplicar interfaces nem criar endpoints, a nova versão compacta o menu (cinco funções principais + Mais opções); transforma a Home em ações rápidas, indicadores reais e pendências; remove títulos repetidos; compacta listagens e reserva botões de baixa frequência para menus de contexto.
+
+**Campanhas:** tela inicial lista apenas banners; o editor abre depois do clique em Criar/Selecionar. Ordenação tem modo próprio com Salvar ordem; publicação continua separada de Salvar banner e respeita o estado global do rascunho de aparência.
+
+**Editor da loja:** edição com uma área por vez, prévia opcional e rascunho/publicação independentes. **Taxas:** calculadora vem primeiro; cadastro/edição fica recolhido e abre ao editar uma taxa. Controles existentes preservados.
+
+**Restrições:** scripts de experiência só atuam no hostname `homologacao.saluz-admin.pages.dev`; nenhuma alteração de tabelas, APIs, autenticação, pagamentos ou checkout. Demais ambientes mantêm o CSS padrão sem `saluz-focus`.
+
+**Testes obrigatórios:** validar login e navegação, rodar testes Node e build admin, conferir no navegador desktop/mobile, testando: edição e listagem de produtos; banner novo, edição, reordenação, salvar rascunho e publicar somente no staging; edição de conteúdo e prévia; simulação e edição de taxas; links e filtros. Conferir isolamento entre homologação/produção. **Sem aprovação visual autenticada, não promover para produção.**
+
+**Reversão:** reverter as alterações Focus V4 de `saluz-minimal.js`, `saluz-minimal.css` e os querystrings do `admin.html`; os módulos e dados não foram alterados.

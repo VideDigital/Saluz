@@ -38,3 +38,16 @@ test('interface preserva acessibilidade, responsividade e conteúdo escondido ac
   assert.match(styles, /prefers-reduced-motion/);
   assert.match(styles, /\[hidden\]/);
 });
+
+test('Focus V4 organiza a navegação e oferece modos de listagem e edição', () => {
+  assert.match(script, /saluz-focus-nav-extra/);
+  assert.match(script, /saluz-focus-browse/);
+  assert.match(script, /saluz-focus-editing/);
+  assert.match(script, /saluz-focus-arranging/);
+  assert.match(script, /saluz-focus-store-preview/);
+  assert.match(script, /saluz-focus-fee-settings/);
+  assert.match(styles, /saluz-focus-browse \.market-editor-area/);
+  assert.match(styles, /saluz-focus-editing \.market-catalog/);
+  assert.match(styles, /saluz-focus-fee-settings/);
+  assert.ok(html.includes('saluz-minimal.js?v=20261030-focus4'));
+});
