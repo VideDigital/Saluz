@@ -92,6 +92,12 @@
     el("studio-discard").disabled=busy||!unpublished;
   }
   async function request(path,options={}){
+    // Homologação: editores e preços no mesmo D1 da vitrine.
+    // Nenhum fallback ao Supabase caso a API D1 falhe.
+    const preview=typeof saluzD1AdminPreview!=="undefined"&&saluzD1AdminPreview;
+    if(preview&&/^admin\/site-content(?:\/|$)/.test(path))
+      path=path.replace(/^admin\/site-content/,"migration-admin/content");
+
     const response=await fetch("/api/"+path,{
       ...options,headers:{"content-type":"application/json"},
       credentials:"same-origin",cache:"no-store"
