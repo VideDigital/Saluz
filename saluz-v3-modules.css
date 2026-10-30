@@ -1,0 +1,86 @@
+/* SALUZ V3: melhorar as áreas de trabalho sem afetar as funções */
+body.saluz-v3 #tab-products>.easy-page-title,
+body.saluz-v3 #tab-campaigns>.easy-page-title,
+body.saluz-v3 #tab-studio>.easy-page-title,
+body.saluz-v3 #tab-customers>.panel-intro,
+body.saluz-v3 #tab-finance>.panel-intro{
+ margin:4px 0 19px!important;padding:0 0 17px!important;border-bottom:1px solid #e2e6ed!important
+}
+body.saluz-v3 #tab-products .product-list,
+body.saluz-v3 #tab-customers #customers-list,
+body.saluz-v3 #tab-orders .order-card,
+body.saluz-v3 #tab-campaigns .market-catalog,
+body.saluz-v3 #tab-campaigns .market-editor-area{
+ background:#fff!important;border:1px solid #e3e7ee!important;border-radius:12px!important;box-shadow:none!important
+}
+body.saluz-v3 #tab-products .saluz-workspace-split,
+body.saluz-v3 #tab-orders .saluz-workspace-split,
+body.saluz-v3 #tab-customers .saluz-workspace-split{
+ gap:16px!important;grid-template-columns:minmax(0,1fr) 270px!important
+}
+body.saluz-v3 #tab-products .saluz-workspace-side,
+body.saluz-v3 #tab-orders .saluz-workspace-side,
+body.saluz-v3 #tab-customers .saluz-workspace-side{top:18px!important}
+body.saluz-v3 .saluz-workspace-side .saluz-guide{
+ background:#fff!important;border:1px solid #e1e5ec!important;box-shadow:none!important;padding:15px!important
+}
+body.saluz-v3 .saluz-workspace-side .saluz-guide-symbol{background:#f1eef8!important}
+body.saluz-v3 .saluz-workspace-side .saluz-guide-title{font-size:15px!important}
+body.saluz-v3 .saluz-workspace-side .saluz-guide-desc{font-size:12px!important}
+body.saluz-v3 #tab-products .product-row{padding:14px 3px!important}
+body.saluz-v3 #tab-products .product-row:hover{background:#f9f9fc!important}
+body.saluz-v3 #tab-campaigns .market-view-nav{margin-top:2px!important}
+body.saluz-v3 #tab-campaigns .market-view-nav button{
+ border-color:#e2e5ed!important;border-radius:9px!important;
+ background:#fff!important;color:#505d77!important;box-shadow:none!important
+}
+body.saluz-v3 #tab-campaigns .market-view-nav button.selected{
+ background:#282f47!important;border-color:#282f47!important;color:#fff!important
+}
+body.saluz-v3 #tab-campaigns .market-status-row{background:#fff!important;border:1px solid #e4e7ef!important;border-radius:12px!important}
+body.saluz-v3 #tab-campaigns .market-guide{
+ background:#f7f8fa!important;color:#5b6578!important;border:1px solid #e6e8ed!important;border-radius:10px!important
+}
+body.saluz-v3 #tab-campaigns .market-publish-bar{
+ background:#fff!important;border:1px solid #e2e6ed!important;
+ box-shadow:0 -4px 18px #1c2a4211!important;border-radius:12px!important
+}
+body.saluz-v3 #tab-studio .studio-nav button{background:#fff!important;color:#546176!important;border-color:#e4e8ee!important}
+body.saluz-v3 #tab-studio .studio-nav button.selected{background:#293148!important;color:#fff!important;border-color:#293148!important}
+body.saluz-v3 #tab-studio .studio-card-head h3{font-size:19px!important}
+body.saluz-v3 #tab-finance .saluz-finance-shell{gap:16px!important}
+body.saluz-v3 #tab-finance .saluz-finance-side #mp-test-connectivity{
+ background:#f8f8fb!important;border:1px solid #e3e5ed!important;border-left:3px solid #7664ad!important;
+ box-shadow:none!important
+}
+body.saluz-v3 #tab-finance .saluz-finance-side .saluz-guide{background:#fff!important;border-color:#e5e7ed!important}
+body.saluz-v3 #tab-finance .fee-saved{border-color:#e3e7ed!important}
+body.saluz-v3 #tab-reports .stat,body.saluz-v3 #tab-reports .reports-chart{
+ background:#fff!important;border:1px solid #e3e7ed!important;box-shadow:none!important
+}
+body.saluz-v3 #tab-campaigns>.saluz-guide,
+body.saluz-v3 #tab-studio>.saluz-guide,
+body.saluz-v3 #tab-reports>.saluz-guide{
+ display:grid!important;grid-template-columns:1fr auto!important;
+ padding:13px 17px!important;gap:10px!important;
+ background:#fff!important;margin:26px 0 8px!important;border:1px solid #e4e7ed!important
+}
+body.saluz-v3 #tab-campaigns>.saluz-guide .saluz-guide-symbol,
+body.saluz-v3 #tab-studio>.saluz-guide .saluz-guide-symbol,
+body.saluz-v3 #tab-reports>.saluz-guide .saluz-guide-symbol{display:none!important}
+body.saluz-v3 #tab-campaigns>.saluz-guide .saluz-guide-title,
+body.saluz-v3 #tab-studio>.saluz-guide .saluz-guide-title,
+body.saluz-v3 #tab-reports>.saluz-guide .saluz-guide-title{font-size:13px!important}
+body.saluz-v3 #tab-campaigns>.saluz-guide .saluz-guide-desc,
+body.saluz-v3 #tab-studio>.saluz-guide .saluz-guide-desc,
+body.saluz-v3 #tab-reports>.saluz-guide .saluz-guide-desc{font-size:11px!important}
+@media(max-width:1250px){
+ body.saluz-v3 #tab-products .saluz-workspace-split,
+ body.saluz-v3 #tab-orders .saluz-workspace-split,
+ body.saluz-v3 #tab-customers .saluz-workspace-split{grid-template-columns:1fr!important}
+}
+@media(max-width:780px){
+ body.saluz-v3 #tab-campaigns>.saluz-guide,
+ body.saluz-v3 #tab-studio>.saluz-guide,
+ body.saluz-v3 #tab-reports>.saluz-guide{display:block!important}
+}

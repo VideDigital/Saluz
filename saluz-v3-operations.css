@@ -1,0 +1,95 @@
+/* SALUZ V3 — operações e orientações secundárias */
+body.saluz-v3 .saluz-op-aside .professional-attention{
+ min-height:0!important;padding:19px!important;margin:0!important;
+ box-shadow:none!important;border:1px solid #e0e5eb!important;border-radius:14px!important;
+ background:#fff!important
+}
+body.saluz-v3 .saluz-op-aside .professional-attention-head h3{
+ font-size:16px!important;margin:2px 0 0!important;color:#273449!important
+}
+body.saluz-v3 .saluz-op-aside .professional-attention-footer{padding-top:9px!important}
+body.saluz-v3 .saluz-op-aside .professional-attention-item{padding:12px 0!important}
+body.saluz-v3 .saluz-op-aside .attention-dot{width:9px;height:9px;background:#cca25b!important}
+body.saluz-v3 .saluz-op-task-panel{
+ background:#fff;border:1px solid #e1e5ec;border-radius:14px;padding:20px!important
+}
+body.saluz-v3 .saluz-op-task-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:15px}
+body.saluz-v3 .saluz-op-task-label h3{
+ margin:2px 0!important;font-size:19px!important;color:#26314b!important
+}
+body.saluz-v3 .saluz-op-task-panel .easy-shortcuts{
+ display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ gap:10px!important;margin:0!important
+}
+body.saluz-v3 .saluz-op-task-panel .easy-shortcuts button{
+ display:grid!important;grid-template-columns:32px minmax(0,1fr) auto!important;
+ grid-template-rows:auto auto!important;gap:2px 9px!important;
+ min-height:76px!important;padding:12px!important;align-items:center!important;
+ text-align:left!important;background:#fafbfd!important;border:1px solid #e8eaf0!important;
+ border-radius:10px!important;box-shadow:none!important;position:relative
+}
+body.saluz-v3 .saluz-op-task-panel .easy-shortcuts button:hover{
+ background:#f5f3fb!important;border-color:#cbc3e4!important;transform:none!important
+}
+body.saluz-v3 .saluz-op-task-panel .easy-shortcuts button>span{
+ grid-column:1;grid-row:1/3;width:30px!important;height:30px!important;min-width:30px!important;
+ font-size:16px!important;border-radius:8px!important;margin:0!important;
+ background:#f0edf8!important;color:#64539f!important
+}
+body.saluz-v3 .saluz-op-task-panel .easy-shortcuts strong{
+ grid-column:2;grid-row:1;font-size:12px!important;font-weight:800!important;
+ color:#26324a!important;margin:0!important
+}
+body.saluz-v3 .saluz-op-task-panel .easy-shortcuts small{
+ grid-column:2;grid-row:2;font-size:11px!important;line-height:1.3!important;color:#7a8395!important
+}
+body.saluz-v3 .saluz-op-task-panel .easy-shortcuts b{
+ grid-column:3;grid-row:1/3;position:static!important;
+ align-self:center;font-size:16px!important;color:#8d7cb7!important
+}
+body.saluz-v3 .saluz-op-guide .saluz-guide{
+ background:#fff!important;border:1px solid #e0e5eb!important;border-radius:12px!important;
+ box-shadow:none!important;padding:15px!important;margin:0!important;
+ display:flex!important;flex-direction:column!important;gap:11px!important
+}
+body.saluz-v3 .saluz-op-guide .saluz-guide-head{display:flex;align-items:start;gap:10px!important}
+body.saluz-v3 .saluz-op-guide .saluz-guide-symbol{
+ width:29px!important;height:29px!important;flex:0 0 29px!important;
+ background:#f1eef8!important;color:#7766a6!important;font-size:16px!important
+}
+body.saluz-v3 .saluz-op-guide .saluz-guide-title{
+ font-size:13px!important;font-weight:750!important;line-height:1.4!important
+}
+body.saluz-v3 .saluz-op-guide .saluz-guide-eyebrow{font-size:9px!important}
+body.saluz-v3 .saluz-op-guide .saluz-guide-desc{
+ font-size:11px!important;line-height:1.55!important
+}
+body.saluz-v3 .saluz-op-guide .saluz-guide-details{width:100%;justify-self:start}
+body.saluz-v3 .saluz-op-guide .saluz-guide-summary{
+ width:100%;text-align:left;white-space:normal;padding:9px 10px!important;
+ background:#f8f9fb!important;border-color:#e5e8ef!important;color:#59627d!important
+}
+body.saluz-v3 .saluz-op-guide .saluz-guide-grid{grid-template-columns:1fr!important}
+body.saluz-v3 #tab-overview>.overview-more{
+ margin-top:20px!important;border:1px solid #e1e5eb!important;
+ background:#fff!important;border-radius:12px!important
+}
+body.saluz-v3 #tab-overview>.overview-more>summary{font-size:13px!important;font-weight:750!important}
+@media(max-width:1290px){
+ body.saluz-v3 .saluz-op-board{grid-template-columns:minmax(0,1fr) 270px!important;gap:13px}
+}
+@media(max-width:1080px){
+ body.saluz-v3 .saluz-op-board{grid-template-columns:1fr!important}
+ body.saluz-v3 .saluz-op-aside{grid-template-columns:1fr 1fr!important}
+}
+@media(max-width:780px){
+ body.saluz-v3 .saluz-op-head{padding:17px!important;flex-wrap:wrap}
+ body.saluz-v3 .saluz-op-actions{width:100%}
+ body.saluz-v3 .saluz-op-actions .professional-welcome-actions{flex-wrap:wrap!important}
+ body.saluz-v3 .saluz-op-metrics{padding:15px!important}
+ body.saluz-v3 .saluz-op-board{gap:12px}
+ body.saluz-v3 .saluz-op-task-panel{padding:15px!important}
+ body.saluz-v3 .saluz-op-task-panel .easy-shortcuts{grid-template-columns:1fr!important}
+ body.saluz-v3 .saluz-op-aside{grid-template-columns:1fr!important}
+ body.saluz-v3 .saluz-op-metrics .professional-kpi-card{padding:12px!important}
+}

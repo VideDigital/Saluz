@@ -16,6 +16,7 @@ on:
       - 'saluz-mobile.js'
       - 'saluz-admin-guide.js'
       - 'saluz-workspace-v2.js'
+      - 'saluz-admin-v3.js'
       - 'saluz-admin-calm*.css'
       - 'saluz-*.css'
       - '_headers'
@@ -98,5 +99,9 @@ jobs:
           assert "admin.js?v=20261030-tab-return" in html, "Novo HTML ainda não servido"
           js = get("/admin.js")
           assert "invalidateAdminSession" in js and "ensureAdminResponse" in js
-          print("Staging admin HTML/JS atualizado e acessível. Próximo teste: login real e expiração de sessão.")
+          assert "saluz-admin-v3.js?v=20261030-operacao3" in html, "HTML não aponta ao novo painel operacional"
+          assert "saluz-v3-theme.css?v=20261030-operacao3" in html, "Tema operacional não foi carregado"
+          assert "saluz-op-head" in get("/saluz-admin-v3.js"), "JS estrutural da nova visão geral ausente"
+          assert "saluz-v3" in get("/saluz-v3-home.css"), "CSS operacional ausente"
+          print("SALUZ V3: nova identidade e layout operacional ativos somente no Preview.")
           PY
