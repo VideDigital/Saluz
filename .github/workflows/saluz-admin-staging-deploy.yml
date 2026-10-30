@@ -114,11 +114,21 @@ jobs:
                       if attempt < 3: time.sleep(2)
               raise RuntimeError("Preview file not accessible: "+path) from last_error
 
+          # Obtain exact cache-busted asset names from the checked-out source.
+          # Never hardcode versions here: content changes must not break a healthy deploy.
+          from pathlib import Path
+          local_html=Path("admin.html").read_text(encoding="utf-8")
+          def expected_asset(name):
+              rx=r'(?:src|href)="(\./'+re.escape(name)+r'\?v=[^"]+)"'
+              match=re.search(rx,local_html)
+              assert match is not None, "Referência de arquivo esperada ausente: "+name
+              return match.group(1)
+          current_refs={name:expected_asset(name) for name in (
+              "saluz-professional.js","saluz-admin-v3.js","saluz-v3-theme.css","admin.js"
+          )}
           html=get(base, "/admin.html")
-          assert "saluz-professional.js?v=20261030-d1-health" in html, "Resumo D1 ausente do deploy imutável"
-          assert "saluz-admin-v3.js?v=20261030-operacao3" in html, "Layout V3 ausente do deploy imutável"
-          assert "saluz-v3-theme.css?v=20261030-operacao3" in html, "CSS V3 ausente do deploy imutável"
-          assert "admin.js?v=20261030-tab-return" in html, "Correção de sessão ausente"
+          for name,reference in current_refs.items():
+              assert reference in html, "Arquivo desatualizado no deploy: "+name
           js=get(base, "/admin.js")
           assert "invalidateAdminSession" in js and "ensureAdminResponse" in js
           assert "saluz-op-head" in get(base, "/saluz-admin-v3.js")
@@ -132,7 +142,7 @@ jobs:
           for attempt in range(8):
               try:
                   alias_html=get(alias,"/admin.html?ci="+os.environ["GITHUB_SHA"][:12]+"-"+str(attempt))
-                  if "saluz-professional.js?v=20261030-d1-health" in alias_html:
+                  if current_refs["saluz-professional.js"] in alias_html:
                       alias_ready=True
                       break
               except (RuntimeError,AssertionError):
