@@ -31,7 +31,7 @@
   if(caption&&!overview.querySelector(".saluz-data-origin")){
    const source=document.createElement("p");
    source.className="saluz-data-origin";
-   source.textContent="Homologação: este resumo usa a integração atual. O catálogo D1 de testes é exibido separadamente na aba Produtos.";
+   source.textContent="Produtos e estoque: D1 de homologação. Banners: D1 em testes (o editor Campanhas ainda usa a integração anterior).";
    caption.after(source);
   }
   const guide=overview.querySelector(":scope > .saluz-guide");
