@@ -13,6 +13,8 @@ on:
       - 'saluz-admin-extras.js'
       - 'saluz-studio.js'
       - 'saluz-campaigns.js'
+      - 'saluz-campaigns-simple.js'
+      - 'saluz-campaigns-simple.css'
       - 'saluz-mobile.js'
       - 'saluz-admin-guide.js'
       - 'saluz-workspace-v2.js'
@@ -129,6 +131,10 @@ jobs:
           html=get(base, "/admin.html")
           for name,reference in current_refs.items():
               assert reference in html, "Arquivo desatualizado no deploy: "+name
+          assert 'saluz-campaigns-simple.js?v=20261030-simple1' in html, "Editor fácil não está no HTML"
+          assert 'saluz-campaigns-simple.css?v=20261030-simple1' in html, "CSS do editor fácil não está no HTML"
+          assert 'market-easy-content' in get(base, "/saluz-campaigns-simple.js"), "Editor fácil não foi publicado"
+          assert 'market-easy-advanced' in get(base, "/saluz-campaigns-simple.css"), "CSS do editor fácil não foi publicado"
           js=get(base, "/admin.js")
           assert "invalidateAdminSession" in js and "ensureAdminResponse" in js
           assert "saluz-op-head" in get(base, "/saluz-admin-v3.js")

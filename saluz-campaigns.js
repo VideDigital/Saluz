@@ -71,13 +71,18 @@
     const label=$("campaign-state"),counter=$("campaign-count");
     if(!label||!doc)return;
     counter.textContent=banners.length+" de "+maxBanners;
-    label.textContent=formDirty?"● Edição não guardada na lista":
-      dataDifferent()?"● Alterações não salvas":
-      publishedDifferent()?"● Rascunho aguardando publicação":"✓ Banners publicados";
+    label.textContent=formDirty?"● Edição não salva":
+      dataDifferent()?"● Alterações pendentes":
+      publishedDifferent()?"● Rascunho salvo, ainda não publicado":
+      !banners.length?"Nenhum banner criado":"✓ Alterações publicadas";
     $("campaign-last-publish").textContent=doc.published_at?
       "Última publicação: "+new Date(doc.published_at).toLocaleString("pt-BR"):
       "Nenhum banner publicado pelo editor";
     $("campaign-save").disabled=busy||formDirty||!dataDifferent();
+    // Na experiência simplificada, o botão extra só aparece quando a lista
+    // foi reorganizada, copiada ou teve exclusões ainda não persistidas.
+    const simple=document.getElementById("tab-campaigns")?.classList.contains("saluz-campaigns-simple");
+    if(simple)$("campaign-save").hidden=!dataDifferent()||formDirty||busy;
     $("campaign-publish").disabled=busy||formDirty||dataDifferent()||!publishedDifferent();
     $("campaign-discard").disabled=busy||(!dataDifferent()&&!publishedDifferent()&&!formDirty);
     $("campaign-apply").disabled=busy;
@@ -179,7 +184,7 @@
       card.append(main,actions);root.append(card);
     });
   }
-  function apply(event){
+  async function apply(event){
     event.preventDefault();
     if(busy)return;
     try{
@@ -190,7 +195,14 @@
         banners.push(item);
       }else banners[index]=item;
       formDirty=false;edit(item);
-      setFeedback("Banner guardado na lista. Clique em Salvar rascunho e depois em Publicar na loja.");
+      // No staging D1, um clique valida e salva o rascunho no banco.
+      // Publicação continua SEMPRE separada. Produção mantém o fluxo anterior.
+      if(typeof saluzD1AdminPreview!=="undefined"&&saluzD1AdminPreview){
+        if(dataDifferent())await execute("save");
+        else setFeedback("O banner já está salvo. Ele só aparece depois de publicar.");
+      }else{
+        setFeedback("Banner guardado na lista. Clique em Salvar rascunho e depois em Publicar na loja.");
+      }
     }catch(error){setFeedback(error.message,true);}
   }
   async function request(path,options={}){
@@ -259,7 +271,9 @@
       const field=form().elements.namedItem(input.dataset.marketUpload);
       if(!field)throw Error("Campo de imagem inválido");
       field.value=url;formDirty=true;preview();
-      setFeedback("Foto enviada. Clique em Guardar na lista para salvar esta alteração.");
+      setFeedback(typeof saluzD1AdminPreview!=="undefined"&&saluzD1AdminPreview
+        ?"Foto enviada. Clique em Salvar rascunho para guardar a alteração."
+        :"Foto enviada. Clique em Guardar na lista para salvar esta alteração.");
     }catch(error){setFeedback(error.message,true);}
     finally{busy=false;state();}
   }

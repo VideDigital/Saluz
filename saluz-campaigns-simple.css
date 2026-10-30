@@ -1,0 +1,271 @@
+/* SALUZ — Campanhas claras e progressivas, exclusivamente em D1 Preview.
+   O formulário original e seus nomes de campos foram preservados. */
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-page-intro{
+ margin-bottom:12px!important;padding-bottom:14px!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-view-nav{
+ gap:8px!important;margin:0 0 15px!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-view-nav button{
+ min-height:46px!important;padding:9px 17px!important;
+ font-size:14px!important;gap:9px!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-view-nav button span{
+ font-size:18px!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-status-row{
+ padding:11px 16px!important;margin-bottom:10px!important;gap:8px!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-status-pill{
+ font-size:12px!important;padding:6px 11px!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-status-row small{
+ font-size:12px!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-guide{
+ background:transparent!important;border:0!important;
+ padding:4px 1px 9px!important;margin:0!important;
+ font-size:12px!important;color:#6c7284!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-top-actions{
+ margin:12px 0 12px!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-top-actions h3{
+ font-size:19px!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-layout{
+ grid-template-columns:minmax(240px,290px) minmax(0,1fr)!important;
+ gap:14px!important;align-items:start
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-catalog{
+ position:static!important;padding:0!important;border-radius:12px!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-catalog-heading{
+ padding:17px 15px 14px!important;gap:3px!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-catalog-heading strong{
+ font-size:15px!important;color:#29344b!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-catalog-heading small{
+ font-size:11px!important;color:#7b8598!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-list{
+ display:grid!important;grid-template-columns:1fr!important;gap:7px!important;
+ padding:10px!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-list-card{
+ border:1px solid #ebedf3!important;border-radius:10px!important;padding:5px!important;
+ background:#fff!important;min-width:0
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-list-card.is-selected{
+ background:#f5f2fc!important;border-color:#d3caed!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-list-open{
+ gap:10px!important;padding:5px!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-list-thumb{
+ width:56px!important;min-width:56px!important;height:56px!important;border-radius:8px!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-list-info strong{
+ font-size:12px!important;line-height:1.35!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-list-info small{
+ font-size:11px!important;color:#777f94!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-list-tag{
+ font-size:10px!important;padding:3px 7px!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-list-card:only-child .market-list-order{
+ display:none!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-list-order button{
+ width:26px!important;height:26px!important;font-size:14px!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-editor-form{
+ padding:clamp(16px,2.5vw,24px)!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-form-head{
+ padding-bottom:15px!important;margin-bottom:19px!important;gap:9px!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-form-head h3{
+ font-size:24px!important;margin:4px 0!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-form-head p{
+ font-size:12px!important;line-height:1.5!important;color:#7a8494!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-easy-content{
+ display:grid;gap:16px;min-width:0
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-easy-intro{
+ display:grid;gap:2px;margin-bottom:3px
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-easy-kicker{
+ color:#6c5da9;font-size:10px;letter-spacing:.09em;font-weight:800
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-easy-intro h4{
+ font-size:19px!important;letter-spacing:-.02em!important;
+ line-height:1.3!important;color:#29334a!important;margin:2px 0!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-easy-intro p{
+ color:#7b8598!important;font-size:12px!important;margin:0!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-easy-content label,
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-advanced-content label{
+ display:grid;gap:7px;margin:0!important;font-size:13px!important;
+ font-weight:700;color:#3c4760!important;min-width:0
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-easy-content input:not([type=checkbox]),
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-easy-content select{
+ min-height:44px!important;font-size:14px!important;background:#fff!important;
+ border:1px solid #dbe0ea!important;border-radius:9px!important;
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-field-hint{
+ font-size:11px!important;font-weight:400;color:#8b93a2!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-easy-image{
+ padding:15px 17px;background:#f8f9fb;border:1px solid #e4e8ee;
+ border-radius:11px;display:grid;gap:7px
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-easy-image>strong{
+ font-size:13px!important;color:#303b51!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-easy-image>p{
+ font-size:12px!important;color:#788399!important;line-height:1.5!important;margin:0!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-main-upload{
+ border:1px dashed #b9aedb!important;background:#fff!important;
+ padding:10px 12px!important;border-radius:10px!important;
+ display:grid!important;gap:5px!important;color:#5e4c9d!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-main-upload small{
+ font-size:11px!important;color:#798298!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-easy-row{
+ display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-easy-active{
+ display:flex!important;flex-direction:row!important;align-items:center!important;
+ gap:12px!important;background:#f9fafc;padding:13px 15px!important;
+ border:1px solid #e4e8ef;border-radius:10px
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-easy-active input[type=checkbox]{
+ flex:0 0 19px;width:19px;height:19px;min-height:19px
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-easy-active span{
+ display:grid;gap:3px
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-easy-active strong{
+ font-size:13px!important;color:#303a54!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-easy-active small{
+ font-size:11px!important;color:#778196!important;font-weight:400!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-preview-heading{
+ display:flex;justify-content:space-between;gap:8px;align-items:center;
+ padding:5px 1px 0;margin-top:0
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-preview-heading strong{
+ font-size:13px!important;color:#2e3950!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-preview-heading span{
+ font-size:11px!important;color:#8c95a5!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-preview{
+ margin:0!important;min-height:142px!important;border-radius:10px!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-preview>div:last-child{
+ padding:15px!important;gap:7px!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-easy-advanced{
+ margin-top:16px;border:1px solid #e3e6ef;border-radius:11px;background:#fff;
+ overflow:hidden
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-easy-advanced summary{
+ list-style:none;display:flex;justify-content:space-between;align-items:center;
+ gap:15px;padding:15px 18px;cursor:pointer;background:#fafbfe;color:#303b53
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-easy-advanced summary::-webkit-details-marker{display:none}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-easy-advanced summary>span:first-child{
+ display:grid;gap:4px
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-easy-advanced summary strong{
+ font-size:14px!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-easy-advanced summary small{
+ font-size:11px!important;color:#7d8799!important;font-weight:400
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-advanced-arrow{
+ font-size:18px;color:#6655a5;transition:transform .15s ease
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-easy-advanced[open] .market-advanced-arrow{
+ transform:rotate(180deg)
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-advanced-content{
+ display:grid;gap:15px;padding:18px;border-top:1px solid #e7eaf1
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-advanced-content .market-form-grid{
+ gap:13px!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-advanced-content .market-mobile-upload{
+ border-radius:10px!important;background:#fbfaff!important;
+ border:1px dashed #d4caed!important;padding:12px!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-advanced-content .market-schedule{
+ margin:0!important;padding:12px 14px!important;border:1px solid #e5e7f1!important;
+ background:#fafbfd!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-advanced-content .market-schedule-help{
+ color:#7d879a!important;font-size:11px!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-editor-actions{
+ border-top:1px solid #e8eaf0!important;margin-top:19px!important;padding-top:16px!important;
+ gap:9px!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple #campaign-apply{
+ flex:1;max-width:230px;min-height:44px!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-publish-bar{
+ position:static!important;box-shadow:none!important;
+ padding:15px 19px!important;margin-top:15px!important;border-radius:12px!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-publish-bar strong{
+ font-size:14px!important;color:#29354d!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-publish-bar small{
+ font-size:12px!important;max-width:590px!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-publish-actions button{
+ min-height:41px!important;font-size:12px!important
+}
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-easy-advanced summary:focus-visible,
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-list-open:focus-visible{
+ outline:3px solid #7a62c5!important;outline-offset:2px
+}
+@media(max-width:1220px){
+ body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-layout{
+  grid-template-columns:1fr!important
+ }
+ body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-list{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important
+ }
+}
+@media(max-width:700px){
+ body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-easy-row,
+ body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-advanced-content .market-form-grid{
+  grid-template-columns:1fr!important
+ }
+ body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-list{
+  grid-template-columns:1fr!important
+ }
+ body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-publish-actions{
+  display:grid!important;grid-template-columns:1fr!important
+ }
+ body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-publish-actions button{
+  grid-column:1!important
+ }
+ body.saluz-v3 #tab-campaigns.saluz-campaigns-simple .market-easy-advanced summary{
+  padding:13px!important
+ }
+}
+
+body.saluz-v3 #tab-campaigns.saluz-campaigns-simple #campaign-save[hidden]{display:none!important}
