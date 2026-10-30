@@ -80,6 +80,20 @@ test("interface distingue HTTP rejeitado, indisponibilidade do provedor e timeou
   assert.equal(obj.button.disabled,false);
  }
 });
+test("painel exibe diagnóstico de token malformatado e servidor alcançável",async()=>{
+ for(const [status,code,expected] of [
+  ["invalid_credential_format","secret_contains_invalid_whitespace",/formato não aceito/],
+  ["transport_error","provider_reachable_auth_request_failed",/provider_reachable_auth_request_failed/],
+  ["provider_redirect","provider_redirect_not_followed",/redirecionamento inesperado/]
+ ]){
+  const obj=ui({apiFn:async path=>path==="auth/me"?{admin:true}:{
+    connection_status:status,diagnostic_code:code,checkout_enabled:false
+  }});
+  await obj.run();
+  assert.match(obj.feedback.textContent,expected);
+  assert.match(obj.feedback.textContent,/Nenhum pagamento foi realizado/);
+ }
+});
 test("interface fornece diagnóstico somente após autenticação no painel",()=>{
  const html=readFileSync("admin.html","utf8");
  assert.match(html,/id="mp-test-connectivity-button"/);
