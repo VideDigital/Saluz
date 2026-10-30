@@ -24,13 +24,13 @@ test("prova conexão usando somente GET em API oficial com token exclusivamente 
  };
  const result=await probeMercadoPagoTestCredential({request:request(),env,fetchFn});
  assert.equal(calls,1);
- assert.deepEqual(result,{httpStatus:200,result:{connection_status:"verified_read_only",checkout_enabled:false}});
+ assert.deepEqual(result,{httpStatus:200,result:{connection_status:"verified_read_only",diagnostic_code:"provider_read_accepted",checkout_enabled:false}});
  assert.doesNotMatch(JSON.stringify(result),/CREDENCIAL_TESTE_FICTICIA|visa|Visa/);
 });
 test("um token inválido não vaza informações, só marca rejeição",async()=>{
  for(const status of [401,403]){
   const result=await probeMercadoPagoTestCredential({request:request(),env,fetchFn:async()=>response(status,{token:"CREDENCIAL_TESTE_FICTICIA"})});
-  assert.deepEqual(result.result,{connection_status:"rejected",checkout_enabled:false});
+  assert.deepEqual(result.result,{connection_status:"rejected",diagnostic_code:"provider_auth_rejected",provider_http_status:status,checkout_enabled:false});
  }
 });
 test("sem token não faz requisições externas",async()=>{
@@ -74,6 +74,49 @@ test("falha externa ou resposta inesperada não vaza conteúdo",async()=>{
   assert.notEqual(result.result.connection_status,"verified_read_only");
   assert.doesNotMatch(JSON.stringify(result),/CREDENCIAL_TESTE_FICTICIA/);
  }
+});
+test("erros HTTP externos trazem somente status numérico permitido e código diagnóstico",async()=>{
+ for(const [http,expected,code] of [
+  [400,"request_rejected","provider_request_error"],
+  [404,"request_rejected","provider_request_error"],
+  [408,"timeout","provider_timeout_http"],
+  [429,"rate_limited","provider_rate_limited"],
+  [500,"provider_error","provider_server_error"],
+  [503,"provider_error","provider_server_error"],
+  [504,"timeout","provider_timeout_http"]
+ ]){
+  const result=await probeMercadoPagoTestCredential({
+   request:request(),env,fetchFn:async()=>response(http,{password:"SECRET_PROVIDER",detail:"PRIVATE",token:"CREDENCIAL_TESTE_FICTICIA"})
+  });
+  assert.equal(result.httpStatus,200);
+  assert.deepEqual(result.result,{
+   connection_status:expected,diagnostic_code:code,provider_http_status:http,checkout_enabled:false
+  });
+  assert.doesNotMatch(JSON.stringify(result),/SECRET_PROVIDER|PRIVATE|CREDENCIAL_TESTE_FICTICIA/);
+ }
+});
+test("timeout ou erro de transporte expõem classe genérica, nunca stack ou token",async()=>{
+ for(const [name,status,code] of [
+  ["TimeoutError","timeout","request_timed_out"],
+  ["AbortError","timeout","request_timed_out"],
+  ["TypeError","transport_error","network_or_request_error"],
+  ["OtherError","runtime_error","unexpected_fetch_exception"]
+ ]){
+  const r=await probeMercadoPagoTestCredential({
+   request:request(),env,fetchFn:async()=>{const e=new Error("Bearer CREDENCIAL_TESTE_FICTICIA");e.name=name;throw e;}
+  });
+  assert.deepEqual(r.result,{connection_status:status,diagnostic_code:code,checkout_enabled:false});
+  assert.doesNotMatch(JSON.stringify(r),/CREDENCIAL_TESTE_FICTICIA|Bearer|stack/);
+ }
+});
+test("nunca inclui código de resposta do provedor em resultados que não receberam HTTP",async()=>{
+ const result=await probeMercadoPagoTestCredential({
+  request:request(),env,fetchFn:async()=>response(200,{secret:"PROVIDER_CONTENT"})
+ });
+ assert.equal(result.result.connection_status,"unexpected_response");
+ assert.equal(result.result.diagnostic_code,"invalid_provider_json");
+ assert.ok(!Object.hasOwn(result.result,"provider_http_status"));
+ assert.doesNotMatch(JSON.stringify(result),/PROVIDER_CONTENT/);
 });
 test("probe só é acessível depois de validação de administrador na rota existente",()=>{
  const gateway=readFileSync("functions/api/[[path]].js","utf8");
