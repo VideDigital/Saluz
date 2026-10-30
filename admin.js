@@ -104,11 +104,15 @@ function showLogin(msg){
  $("login-message").textContent=msg||"Acesse com sua conta autorizada.";
 }
 function showDashboard(){
+ // A revalidação periódica da sessão (inclusive ao voltar a esta aba)
+ // não é uma nova abertura do painel. Preservar seção, formulário e posição.
+ const alreadyOpen=!$("dashboard").classList.contains("hidden");
  adminSessionInvalidated=false;
  $("login-screen").classList.add("hidden");
  $("dashboard").classList.remove("hidden");
- // A conta já foi autenticada. Um erro de renderização jamais pode ser
- // confundido com senha inválida e devolver o usuário à tela de login.
+ if(alreadyOpen)return;
+ // Somente no login ou carregamento inicial abrir Início.
+ // Um erro de renderização jamais deve invalidar um login válido.
  try { changeTab("overview"); }
  catch (err) {
    console.error("SALUZ: erro ao iniciar o painel",err);
