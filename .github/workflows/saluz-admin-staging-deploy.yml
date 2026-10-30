@@ -119,7 +119,7 @@ jobs:
           from pathlib import Path
           local_html=Path("admin.html").read_text(encoding="utf-8")
           def expected_asset(name):
-              rx=r'(?:src|href)="(\\./'+re.escape(name)+r'\\?v=[^"]+)"'
+              rx=r'(?:src|href)="(\./'+re.escape(name)+r'\?v=[^"]+)"'
               match=re.search(rx,local_html)
               assert match is not None, "Referência de arquivo esperada ausente: "+name
               return match.group(1)
