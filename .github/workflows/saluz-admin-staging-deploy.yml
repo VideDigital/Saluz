@@ -104,4 +104,14 @@ jobs:
           assert "saluz-op-head" in get("/saluz-admin-v3.js"), "JS estrutural da nova visão geral ausente"
           assert "saluz-v3" in get("/saluz-v3-home.css"), "CSS operacional ausente"
           print("SALUZ V3: nova identidade e layout operacional ativos somente no Preview.")
+          new_js = get("/saluz-professional.js")
+          assert "/api/migration-admin/store-health" in new_js, "Resumo D1 ausente do painel"
+          assert "saluz-professional.js?v=20261030-d1-health" in html, "Resumo desatualizado no HTML"
+          try:
+              req=urllib.request.Request(base+"/api/migration-admin/store-health",headers={"Accept":"application/json"})
+              urllib.request.urlopen(req,timeout=30)
+              raise AssertionError("Resumo D1 deve exigir login de administrador")
+          except HTTPError as denied:
+              assert denied.code == 401, f"Resumo D1: acesso sem sessão retornou {denied.code}, esperado 401"
+          print("SALUZ Preview: dashboard D1 carregado e protegido por autorização 401.")
           PY

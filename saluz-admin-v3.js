@@ -85,7 +85,7 @@
  // Contextual semantics from existing source only; never synthesize counts.
  const storage=document.createElement("p");
  storage.className="saluz-op-source";
- storage.textContent="Os números acima vêm da integração atual. O catálogo D1 de testes está na aba Produtos.";
+ storage.textContent="Produtos e estoque vêm do D1 da homologação. Banners no D1 ainda não acompanham o editor de campanhas legado.";
  const existing=main.querySelector(".saluz-data-origin");
  if(existing)existing.replaceWith(storage);else caption.after(storage);
 })();

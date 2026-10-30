@@ -17,7 +17,7 @@ test("novo layout carrega depois das camadas anteriores, em todas as abas",()=>{
   pos=current;
   assert.ok(readFileSync(path,"utf8").length>1800);
  }
- assert.ok(html.indexOf('saluz-workspace-v2.js?v=20261030-layout2')>html.indexOf('saluz-admin-guide.js?v=20261030-calm1'));
+ assert.ok(html.indexOf('saluz-workspace-v2.js?v=20261030-d1-health')>html.indexOf('saluz-admin-guide.js?v=20261030-calm1'));
  new vm.Script(script);
 });
 test("o limite de largura que desperdiçava tela foi explicitamente removido",()=>{
@@ -34,7 +34,7 @@ test("Início deixa de empilhar duas faixas de apresentação e mantém dados re
  assert.match(css,/professional-welcome-actions/);
  assert.match(css,/professional-kpis/);
  assert.match(css,/professional-dashboard-grid/);
- assert.match(script,/este resumo usa a integração atual/);
+ assert.match(script,/Produtos e estoque: D1 de homologação/);
  assert.doesNotMatch(script,/R\$\s*[0-9]/);
  assert.doesNotMatch(script,/fetch\(|CHECKOUT_ENABLED|MP_ACCESS_TOKEN|localStorage|sessionStorage/);
 });

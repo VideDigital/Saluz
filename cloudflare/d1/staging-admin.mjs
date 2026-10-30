@@ -3,6 +3,7 @@
  * NEVER reuse for live payments or switch the public catalog here.
  */
 import {putImage,readImage} from "../../cloudflare/storage/kv-media.mjs";
+import {storeHealthD1} from "./store-health.mjs";
 const categories=new Set(["Nécessaires","Porta-joias","Organizadores de maquiagem","Organizadores de bolsa","Acessórios de viagem","Autocuidado","Acessórios femininos","Kits e presentes"]);
 const uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const headers={"content-type":"application/json; charset=utf-8","cache-control":"no-store","x-robots-tag":"noindex, nofollow","x-content-type-options":"nosniff"};
@@ -36,6 +37,9 @@ export async function onAdminRequest({request,env,route,validateProduct}){
  if(!stage(request,env))return response({error:"Laboratório indisponível"},404);
  const db=env.SALUZ_D1_PREVIEW,url=new URL(request.url),method=request.method;
  try{
+   if(route==="store-health"&&method==="GET"){
+     return response(await storeHealthD1(db));
+   }
    if(route==="products"&&method==="GET"){
      const p=Number(url.searchParams.get("page")||1),limit=48;
      if(!Number.isSafeInteger(p)||p<1||p>1000)return response({error:"Página inválida"},400);

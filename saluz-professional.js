@@ -125,25 +125,35 @@
     grid.replaceChildren();
     const numbers={...data.counts,banners:data.activeBanners};
     for(const [key,label,icon,tone] of kpiConfigs){
+      const d1Banner=key==="banners"&&data.source==="D1 staging";
+      const displayLabel=d1Banner?"Banners no D1":label;
       const card=safe("button","professional-kpi-card professional-kpi-"+tone);
       card.type="button";
-      card.setAttribute("aria-label",label+": "+String(numbers[key]??0));
+      card.setAttribute("aria-label",displayLabel+": "+String(numbers[key]??0));
       card.append(safe("span","professional-kpi-symbol",icon));
       const number=safe("strong","professional-kpi-value",Number(numbers[key]||0).toLocaleString("pt-BR"));
-      const main=safe("span","professional-kpi-label",label);
+      const main=safe("span","professional-kpi-label",displayLabel);
       const footer=safe("span","professional-kpi-foot",key==="total"?"Itens no catálogo":
         key==="active"?"Produtos publicados":
-        key==="lowStock"?"De 1 a 5 unidades":"Campanhas disponíveis");
+        key==="lowStock"?"De 1 a 5 unidades":d1Banner?"Editor ainda no legado":"Campanhas disponíveis");
       card.append(number,main,footer);
-      card.addEventListener("click",()=>{
-        if(key==="banners")detailAction("campaigns");
-        else detailAction("products",key==="lowStock"?"low":key==="active"?"active":"all");
-      });
+      if(d1Banner){
+        card.setAttribute("aria-disabled","true");
+        card.title="Editor de campanhas ainda não migrou para D1. Indicador apenas informativo.";
+      }else{
+        card.addEventListener("click",()=>{
+          if(key==="banners")detailAction("campaigns");
+          else detailAction("products",key==="lowStock"?"low":key==="active"?"active":"all");
+        });
+      }
       grid.append(card);
     }
+    const source=data.source==="D1 staging"
+      ?"Fonte: banco D1 de homologação (mesmo catálogo da vitrine de testes)."
+      :"Fonte: integração anterior (Supabase).";
     el("overview-health-caption").textContent=data.truncated?
-      "Resumo parcial: o catálogo excedeu 2.000 itens. Continue pelo gerenciamento de produtos.":
-      "Última consulta: "+new Date(data.updatedAt).toLocaleString("pt-BR")+". Valores do catálogo e das campanhas cadastradas.";
+      "Resumo parcial: o catálogo excedeu 2.000 itens. "+source:
+      "Última consulta: "+new Date(data.updatedAt).toLocaleString("pt-BR")+". "+source;
     const attention=el("overview-attention-list");attention.replaceChildren();
     const items=[];
     if(data.unpublished)items.push({icon:"✎",title:"Alterações aguardando publicação",subtitle:"Há um rascunho não publicado em Aparência e links ou Campanhas.",tab:"studio"});
@@ -174,7 +184,11 @@
     loading=true;
     if(force)el("overview-health-caption").textContent="Atualizando informações...";
     try{
-      const res=await fetch("/api/admin/store-health",{credentials:"same-origin",cache:"no-store"});
+      // Respect the identical D1 toggle used by the Products editor.
+      // Never fall back to Supabase if a D1 staging query fails.
+      const d1Preview=typeof saluzD1AdminPreview!=="undefined"&&saluzD1AdminPreview;
+      const endpoint=d1Preview?"/api/migration-admin/store-health":"/api/admin/store-health";
+      const res=await fetch(endpoint,{credentials:"same-origin",cache:"no-store"});
       const data=await res.json().catch(()=>({}));
       if(!res.ok)throw Error(data.error||"Erro na consulta");
       renderHealth(data);
