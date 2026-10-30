@@ -27,6 +27,13 @@
  // Informações de trabalho primeiro; ajuda de leitura depois, sem repetir dois banners.
  const overview=$("#tab-overview");
  if(overview){
+  const caption=overview.querySelector("#overview-health-caption");
+  if(caption&&!overview.querySelector(".saluz-data-origin")){
+   const source=document.createElement("p");
+   source.className="saluz-data-origin";
+   source.textContent="Homologação: este resumo usa a integração atual. O catálogo D1 de testes é exibido separadamente na aba Produtos.";
+   caption.after(source);
+  }
   const guide=overview.querySelector(":scope > .saluz-guide");
   if(guide)overview.append(guide);
   const welcome=overview.querySelector(".professional-welcome");
@@ -35,7 +42,7 @@
   if(heading)heading.textContent="Tudo o que importa na sua loja, em um só lugar.";
   if(description)description.textContent="Acompanhe o catálogo, revise pendências e continue suas tarefas.";
  }
- place("products",[".product-list"]);
+ place("products",[".product-workspace"]);
  place("orders",[".orders-toolbar","#orders"]);
  place("customers",[".customer-summary",".panel-filter","#customers-list"]);
  const finance=$("#tab-finance");
