@@ -105,3 +105,13 @@ Não adicionar senhas, tokens, chaves Mercado Pago ou dados reais de clientes ao
 **Testes obrigatórios:** validar login e navegação, rodar testes Node e build admin, conferir no navegador desktop/mobile, testando: edição e listagem de produtos; banner novo, edição, reordenação, salvar rascunho e publicar somente no staging; edição de conteúdo e prévia; simulação e edição de taxas; links e filtros. Conferir isolamento entre homologação/produção. **Sem aprovação visual autenticada, não promover para produção.**
 
 **Reversão:** reverter as alterações Focus V4 de `saluz-minimal.js`, `saluz-minimal.css` e os querystrings do `admin.html`; os módulos e dados não foram alterados.
+
+## Atelier V5 — ajuste visual (30/10/2026)
+
+- Nova linguagem para o **painel de homologação**: barra lateral café, fundo off-white, tipografia operacional limpa, cartões com contraste discreto e telas de edição mais legíveis.
+- A Home preserva as duas ações rápidas, os indicadores reais do ambiente, avisos de pendências e explicação explícita de que pagamentos ainda estão desativados.
+- Produtos, banners, conteúdo, taxas, pedidos e relatórios compartilham contornos, espaçamento e botões consistentes, incluindo ajustes para tablet e celular.
+- A mudança está **somente no CSS existente** `saluz-minimal.css` e no cache-buster em `admin.html`, sem adicionar chamadas de API ou modificar dados, regras financeiras, credenciais, autenticação, tabelas ou ações de publicação.
+- Esta camada exige `body.saluz-v3.saluz-minimal.saluz-focus`; a classe `saluz-focus` é habilitada pela experiência somente no hostname de homologação. **Nunca validar produção com base apenas em testes estáticos.**
+- Validação pendente: conferir desktop/mobile com login de homologação, títulos, foco, menus, cards, tabelas, modais, listagem de banners e formulários. Comparar com a produção para confirmar isolamento visual. Checkout não habilitado.
+- Rollback: reverter o commit do Atelier V5 na branch de homologação. Os módulos funcionais continuam intactos.
