@@ -50,9 +50,24 @@ test('Focus V4 organiza a navegação e oferece modos de listagem e edição', (
   assert.match(styles, /saluz-focus-editing \.market-catalog/);
   assert.match(styles, /saluz-focus-fee-settings/);
   assert.ok(html.includes('saluz-minimal.js?v=20261030-focus4'));
-  assert.ok(html.includes('saluz-minimal.css?v=20261030-atelier5'));
+  assert.ok(html.includes('saluz-minimal.css?v=20261030-home6'));
   assert.match(styles, /SALUZ Atelier V5/);
   assert.match(styles, /body\.saluz-v3\.saluz-minimal\.saluz-focus/);
   assert.match(styles, /--atelier-coffee/);
   assert.match(styles, /\.mobile-bottom-nav/);
+});
+
+test('Home V6 melhora contraste e indicadores sem simular dados', () => {
+  const professional = read('saluz-professional.js');
+  assert.match(html, /saluz-professional\\.js\\?v=20261030-home6/);
+  assert.match(styles, /SALUZ Home V6/);
+  assert.match(styles, /#tab-overview \\.saluz-focus-state>\\.management-notice/);
+  assert.match(styles, /background:#fff5e6!important/);
+  assert.match(styles, /color:#5a4531!important/);
+  assert.match(styles, /#tab-overview \\.saluz-op-metrics \\.professional-kpi-foot/);
+  assert.match(styles, /display:block!important/);
+  assert.match(professional, /lowStockCount>0/);
+  assert.match(professional, /saluz-home-kpi-attention/);
+  assert.match(professional, /Editor ainda em integração/);
+  assert.match(professional, /location\\.hostname==="homologacao\\.saluz-admin\\.pages\\.dev"/);
 });
