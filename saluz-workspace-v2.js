@@ -17,10 +17,12 @@
   const main=document.createElement("div");main.className="saluz-workspace-main";
   const side=document.createElement("aside");side.className="saluz-workspace-side";
   side.setAttribute("aria-label","Orientações da seção");
+  const marker=document.createComment("saluz-v2-layout-position");
+  root.insertBefore(marker,mainNodes[0]);
   for(const node of mainNodes)main.append(node);
   side.append(guide);
   split.append(main,side);
-  root.insertBefore(split,root.querySelector(":scope > .saluz-guide")||root.lastChild);
+  marker.replaceWith(split);
  };
  // Informações de trabalho primeiro; ajuda de leitura depois, sem repetir dois banners.
  const overview=$("#tab-overview");
