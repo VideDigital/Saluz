@@ -17,7 +17,7 @@ REQUIRED_FILES = {
     "admin.html", "admin.js", "admin.css", "saluz-admin-extras.js",
     "saluz-studio.js", "saluz-campaigns.js", "saluz-mobile.js",
     "saluz-campaigns-simple.js", "saluz-campaigns-simple.css",
-    "saluz-admin-polish.css",
+    "saluz-admin-polish.css", "saluz-minimal.css", "saluz-minimal.js",
     "saluz-product-dialog.css", "_headers",
     "saluz-admin-calm.css", "saluz-admin-calm-components.css",
     "saluz-admin-calm-guide.css", "saluz-admin-guide.js",

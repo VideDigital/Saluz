@@ -45,6 +45,7 @@ jobs:
           node --check cloudflare/storage/kv-media.mjs
           node --check functions/api/\[\[path\]\].js
           node --check admin-deploy/functions/api/\[\[path\]\].js
+          node --check saluz-minimal.js
           node --check migration-lab.js
           node --check colecao.js
           node --check saluz-shell.js
