@@ -14,6 +14,8 @@ on:
       - 'saluz-studio.js'
       - 'saluz-campaigns.js'
       - 'saluz-mobile.js'
+      - 'saluz-admin-guide.js'
+      - 'saluz-admin-calm*.css'
       - 'saluz-*.css'
       - '_headers'
       - 'tests/admin-session-expiry.test.mjs'
