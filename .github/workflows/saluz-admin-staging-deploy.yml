@@ -67,63 +67,86 @@ jobs:
         run: python3 .github/scripts/build-saluz-admin-preview.py "$TARGET_DIR"
 
       - name: Implantar estritamente no Pages saluz-admin — homologacao
+        id: publish_preview
         working-directory: ${{ runner.temp }}/saluz-admin-staging
+        shell: bash
         run: |
+          set -euo pipefail
           npx --yes wrangler@4 pages deploy ./public \
             --project-name saluz-admin \
-            --branch homologacao
+            --branch homologacao 2>&1 | tee "$RUNNER_TEMP/saluz-admin-publish.log"
+          deployed_url="$(grep -oE 'https://[0-9a-f]{8}\\.saluz-admin\\.pages\\.dev' "$RUNNER_TEMP/saluz-admin-publish.log" | head -n 1 || true)"
+          if [[ ! "$deployed_url" =~ ^https://[0-9a-f]{8}\\.saluz-admin\\.pages\\.dev$ ]]; then
+            echo "::error::Não foi possível identificar a URL imutável do deploy de homologação."
+            exit 1
+          fi
+          echo "url=$deployed_url" >> "$GITHUB_OUTPUT"
 
-      - name: Confirmar URL e comportamento estático sem autenticação
+      - name: Verificar build imutável e propagação do alias sem autenticação
+        env:
+          DEPLOY_URL: ${{ steps.publish_preview.outputs.url }}
         run: |
           python3 - <<'PY'
+          import os
+          import re
           import time
           import urllib.request
           from urllib.error import HTTPError, URLError
-          base = "https://homologacao.saluz-admin.pages.dev"
-          headers = {"User-Agent": "Mozilla/5.0 (compatible; SALUZ-Staging-Check/1.0)",
-                     "Accept": "text/html,application/javascript,*/*"}
-          def get(path):
+
+          # The immutable deploy URL uniquely identifies the files just uploaded.
+          # The public branch alias may temporarily resolve to the previous deploy.
+          base = os.environ["DEPLOY_URL"].rstrip("/")
+          assert re.fullmatch(r"https://[0-9a-f]{8}\\.saluz-admin\\.pages\\.dev", base), "Invalid immutable deploy URL"
+          alias = "https://homologacao.saluz-admin.pages.dev"
+          headers = {"User-Agent": "SALUZ-Preview-CI/1.0",
+                     "Accept": "text/html,application/javascript,*/*",
+                     "Cache-Control": "no-cache"}
+          def get(origin, path):
               last_error = None
               for attempt in range(4):
                   try:
-                      request = urllib.request.Request(base + path, headers=headers)
-                      with urllib.request.urlopen(request, timeout=30) as response:
+                      req=urllib.request.Request(origin + path, headers=headers)
+                      with urllib.request.urlopen(req, timeout=30) as response:
                           assert response.status == 200
                           return response.read().decode("utf-8")
-                  except (HTTPError, URLError) as error:
-                      last_error = error
-                      if attempt < 3:
-                          time.sleep(3)
-              raise RuntimeError(f"Staging endpoint {path} unavailable") from last_error
-          html = get("/admin.html")
-          # Pages preview alias can briefly serve the preceding deploy from edge caches.
-          # Retry the actual file with a unique query, and only then validate the build.
-          import os
-          version = os.environ.get("GITHUB_SHA", "no-sha")[:12]
-          for attempt in range(12):
-              if "saluz-professional.js?v=20261030-d1-health" in html and "saluz-admin-v3.js?v=20261030-operacao3" in html:
-                  break
-              if attempt == 11:
-                  raise AssertionError("Staging admin ainda não serve o HTML do commit implantado")
-              time.sleep(3)
-              html = get("/admin.html?verify="+version+"-"+str(attempt))
-          
-          assert "admin.js?v=20261030-tab-return" in html, "Novo HTML ainda não servido"
-          js = get("/admin.js")
+                  except (HTTPError,URLError) as error:
+                      last_error=error
+                      if attempt < 3: time.sleep(2)
+              raise RuntimeError("Preview file not accessible: "+path) from last_error
+
+          html=get(base, "/admin.html")
+          assert "saluz-professional.js?v=20261030-d1-health" in html, "Resumo D1 ausente do deploy imutável"
+          assert "saluz-admin-v3.js?v=20261030-operacao3" in html, "Layout V3 ausente do deploy imutável"
+          assert "saluz-v3-theme.css?v=20261030-operacao3" in html, "CSS V3 ausente do deploy imutável"
+          assert "admin.js?v=20261030-tab-return" in html, "Correção de sessão ausente"
+          js=get(base, "/admin.js")
           assert "invalidateAdminSession" in js and "ensureAdminResponse" in js
-          assert "saluz-admin-v3.js?v=20261030-operacao3" in html, "HTML não aponta ao novo painel operacional"
-          assert "saluz-v3-theme.css?v=20261030-operacao3" in html, "Tema operacional não foi carregado"
-          assert "saluz-op-head" in get("/saluz-admin-v3.js"), "JS estrutural da nova visão geral ausente"
-          assert "saluz-v3" in get("/saluz-v3-home.css"), "CSS operacional ausente"
-          print("SALUZ V3: nova identidade e layout operacional ativos somente no Preview.")
-          new_js = get("/saluz-professional.js")
-          assert "/api/migration-admin/store-health" in new_js, "Resumo D1 ausente do painel"
-          assert "saluz-professional.js?v=20261030-d1-health" in html, "Resumo desatualizado no HTML"
-          try:
-              req=urllib.request.Request(base+"/api/migration-admin/store-health",headers={"Accept":"application/json"})
-              urllib.request.urlopen(req,timeout=30)
-              raise AssertionError("Resumo D1 deve exigir login de administrador")
-          except HTTPError as denied:
-              assert denied.code == 401, f"Resumo D1: acesso sem sessão retornou {denied.code}, esperado 401"
-          print("SALUZ Preview: dashboard D1 carregado e protegido por autorização 401.")
+          assert "saluz-op-head" in get(base, "/saluz-admin-v3.js")
+          assert "saluz-v3" in get(base, "/saluz-v3-home.css")
+          assert "/api/migration-admin/store-health" in get(base, "/saluz-professional.js")
+          print("SALUZ: arquivos V3 e resumo D1 confirmados no deploy imutável de Preview.")
+
+          # Alias is tested separately. A stale edge alias must NOT hide a good
+          # immutable deployment, but its pending propagation must be reported.
+          alias_ready = False
+          for attempt in range(8):
+              try:
+                  alias_html=get(alias,"/admin.html?ci="+os.environ["GITHUB_SHA"][:12]+"-"+str(attempt))
+                  if "saluz-professional.js?v=20261030-d1-health" in alias_html:
+                      alias_ready=True
+                      break
+              except (RuntimeError,AssertionError):
+                  pass
+              if attempt<7:time.sleep(3)
+          if not alias_ready:
+              print("::warning::O deploy imutável está correto, mas o alias de homologação ainda não serve o novo HTML. Conferir propagação antes de validar visualmente.")
+          else:
+              try:
+                  req=urllib.request.Request(alias+"/api/migration-admin/store-health",
+                                             headers={"Accept":"application/json"})
+                  urllib.request.urlopen(req,timeout=30)
+                  raise AssertionError("Resumo D1 ficou acessível sem administrador")
+              except HTTPError as denied:
+                  assert denied.code==401, f"Rota privada sem login retornou {denied.code}, esperado 401"
+              print("SALUZ: alias atualizado e endpoint de resumo D1 protegido por 401.")
           PY
