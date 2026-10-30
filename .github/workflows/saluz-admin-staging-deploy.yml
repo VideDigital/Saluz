@@ -96,6 +96,18 @@ jobs:
                           time.sleep(3)
               raise RuntimeError(f"Staging endpoint {path} unavailable") from last_error
           html = get("/admin.html")
+          # Pages preview alias can briefly serve the preceding deploy from edge caches.
+          # Retry the actual file with a unique query, and only then validate the build.
+          import os
+          version = os.environ.get("GITHUB_SHA", "no-sha")[:12]
+          for attempt in range(12):
+              if "saluz-professional.js?v=20261030-d1-health" in html and "saluz-admin-v3.js?v=20261030-operacao3" in html:
+                  break
+              if attempt == 11:
+                  raise AssertionError("Staging admin ainda não serve o HTML do commit implantado")
+              time.sleep(3)
+              html = get("/admin.html?verify="+version+"-"+str(attempt))
+          
           assert "admin.js?v=20261030-tab-return" in html, "Novo HTML ainda não servido"
           js = get("/admin.js")
           assert "invalidateAdminSession" in js and "ensureAdminResponse" in js
