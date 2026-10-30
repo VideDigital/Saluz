@@ -92,7 +92,7 @@ jobs:
                           time.sleep(3)
               raise RuntimeError(f"Staging endpoint {path} unavailable") from last_error
           html = get("/admin.html")
-          assert "admin.js?v=20261029-expired-session" in html, "Novo HTML ainda não servido"
+          assert "admin.js?v=20261030-tab-return" in html, "Novo HTML ainda não servido"
           js = get("/admin.js")
           assert "invalidateAdminSession" in js and "ensureAdminResponse" in js
           print("Staging admin HTML/JS atualizado e acessível. Próximo teste: login real e expiração de sessão.")

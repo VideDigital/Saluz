@@ -235,7 +235,9 @@
         provider_error:"Servidor do Mercado Pago apresentou falha. Tente novamente depois.",
         request_rejected:"Mercado Pago recusou a requisição. Verifique o código HTTP abaixo para orientar o diagnóstico.",
         timeout:"Consulta excedeu o prazo de resposta. A ligação pode estar lenta ou indisponível.",
-        transport_error:"Falha na comunicação entre a Cloudflare e o Mercado Pago ou na preparação da requisição.",
+        transport_error:"Falha na comunicação com Mercado Pago. Confira o diagnóstico técnico abaixo.",
+        invalid_credential_format:"O segredo de teste contém um formato não aceito para autenticação. Revise a variável no Preview, sem compartilhar seu valor.",
+        provider_redirect:"O Mercado Pago respondeu com um redirecionamento inesperado. A requisição não foi seguida por segurança.",
         runtime_error:"Falha interna da verificação na Cloudflare; revisar diagnóstico técnico.",
         unavailable:"Serviço de verificação indisponível no momento; nenhuma cobrança foi realizada.",
         unexpected_response:"Resposta inesperada do Mercado Pago; conferir formato ou status HTTP."
@@ -247,7 +249,9 @@
         "provider_auth_rejected","missing_test_secret","unsafe_environment_flags",
         "provider_timeout_http","provider_rate_limited","provider_server_error",
         "provider_request_error","unexpected_provider_status","invalid_provider_json",
-        "provider_read_accepted","request_timed_out","network_or_request_error","unexpected_fetch_exception"
+        "provider_read_accepted","request_timed_out","network_or_request_error","unexpected_fetch_exception",
+        "secret_not_text","secret_contains_invalid_whitespace","invalid_authorization_header",
+        "provider_redirect_not_followed","provider_reachable_auth_request_failed"
       ]);
       const code=diagnosticCodes.has(result.diagnostic_code)
         ?" Diagnóstico: "+result.diagnostic_code+".":"";
