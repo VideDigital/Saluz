@@ -31,7 +31,33 @@ export function validateCart(raw){
  if(cep&&cep.length!==8)throw new Error("CEP inválido");
  return {items,postal_code:cep};
 }
-export async function quoteCartD1(db,cart){
+/**
+ * Only a server-approved, enabled rate is a valid quote.
+ * Ranges are explicitly configured by the merchant; there are no guessed tariffs.
+ */
+async function quoteShippingD1(db,postalCode,enabled){
+ if(!postalCode)return {shipping_status:"informe_cep",shipping_cents:null,
+  shipping_method:null,shipping_label:null,estimated_days:null};
+ if(!enabled)return {shipping_status:"aguardando_configuracao",shipping_cents:null,
+  shipping_method:null,shipping_label:null,estimated_days:null};
+ const response=await db.prepare(
+  "SELECT price_cents,label,eta_min_days,eta_max_days FROM saluz_shipping_rules "+
+  "WHERE enabled=1 AND cep_start<=? AND cep_end>=? "+
+  "ORDER BY (CAST(cep_end AS INTEGER)-CAST(cep_start AS INTEGER)) ASC,id ASC LIMIT 1"
+ ).bind(postalCode,postalCode).all();
+ const rule=(response.results||[])[0];
+ if(!rule)return {shipping_status:"regiao_sem_cobertura",shipping_cents:null,
+  shipping_method:null,shipping_label:null,estimated_days:null};
+ const price=Number(rule.price_cents),min=Number(rule.eta_min_days),max=Number(rule.eta_max_days);
+ if(!Number.isSafeInteger(price)||price<0||price>50000000||
+    !Number.isSafeInteger(min)||min<1||
+    !Number.isSafeInteger(max)||max<min||max>90||
+    typeof rule.label!=="string"||rule.label.trim().length<3||rule.label.length>80)
+  throw new Error("Regra de frete inválida");
+ return {shipping_status:"cotado",shipping_cents:price,shipping_method:"entrega_local",
+  shipping_label:rule.label,estimated_days:{min,max}};
+}
+export async function quoteCartD1(db,cart,{shippingEnabled=false}={}){
  const input=validateCart(cart),uniqueIds=[...new Set(input.items.map(x=>x.id))];
  const placeholders=uniqueIds.map(()=>"?").join(",");
  const result=await db.prepare(
@@ -52,10 +78,16 @@ export async function quoteCartD1(db,cart){
   return {id:item.id,name:product.name,color:item.color,size:item.size,quantity:item.quantity,
    unit_price_cents:unit,line_total_cents:line};
  });
+ const shipping=await quoteShippingD1(db,input.postal_code,shippingEnabled===true);
+ const total=shipping.shipping_status==="cotado"?subtotal+shipping.shipping_cents:null;
+ if(total!==null&&(!Number.isSafeInteger(total)||total>50000000))
+  throw new Error("Pedido excede o limite");
  return {mode:"homologacao_visual",source:"D1 staging",items,subtotal_cents:subtotal,
-  shipping_cents:null,shipping_status:"aguardando_configuracao",total_cents:null,
-  payment_enabled:false,available_payment_methods:["pix","credit_card"],
-  notice:"Frete não configurado. Esta cotação não reserva estoque, cria pedidos nem cobra pagamentos."};
+  ...shipping,total_cents:total,payment_enabled:false,
+  available_payment_methods:["pix","credit_card"],
+  notice:shipping.shipping_status==="cotado"?
+   "Frete calculado pela tabela autorizada, mas pagamentos continuam desativados na homologação.":
+   "Frete ainda não confirmado. Esta cotação não reserva estoque, cria pedidos nem cobra pagamentos."};
 }
 export async function quoteRequestD1({request,env}){
  if(new URL(request.url).hostname!==STAGE||request.method!=="POST")
@@ -68,11 +100,13 @@ export async function quoteRequestD1({request,env}){
  try{
   const raw=await request.text();
   if(raw.length>8192)return reply({error:"Sacola inválida"},400);
-  return reply(await quoteCartD1(env.SALUZ_D1_PREVIEW,JSON.parse(raw)));
+  return reply(await quoteCartD1(env.SALUZ_D1_PREVIEW,JSON.parse(raw),{
+   shippingEnabled:env.SALUZ_SHIPPING_RULES_ENABLED==="true"
+  }));
  }catch(e){
   if(e instanceof SyntaxError)return reply({error:"JSON inválido"},400);
   const m=String(e?.message||"");
-  if(/Sacola|CEP|Estoque|Preço|Pedido|Produto/.test(m))return reply({error:m},400);
+  if(/Sacola|CEP|Estoque|Preço|Pedido|Produto|frete/.test(m))return reply({error:m},400);
   return reply({error:"Cotação de homologação indisponível"},503);
  }
 }
@@ -98,14 +132,17 @@ function customerForOrder(raw){
  * D1.batch is a transaction. Triggers reject overselling/price drift and roll back
  * every stock change AND the order if any line fails.
  */
-export async function reserveOrderD1({db,orderId,cart,customer,shippingCents,shippingVerified=false}){
- if(!db?.batch||!UUID.test(String(orderId))||shippingVerified!==true||
+export async function reserveOrderD1({db,orderId,cart,customer,shippingCents,shippingVerified=false,shippingEnabled=false}){
+ if(!db?.batch||!UUID.test(String(orderId))||shippingVerified!==true||shippingEnabled!==true||
    !Number.isSafeInteger(shippingCents)||shippingCents<0||shippingCents>50000000)
   throw new Error("Frete e reserva não verificados");
- const quoted=await quoteCartD1(db,cart);
- const total=quoted.subtotal_cents+shippingCents;
- if(total<100||total>50000000)throw new Error("Total inválido");
  const c=customerForOrder(customer);
+ const quoted=await quoteCartD1(db,{...cart,postal_code:c.postal_code},{shippingEnabled:true});
+ // Never trust a caller's claimed shipping price, even if it supplies shippingVerified=true.
+ if(quoted.shipping_status!=="cotado"||quoted.shipping_cents!==shippingCents)
+  throw new Error("Frete não corresponde à cotação válida no servidor");
+ const total=quoted.total_cents;
+ if(total<100||total>50000000)throw new Error("Total inválido");
  const now=Date.now(),created=new Date(now).toISOString(),expiry=new Date(now+15*60*1000).toISOString();
  const keys=["customer_name","customer_email","customer_phone","customer_cpf","postal_code",
  "address_line","address_number","address_extra","neighborhood","city","state"];
