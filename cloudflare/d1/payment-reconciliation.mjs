@@ -76,9 +76,10 @@ export async function reconcilePaymentD1({db,orderId,provider,merchantId,now=new
   "WHERE id=? AND mp_order_id=? AND payment_provider='mercado_pago' AND status='aguardando_pagamento' "+
   "AND payment_state IN ('checkout_criado','pendente') "+
   "AND EXISTS(SELECT 1 FROM saluz_stock_reservations WHERE order_id=? AND released_at IS NULL) "+
+  "AND NOT EXISTS(SELECT 1 FROM saluz_stock_reservations WHERE order_id=? AND released_at IS NOT NULL) "+
   (approved?"AND stock_reservation_expires_at>? ":"")
  ).bind(nextState,approved?"pago_confirmado":"cancelado",now,approved?1:0,now,now,
-   orderId,String(provider.id),orderId,...(approved?[now]:[]))];
+   orderId,String(provider.id),orderId,orderId,...(approved?[now]:[]))];
  if(!approved)statements.push(db.prepare(
   "UPDATE saluz_stock_reservations SET released_at=? "+
   "WHERE order_id=? AND released_at IS NULL AND EXISTS ("+
