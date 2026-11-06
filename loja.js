@@ -312,8 +312,15 @@ async function refreshPaymentPreview(){
    });
    const quote=await response.json();
    if(!response.ok)throw Error(quote.error||"Não foi possível conferir o carrinho.");
-   if(quote.payment_enabled!==false||quote.total_cents!==null||quote.shipping_cents!==null)
-     throw Error("Cotação inesperada: pagamentos bloqueados até revisão.");
+   if(quote.payment_enabled!==false)throw Error("Pagamentos não podem ser ativados na prévia.");
+   const quoted=quote.shipping_status==="cotado";
+   if(quoted){
+     if(!Number.isSafeInteger(quote.subtotal_cents)||!Number.isSafeInteger(quote.shipping_cents)||
+        quote.shipping_cents<0||!Number.isSafeInteger(quote.total_cents)||
+        quote.total_cents!==quote.subtotal_cents+quote.shipping_cents)
+       throw Error("Cotação de frete inconsistente.");
+   }else if(quote.shipping_cents!==null||quote.total_cents!==null)
+     throw Error("Frete não confirmado: total não deve ser exibido.");
    list.replaceChildren();
    for(const item of quote.items||[]){
      const line=node("div","saluz-pay-product"),info=node("div","saluz-pay-product-info");
@@ -321,8 +328,15 @@ async function refreshPaymentPreview(){
      line.append(info,node("strong","",money(item.line_total_cents)));list.append(line);
    }
    $("payment-preview-subtotal").textContent=money(quote.subtotal_cents);
-   $("payment-preview-shipping").textContent="A calcular";
-   feedback.textContent=rawCep?"Carrinho conferido. Falta configurar o frete para este CEP; não haverá cobrança.":"Carrinho conferido. Informe o CEP para preparar a cotação do frete.";
+   $("payment-preview-shipping").textContent=quoted?money(quote.shipping_cents):"A confirmar";
+   $("payment-preview-total").textContent=quoted?money(quote.total_cents):"A confirmar";
+   const eta=quote.estimated_days;
+   feedback.textContent=quoted?
+     "Frete consultado no servidor"+(eta?" · prazo estimado de "+eta.min+" a "+eta.max+" dias":"")+". Prévia sem cobrança.":
+     quote.shipping_status==="regiao_sem_cobertura"?
+     "Não há regra de entrega aprovada para este CEP. Nenhum pedido será criado.":
+     rawCep?"Carrinho conferido. Frete ainda não configurado para este CEP; não haverá cobrança.":
+     "Carrinho conferido. Informe o CEP para consultar a disponibilidade de entrega.";
  }catch(e){
    list.replaceChildren(node("p","","Não foi possível validar a sacola."));
    feedback.textContent=e.message;
