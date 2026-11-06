@@ -14,7 +14,7 @@ function mockDb(overrides={}){
  const statements=[],events=[];
  return {statements,events,
   prepare(sql){return {bind(...args){statements.push({sql,args});return {
-   first:async()=>sql.includes("FROM saluz_orders")?(overrides.local??local):
+   first:async()=>sql.includes("FROM saluz_orders")?(Object.hasOwn(overrides,"local")?overrides.local:local):
     (overrides.reservations??{total:2,released:0})
   }}};},
   async batch(seq){events.push(seq.map(s=>s));return seq.map((_,i)=>({meta:{changes:i===0?(overrides.changes??1):2}}));}
