@@ -6,16 +6,20 @@ const id="d0110000-0000-4000-8000-000000000105";
 const orderId="6dd24613-62cb-44e2-ab64-f80e08470e52";
 const host="https://homologacao.saluz-loja.pages.dev";
 const item={id,color:"Neutro",size:"Kit",quantity:2};
-function db(stock=4,price=15990){
+function db(stock=4,price=15990,rule=null){
  const history=[];
  return {history,prepare(sql){
    history.push(sql);
    return {bind(...args){
+     if(sql.includes("FROM saluz_shipping_rules"))
+       return {all:async()=>({results:rule&&args[0]>=rule.cep_start&&args[1]<=rule.cep_end?[rule]:[]})};
      return {all:async()=>({results:[{id,name:"Kit Autocuidado",price_cents:price,
         variants:JSON.stringify([{color:"Neutro",size:"Kit",stock}])}]}),run:async()=>({success:true})};
    }};
  },batch:async statements=>{history.push("batch:"+statements.length);return statements.map(()=>({success:true}))}};
 }
+const rate={label:"Entrega local de teste",cep_start:"01000000",cep_end:"01999999",price_cents:500,
+ eta_min_days:2,eta_max_days:4};
 const request=(base=host,body={items:[item],postal_code:"01310930"})=>new Request(base+"/api/migration-orders/quote",{
  method:"POST",headers:{"content-type":"application/json","origin":base},body:JSON.stringify(body)
 });
@@ -45,11 +49,11 @@ test("reserva interna nunca aceita frete ainda não validado",async()=>{
   shippingCents:0}),/Frete/);
 });
 test("reserva interna exige dados validados e prepara lote transacional",async()=>{
- const d=db(),c={customer_name:"Cliente Exemplo",customer_email:"cliente@example.invalid",
+ const d=db(4,15990,rate),c={customer_name:"Cliente Exemplo",customer_email:"cliente@example.invalid",
  customer_phone:"11999999999",customer_cpf:"12345678901",postal_code:"01310930",
  address_line:"Rua de Teste",address_number:"1",neighborhood:"Centro",city:"São Paulo",state:"SP"};
  const result=await reserveOrderD1({db:d,orderId,cart:{items:[item]},customer:c,shippingCents:500,
-  shippingVerified:true});
+  shippingVerified:true,shippingEnabled:true});
  assert.equal(result.total_cents,32480);assert.equal(result.payment_enabled,false);
  assert.ok(d.history.includes("batch:2"));
 });
@@ -66,4 +70,43 @@ test("a UI usa endpoint D1 somente na homologação; produção mantém a rota a
  assert.match(source,/window\.saluzD1PreviewEnabled\?"\/api\/migration-orders\/quote":"\/api\/checkout\/quote"/);
  const gateway=readFileSync("functions/api/[[path]].js","utf8");
  assert.ok(gateway.indexOf('if(route[0]==="migration-orders"')<gateway.indexOf("if (!ready(env))"));
+});
+
+test("frete por faixa CEP usa apenas tarifa ativada no servidor e nunca preço do cliente",async()=>{
+ const d=db(4,15990,rate);
+ const q=await quoteCartD1(d,{items:[{...item,price_cents:1}],postal_code:"01310930",shipping_cents:1},{shippingEnabled:true});
+ assert.equal(q.subtotal_cents,31980);
+ assert.equal(q.shipping_cents,500);
+ assert.equal(q.total_cents,32480);
+ assert.equal(q.shipping_status,"cotado");
+ assert.equal(q.payment_enabled,false);
+ assert.deepEqual(q.estimated_days,{min:2,max:4});
+ assert.ok(d.history.some(x=>x.includes("FROM saluz_shipping_rules")&&x.includes("enabled=1")));
+ const blocked=await quoteCartD1(db(4,15990,rate),{items:[item],postal_code:"01310930"},{shippingEnabled:false});
+ assert.equal(blocked.shipping_cents,null);
+ assert.equal(blocked.total_cents,null);
+ const outside=await quoteCartD1(db(4,15990,rate),{items:[item],postal_code:"20000000"},{shippingEnabled:true});
+ assert.equal(outside.shipping_status,"regiao_sem_cobertura");
+ assert.equal(outside.total_cents,null);
+});
+test("reserva não aceita frete manipulado, mesmo com shippingVerified=true",async()=>{
+ const c={customer_name:"Cliente Exemplo",customer_email:"cliente@example.invalid",
+ customer_phone:"11999999999",customer_cpf:"12345678901",postal_code:"01310930",
+ address_line:"Rua de Teste",address_number:"1",neighborhood:"Centro",city:"São Paulo",state:"SP"};
+ const d=db(4,15990,rate);
+ await assert.rejects(reserveOrderD1({db:d,orderId,cart:{items:[item]},customer:c,
+   shippingCents:1,shippingVerified:true,shippingEnabled:true}),/Frete/);
+ assert.equal(d.history.some(x=>x.startsWith("batch:")),false);
+});
+test("endpoint de homologação nunca fornece frete sem aprovação via variável do servidor",async()=>{
+ const d=db(4,15990,rate);
+ const blocked=await quoteRequestD1({request:request(),env:{SALUZ_D1_PREVIEW:d}});
+ assert.equal((await blocked.json()).shipping_cents,null);
+ const enabled=await quoteRequestD1({request:request(),env:{SALUZ_D1_PREVIEW:d,SALUZ_SHIPPING_RULES_ENABLED:"true"}});
+ const q=await enabled.json();
+ assert.equal(q.shipping_cents,500);
+ assert.equal(q.payment_enabled,false);
+ assert.equal(q.total_cents,32480);
+ assert.equal((await quoteRequestD1({request:request("https://usesaluz.com.br"),
+   env:{SALUZ_D1_PREVIEW:d,SALUZ_SHIPPING_RULES_ENABLED:"true"}})).status,404);
 });
