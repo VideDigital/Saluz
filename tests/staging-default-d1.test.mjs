@@ -56,7 +56,8 @@ test("Arquivos HTML utilizam versão nova para evitar cache desatualizado",()=>{
    if(html.includes("./"+script)){
     count++;
     const expected=script==="admin.js"&&name==="admin.html"?
-     "20261030-tab-return":"20261022-d1-default";
+     "20261030-tab-return":script==="loja.js"&&name==="loja.html"?
+     "20261112-categorias-v3":"20261022-d1-default";
     assert.ok(html.includes("./"+script+"?v="+expected),name+" precisa atualizar "+script);
    }
   }
