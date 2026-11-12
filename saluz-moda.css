@@ -360,6 +360,7 @@ body[data-saluz-fashion] .commerce-footer-end{
   font-size:14px;
   line-height:1.65;
 }
+.fashion-home .home-commerce-empty[hidden]{display:none!important}
 .fashion-home .home-commerce-empty{
   margin-top:20px;
   border:1px solid var(--moda-line);
