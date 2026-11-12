@@ -1,6 +1,7 @@
 /* SALUZ: adaptador D1 isolado. Nao substitui a API atual ate auth/testes/cutover. */
 const uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-const categories=new Set(["Nécessaires","Porta-joias","Organizadores de maquiagem","Organizadores de bolsa","Acessórios de viagem","Autocuidado","Acessórios femininos","Kits e presentes"]);
+import {ACCEPTED_CATEGORIES} from "./fashion-catalog.mjs";
+const categories=ACCEPTED_CATEGORIES;
 const integer=(v,min,max)=>{const n=Number(v);if(!Number.isInteger(n)||n<min||n>max)throw Error("Numero invalido");return n;};
 export const parseProduct=r=>r?{...r,variants:JSON.parse(r.variants||"[]"),is_active:r.is_active===1,is_featured:r.is_featured===1}:null;
 export async function publicProducts(db,{category=null,page=1,limit=24}={}){
