@@ -4,7 +4,8 @@
  */
 import {putImage,readImage} from "../../cloudflare/storage/kv-media.mjs";
 import {storeHealthD1} from "./store-health.mjs";
-const categories=new Set(["Nécessaires","Porta-joias","Organizadores de maquiagem","Organizadores de bolsa","Acessórios de viagem","Autocuidado","Acessórios femininos","Kits e presentes"]);
+import {ACCEPTED_CATEGORIES} from "./fashion-catalog.mjs";
+const categories=ACCEPTED_CATEGORIES;
 const uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const headers={"content-type":"application/json; charset=utf-8","cache-control":"no-store","x-robots-tag":"noindex, nofollow","x-content-type-options":"nosniff"};
 const response=(body,status=200)=>new Response(JSON.stringify(body),{status,headers});

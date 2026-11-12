@@ -191,20 +191,16 @@
           <h2>Informações do produto</h2>
           <input type="hidden" name="id">
           <label>Nome<input name="name" required minlength="2" maxlength="140" placeholder="Nome real do produto"></label>
-          <label>Categoria<select name="category">
-            <option value="Nécessaires">Nécessaires</option><option value="Porta-joias">Porta-joias</option>
-            <option value="Organizadores de maquiagem">Organizadores de maquiagem</option>
-            <option value="Organizadores de bolsa">Organizadores de bolsa</option>
-            <option value="Acessórios de viagem">Acessórios de viagem</option>
-            <option value="Autocuidado">Autocuidado</option>
-            <option value="Acessórios femininos">Acessórios femininos</option>
-            <option value="Kits e presentes">Kits e presentes</option>
-            
-          </select></label>
+          <label>Categoria<select name="category" required>
+<optgroup label="Roupas"><option value="Roupas / Blusas">Blusas</option><option value="Roupas / Camisas">Camisas</option><option value="Roupas / Camisetas e regatas">Camisetas e regatas</option><option value="Roupas / Croppeds">Croppeds</option><option value="Roupas / Calças">Calças</option><option value="Roupas / Shorts">Shorts</option><option value="Roupas / Saias">Saias</option><option value="Roupas / Vestidos">Vestidos</option><option value="Roupas / Conjuntos">Conjuntos</option><option value="Roupas / Casacos e jaquetas">Casacos e jaquetas</option></optgroup>
+<optgroup label="Bolsas"><option value="Bolsas / Transversais">Transversais</option><option value="Bolsas / De ombro">De ombro</option><option value="Bolsas / Tote e shopper">Tote e shopper</option><option value="Bolsas / Mochilas">Mochilas</option><option value="Bolsas / Carteiras">Carteiras</option></optgroup>
+<optgroup label="Acessórios"><option value="Acessórios / Bijuterias">Bijuterias</option><option value="Acessórios / Cintos">Cintos</option><option value="Acessórios / Lenços e echarpes">Lenços e echarpes</option><option value="Acessórios / Óculos">Óculos</option><option value="Acessórios / Acessórios de cabelo">Acessórios de cabelo</option></optgroup>
+<optgroup label="Catálogo anterior (para migrar)"><option value="Nécessaires">Nécessaires</option><option value="Porta-joias">Porta-joias</option><option value="Organizadores de maquiagem">Organizadores de maquiagem</option><option value="Organizadores de bolsa">Organizadores de bolsa</option><option value="Acessórios de viagem">Acessórios de viagem</option><option value="Autocuidado">Autocuidado</option><option value="Acessórios femininos">Acessórios femininos</option><option value="Kits e presentes">Kits e presentes</option></optgroup>
+</select><small>Escolha o tipo específico. As categorias anteriores continuam disponíveis apenas para revisar ou recategorizar os produtos já existentes.</small></label>
           <div class="easy-price-fields"><label>Preço que a cliente vai pagar (R$)<input name="price" type="number" required min="0" max="500000" step=".01" placeholder="Ex.: 89,90"></label><label>Preço anterior, se estiver em oferta (R$)<input name="original_price" type="number" min="0" max="500000" step=".01" placeholder="Ex.: 119,90"><small>Opcional. Deixe vazio quando não houver desconto.</small></label></div>
           <label>Endereço da foto (opcional) <input name="image_url" type="url" placeholder="https://..."></label><label class="easy-upload">Escolher foto do computador <input type="file" id="main-photo" accept="image/jpeg,image/png,image/webp"><small>JPG, PNG ou WebP, até 5 MB.</small></label><div id="main-preview" class="upload-preview"></div>
           <label>Descrição<textarea name="description" rows="3" maxlength="2000"></textarea></label>
-          <div class="variant-editor"><div class="tab-toolbar"><div><strong>Cores, tamanhos e fotografias</strong><p>Cada combinação pode ter sua própria foto e quantidade.</p></div><button type="button" class="outline" id="add-variant">+ Adicionar variação</button></div><div id="variant-rows" class="variant-rows"></div></div>
+          <datalist id="saluz-fashion-size-options"><option value="PP"><option value="P"><option value="M"><option value="G"><option value="GG"><option value="XG"><option value="34"><option value="36"><option value="38"><option value="40"><option value="42"><option value="44"><option value="46"><option value="Único"></datalist><div class="variant-editor"><div class="tab-toolbar"><div><strong>Cores, tamanhos e fotografias</strong><p>Cadastre a combinação real de cor e tamanho (ex.: preto / M ou bege / Único), com seu estoque e foto. Para roupas, informe medidas e tecido na descrição.</p></div><button type="button" class="outline" id="add-variant">+ Adicionar variação</button></div><div id="variant-rows" class="variant-rows"></div></div>
           <label class="switch"><input type="checkbox" name="is_active"> Produto ativo na loja</label>
           <label class="switch"><input type="checkbox" name="is_featured"> Colocar nos destaques da página inicial</label>
           <p class="hint">Ao ativar o produto, ele fica visível na loja. É necessário adicionar foto e pelo menos uma opção de cor/tamanho. Estoque zerado impede colocar na sacola.</p>

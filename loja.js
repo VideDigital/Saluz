@@ -1,10 +1,15 @@
 /* SALUZ Loja · no payment provider connected · no customer data stored in browser */
 const $ = id => document.getElementById(id);
 const money = cents => (Number(cents||0)/100).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
-const knownCategories=["Nécessaires","Porta-joias","Organizadores de maquiagem","Organizadores de bolsa","Acessórios de viagem","Autocuidado","Acessórios femininos","Kits e presentes"];
+const fashion=window.SaluzModa;
+const knownCategories=fashion.categories;
 const urlParams=new URLSearchParams(location.search);
-const requestedCategory=urlParams.get("categoria")||"all";
-let products=[],bag=[],activeCategory=knownCategories.includes(requestedCategory)?requestedCategory:"all",available=false,checkoutEnabled=false,checkoutPreview=false,detailProduct=null,detailCount=1;
+const requestedCategory=urlParams.get("categoria")||"";
+const requestGroup=urlParams.get("grupo")||"";
+const selectedCategory=fashion.isCategory(requestedCategory)?requestedCategory:"all";
+const groupSlugToName=Object.fromEntries(Object.entries(fashion.slugs).map(([name,slug])=>[slug,name]));
+let activeGroup=selectedCategory!=="all"?fashion.groupOf(selectedCategory):(groupSlugToName[requestGroup]||null);
+let products=[],bag=[],activeCategory=selectedCategory,available=false,checkoutEnabled=false,checkoutPreview=false,detailProduct=null,detailCount=1;
 let catalogPage=0,catalogHasMore=false,catalogLoading=false,bagLookup=[];
 bag=window.SaluzBag.read();
 const emit=(type,label="")=>{
@@ -50,12 +55,38 @@ function addToBag(p,v,quantity=1){
 function node(tag,cls,text){const e=document.createElement(tag);if(cls)e.className=cls;if(text!==undefined)e.textContent=String(text);return e;}
 function variantsFor(p){return Array.isArray(p.variants)?p.variants.filter(v=>Number(v.stock)>0):[];}
 function renderFilters(){
-  const root=$("filters");root.replaceChildren();
-  const categories=["all",...new Set([...knownCategories,...products.map(p=>p.category).filter(Boolean)])];
-  categories.forEach(cat=>{
-    const button=node("button","filter"+(cat===activeCategory?" active":""),cat==="all"?"Todos":cat);
-    button.type="button";button.onclick=()=>{activeCategory=cat;renderFilters();renderProducts();};root.append(button);
-  });
+ const root=$("filters");root.replaceChildren();
+ const groups=[["Todos","all"],...Object.keys(fashion.groups).map(name=>[name,name])];
+ for(const [label,name] of groups){
+  const selected=name===(activeGroup||"all");
+  const button=node("button","filter"+(selected?" active":""),label);
+  button.type="button";button.setAttribute("aria-pressed",String(selected));
+  button.onclick=()=>{activeGroup=name==="all"?null:name;activeCategory="all";renderFilters();renderProducts();};
+  root.append(button);
+ }
+ if(activeGroup){
+  const divider=node("span","fashion-filter-divider","Tipo de peça:");root.append(divider);
+  for(const type of fashion.groups[activeGroup]){
+   const name=activeGroup+" / "+type;
+   const button=node("button","filter fashion-subfilter"+(activeCategory===name?" active":""),type);
+   button.type="button";button.setAttribute("aria-pressed",String(activeCategory===name));
+   button.onclick=()=>{activeCategory=activeCategory===name?"all":name;renderFilters();renderProducts();};
+   root.append(button);
+  }
+ }
+ refreshAttributeFilters();
+}
+function refreshAttributeFilters(){
+ const eligible=products.filter(p=>fashion.isCategory(p.category)&&(activeGroup===null||fashion.groupOf(p.category)===activeGroup)&&(activeCategory==="all"||p.category===activeCategory));
+ const options=[["fashion-color-filter","color","Todas as cores"],["fashion-size-filter","size","Todos os tamanhos"]];
+ for(const [id,key,label] of options){
+  const select=$(id);if(!select)continue;
+  const values=[...new Set(eligible.flatMap(p=>(p.variants||[]).filter(v=>Number(v.stock)>0).map(v=>String(v[key]||"").trim())).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"pt-BR",{numeric:true}));
+  const chosen=select.value;select.replaceChildren();
+  const all=node("option","",label);all.value="all";select.append(all);
+  for(const value of values){const o=node("option","",value);o.value=value;select.append(o);}
+  select.value=values.includes(chosen)?chosen:"all";
+ }
 }
 function syncFavoriteButtons(){
   document.querySelectorAll("[data-favorite-product]").forEach(button=>{
@@ -139,7 +170,8 @@ function productCard(p){
 const normalizedSearch=value=>String(value??"").normalize("NFD").replace(/\p{M}/gu,"").toLocaleLowerCase("pt-BR").trim();
 function renderProducts(){
   const query=normalizedSearch($("search").value);
-  const chosen=products.filter(p=>(activeCategory==="all"||p.category===activeCategory)&&normalizedSearch(
+  const filterColor=$("fashion-color-filter")?.value||"all",filterSize=$("fashion-size-filter")?.value||"all";
+   const chosen=products.filter(p=>fashion.isCategory(p.category)&&(activeGroup===null||fashion.groupOf(p.category)===activeGroup)&&(activeCategory==="all"||p.category===activeCategory)&&(filterColor==="all"&&filterSize==="all"||(p.variants||[]).some(v=>Number(v.stock)>0&&(filterColor==="all"||v.color===filterColor)&&(filterSize==="all"||v.size===filterSize)))&&normalizedSearch(
     p.name+" "+p.category+" "+p.description+" "+(p.variants||[]).map(v=>v.color+" "+v.size).join(" ")
   ).includes(query));
   const sort=$("sort").value;
@@ -281,6 +313,7 @@ function close(dialog){if(dialog.open)dialog.close();}
 if($("year"))$("year").textContent=new Date().getFullYear();
 $("search").value=urlParams.get("q")||"";
 $("search").addEventListener("input",renderProducts);
+for(const id of ["fashion-color-filter","fashion-size-filter"]){$(id)?.addEventListener("change",renderProducts);}
 if(urlParams.get("busca")==="1"){
   window.addEventListener("load",()=>{
     const field=$("search");

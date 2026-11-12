@@ -20,6 +20,7 @@ const validImage=u=>typeof u==="string"&&/^https:\/\/[^\s<>"']+$/.test(u);
   const {content:c}=await res.json();
   if(!c||typeof c!=="object")return;
   for(const [key,selector] of Object.entries(map)){
+   if(document.body.dataset.saluzFashion==="true")continue;
    const value=String(c[key]||"").trim();
    const node=document.querySelector(selector);
    if(value&&node)node.textContent=value;

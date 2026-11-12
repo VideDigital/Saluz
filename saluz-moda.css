@@ -1,0 +1,94 @@
+/* SALUZ MODA — direção editorial em café, areia e creme; sem alterar identidade */
+:root{--moda-ink:#51443B;--moda-sand:#DCC8B8;--moda-light:#F7F4EF;--moda-ivory:#FFFDF9;--moda-border:#DDD0C4}
+.fashion-home .fashion-hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.98fr);align-items:stretch;gap:0;max-width:none;padding:0;min-height:600px;background:#f0e8df;border-bottom:1px solid var(--moda-border)}
+.fashion-home .fashion-hero .hero-content{padding:clamp(55px,7vw,108px) clamp(28px,7vw,120px);max-width:760px;margin:auto 0;position:relative;z-index:2}
+.fashion-home .fashion-hero .eyebrow{font-size:12px!important;letter-spacing:.18em;color:#8A6F58;font-weight:700}
+.fashion-home .fashion-hero h1{font:400 clamp(54px,5.6vw,96px)/1.02 "DM Serif Display",Georgia,serif;letter-spacing:-.035em;color:var(--moda-ink);margin:18px 0 25px;text-wrap:balance}
+.fashion-home .fashion-hero h1 em{font-style:italic;color:#9A7862}
+.fashion-home .fashion-hero .hero-content>p:not(.eyebrow){max-width:505px;font:400 clamp(16px,1.4vw,19px)/1.7 "DM Sans",sans-serif;color:#66584d}
+.fashion-home .fashion-hero .hero-actions{margin-top:32px;display:flex;gap:23px;align-items:center;flex-wrap:wrap}
+.fashion-home .fashion-hero .button-dark,.fashion-home .fashion-hero .button{min-height:52px;padding:14px 24px;border-radius:2px;background:var(--moda-ink);color:white;display:inline-flex;align-items:center;justify-content:center;letter-spacing:.01em}
+.fashion-home .fashion-hero .text-link{color:var(--moda-ink);text-decoration:underline;text-underline-offset:6px;font-size:15px}
+.fashion-hero-photo{position:relative;overflow:hidden;min-height:550px;background:linear-gradient(150deg,#e1d2c6,#f7eee7)}
+.fashion-hero-photo img{width:100%;height:100%;object-fit:cover;object-position:center;display:block;filter:saturate(.74) contrast(.92)}
+.fashion-hero-photo::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(80,63,49,.06),transparent 25%,rgba(44,34,28,.12))}
+.fashion-photo-credit{position:absolute;bottom:18px;left:22px;right:22px;z-index:3;display:inline-flex;width:fit-content;max-width:calc(100% - 44px);background:#fffdf9e9;padding:8px 12px;color:#51443b;font-size:11px;line-height:1.5}
+.fashion-home .quick-categories{padding-top:95px;padding-bottom:78px}
+.fashion-home .quick-categories .section-title{margin-bottom:34px}
+.fashion-home .quick-categories .section-title h2{max-width:660px;line-height:1.12}
+.fashion-category-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.fashion-category-card{position:relative;min-height:420px;overflow:hidden;display:flex;align-items:flex-end;padding:34px 30px;background:#e9dcd0;color:var(--moda-ink);border:1px solid #d7c6b8;text-decoration:none!important;isolation:isolate;transition:transform .25s ease,box-shadow .25s ease}
+.fashion-category-card:before{content:"";position:absolute;inset:0;z-index:-2;background:radial-gradient(circle at 75% 18%,#fff6 0 25%,transparent 65%),linear-gradient(155deg,#ede3d8,#c8ae9b)}
+.fashion-category-card[data-moda-kind="bolsas"]:before{background:radial-gradient(ellipse at 70% 55%,#a48a7640,transparent 56%),linear-gradient(145deg,#e3d0c0,#bca18b)}
+.fashion-category-card[data-moda-kind="acessorios"]:before{background:radial-gradient(circle at 15% 10%,#fff9,transparent 40%),linear-gradient(150deg,#f4ece2,#ceb49e)}
+.fashion-category-card:after{content:"";position:absolute;z-index:-1;right:-12%;top:-16%;width:85%;aspect-ratio:1;border:1px solid #fff8;border-radius:50%;box-shadow:0 0 0 48px #fff2,0 0 0 95px #fff1}
+.fashion-category-card:hover{transform:translateY(-4px);box-shadow:0 18px 30px #59402e23}
+.fashion-category-card:focus-visible{outline:3px solid #7c513b;outline-offset:3px}
+.fashion-category-copy{position:relative;z-index:2;display:grid;gap:8px;padding:20px;background:#fffdf8dd;backdrop-filter:blur(8px);width:100%}
+.fashion-category-number{position:absolute;right:30px;top:25px;font:400 15px Georgia,serif;letter-spacing:.17em}
+.fashion-category-kicker{text-transform:uppercase;letter-spacing:.13em;font-size:11px;font-weight:700;color:#856b59}
+.fashion-category-copy strong{font:400 clamp(33px,3vw,50px)/1 "DM Serif Display",Georgia,serif}
+.fashion-category-copy small{font-size:14px;line-height:1.5;color:#64534a}
+.fashion-category-copy em{font:600 13px "DM Sans",sans-serif;font-style:normal;text-transform:uppercase;letter-spacing:.07em;padding-top:9px}
+.fashion-type-links{max-width:1380px;margin:0 auto;padding:8px 28px 78px;display:grid;grid-template-columns:1fr 2fr;gap:40px;border-bottom:1px solid var(--moda-border)}
+.fashion-type-intro h2{font:400 clamp(28px,3vw,42px)/1.16 "DM Serif Display",Georgia,serif;margin:8px 0 0}
+.fashion-type-intro p{max-width:310px;font-size:15px;color:#75665a}
+.fashion-type-list{display:flex;flex-wrap:wrap;align-content:start;gap:12px}
+.fashion-type-list a{display:inline-flex;align-items:center;min-height:42px;padding:10px 17px;border:1px solid #d8c8ba;background:#fffcf8;color:var(--moda-ink);text-decoration:none;font-size:14px;font-weight:600;transition:background .2s,color .2s}
+.fashion-type-list a:hover,.fashion-type-list a:focus-visible{background:var(--moda-ink);color:#fff}
+.fashion-style-note{max-width:1380px;margin:25px auto 85px;padding:55px 60px;background:#e7d9cd;display:grid;grid-template-columns:1.1fr .9fr;gap:30px;align-items:center}
+.fashion-style-note h2{font:400 clamp(37px,4vw,60px)/1.08 "DM Serif Display",Georgia,serif;margin:12px 0 20px;max-width:620px}
+.fashion-style-note p{line-height:1.65;max-width:520px}
+.fashion-style-note .fashion-note-figure{min-height:280px;border:1px solid #bca895;position:relative;background:repeating-linear-gradient(45deg,#ede4dc,#ede4dc 1px,#e6d6ca 1px,#e6d6ca 18px);display:grid;place-items:center}
+.fashion-note-figure span{font:400 clamp(70px,9vw,145px)/1 "DM Serif Display",Georgia,serif;color:#a98b77;text-shadow:0 4px 0 #eee4dc;letter-spacing:-.06em}
+.fashion-note-figure small{position:absolute;bottom:20px;font:600 12px "DM Sans",sans-serif;letter-spacing:.2em}
+.fashion-catalog-banner{background:#e9dcd1;margin:12px auto 36px;padding:25px clamp(20px,4vw,54px);border:1px solid var(--moda-border);max-width:1350px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.fashion-catalog-banner strong{font:400 28px "DM Serif Display",Georgia,serif}
+.fashion-catalog-banner p{font-size:14px;margin:3px 0}
+.fashion-catalog-banner a{font-size:14px;font-weight:700;text-decoration:underline;text-underline-offset:4px}
+.fashion-collection-hero{max-width:1340px;margin:auto;padding:46px 0 20px}
+.fashion-collection-hero h1{font:400 clamp(54px,6vw,92px)/1.05 "DM Serif Display",Georgia,serif;letter-spacing:-.035em;margin:10px 0 16px}
+.fashion-collection-hero p{max-width:580px;font-size:17px;line-height:1.7}
+.fashion-collection-blocks{display:grid;gap:18px;margin:25px 0 70px}
+.fashion-collection-block{display:grid;grid-template-columns:minmax(220px,.6fr) 1fr;gap:25px;padding:32px;background:#f4eee9;border:1px solid var(--moda-border);scroll-margin-top:130px}
+.fashion-collection-block:nth-child(even){background:#ebdfd5}
+.fashion-collection-block h2{font:400 46px/1.12 "DM Serif Display",Georgia,serif;margin:5px 0 15px}
+.fashion-collection-block p{max-width:360px}
+.fashion-collection-block .fashion-type-list{gap:10px}
+.fashion-collection-cta{display:inline-flex;color:#51443b;text-decoration:underline;text-underline-offset:5px;font-weight:700;margin-top:20px}
+.fashion-mega-group{display:grid;align-content:start;gap:8px}
+.fashion-mega-group>strong{font-size:14px;letter-spacing:.06em;text-transform:uppercase;padding:9px 0;border-bottom:1px solid #cdb8a6}
+.commerce-mega-links .fashion-mega-group a{font-weight:500;font-size:14px;padding:5px 0;border-bottom:0;min-height:30px}
+.commerce-mega-links:has(.fashion-mega-group){grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
+body[data-saluz-fashion] .commerce-footer-brand p{max-width:270px}
+.fashion-product-note{display:block;margin:9px 0;font-size:13px;line-height:1.6;color:#69574a}
+@media(max-width:930px){
+ .fashion-home .fashion-hero{grid-template-columns:1fr}.fashion-home .fashion-hero .hero-content{padding:65px 30px 40px}.fashion-hero-photo{min-height:420px;max-height:550px}
+ .fashion-category-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.fashion-category-card{padding:15px;min-height:315px}.fashion-category-copy{padding:15px}.fashion-category-copy strong{font-size:29px}
+ .fashion-type-links{grid-template-columns:1fr}.fashion-style-note{margin:25px 25px 60px;padding:35px 30px}
+ .commerce-mega-links:has(.fashion-mega-group){grid-template-columns:1fr;gap:10px}.commerce-mega-panel:has(.fashion-mega-group){overflow-y:auto;max-height:min(72vh,620px)}
+}
+@media(max-width:680px){
+ .fashion-home .fashion-hero .hero-content{padding:52px 22px 38px}.fashion-home .fashion-hero h1{font-size:clamp(48px,14vw,67px)}
+ .fashion-home .fashion-hero .hero-actions{gap:12px}.fashion-hero-photo{min-height:330px;max-height:420px}
+ .fashion-home .quick-categories{padding:57px 17px 35px}
+ .fashion-category-grid{grid-template-columns:1fr;gap:14px}.fashion-category-card{min-height:245px;padding:18px}.fashion-category-copy{max-width:320px}.fashion-category-copy strong{font-size:37px}
+ .fashion-type-links{padding:15px 18px 48px;gap:18px}.fashion-type-list a{font-size:13px}
+ .fashion-style-note{margin:0 15px 60px;padding:30px 22px;grid-template-columns:1fr}.fashion-note-figure{display:none!important}
+ .fashion-collection-block{grid-template-columns:1fr;padding:24px;gap:10px}.fashion-collection-block h2{font-size:40px}
+ .fashion-collection-hero{padding:22px 0}.fashion-collection-hero h1{font-size:54px}
+ .fashion-catalog-banner{margin:12px 12px 28px;padding:20px}
+ .fashion-photo-credit{font-size:10px}
+}
+@media(prefers-reduced-motion:reduce){.fashion-category-card{transition:none}}
+
+/* Controles de moda: filtros de cor/tamanho e instruções de caimento */
+.fashion-attribute-filters{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin:18px 0 20px}
+.fashion-attribute-filters label{display:flex;align-items:center;gap:9px;font:600 13px "DM Sans",sans-serif;color:#51443b}
+.fashion-attribute-filters select{appearance:auto;min-width:158px;height:43px;border:1px solid #d5c4b7;border-radius:3px;background:#fffdfb;padding:8px 10px;color:#51443b;font:500 14px "DM Sans",sans-serif}
+.fashion-filter-divider{display:inline-flex;align-items:center;font:700 12px "DM Sans",sans-serif;white-space:nowrap;letter-spacing:.04em;padding:0 5px}
+#filters .fashion-subfilter{font-size:13px;padding:7px 13px;min-height:39px}
+.fashion-size-help{margin:10px 0 16px;padding:12px 14px;border:1px solid #e1d4ca;background:#faf6f1;color:#51443b}
+.fashion-size-help summary{font:600 14px "DM Sans",sans-serif;cursor:pointer;text-decoration:underline;text-underline-offset:4px}
+.fashion-size-help p{font:400 14px/1.65 "DM Sans",sans-serif;margin:8px 0 0}
+@media(max-width:680px){.fashion-attribute-filters{display:grid;grid-template-columns:1fr 1fr;gap:10px}.fashion-attribute-filters label{display:grid;gap:4px;min-width:0}.fashion-attribute-filters select{width:100%;min-width:0}.fashion-filter-divider{width:100%}}

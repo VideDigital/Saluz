@@ -40,7 +40,7 @@ function card(p){
 }
 function render(items,key){
  const root=$(key+"-products"),status=$(key+"-status"),empty=$(key+"-empty");
- const valid=Array.isArray(items)?items.filter(p=>p?.id&&p?.name&&Number.isInteger(p?.price_cents)):[];
+ const valid=Array.isArray(items)?items.filter(p=>p?.id&&p?.name&&Number.isInteger(p?.price_cents)&&window.SaluzModa?.isCategory(p.category)):[];
  root.replaceChildren(...valid.slice(0,8).map(card));
  empty.hidden=valid.length>0;
  status.textContent=valid.length?valid.length+" produto(s) para descobrir":"";

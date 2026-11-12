@@ -5,7 +5,7 @@
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#f7f4ef">
 <title>Loja SALUZ — Beleza nos detalhes</title>
-<meta name="description" content="Conheça a coleção SALUZ de organização, acessórios e presentes.">
+<meta name="description" content="Conheça roupas, bolsas e acessórios da SALUZ. Filtre por tipo, cor e tamanho.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
@@ -17,13 +17,15 @@
 <script src="./favoritos.js" defer></script>
 <script src="./saluz-shell.js?v=20261022-d1-default" defer></script>
 <script src="./sacola.js" defer></script>
+<script src="./saluz-fashion.js" defer></script>
 <script src="./loja.js?v=20261022-d1-default" defer></script>
 <link rel="stylesheet" href="./saluz-checkout-preview.css?v=1">
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="./saluz-store-editable.css?v=2">
 <script src="./saluz-site-content.js?v=2" defer></script>
+<link rel="stylesheet" href="./saluz-moda.css?v=1">
 </head>
-<body>
+<body data-saluz-fashion="true">
 <a class="skip" href="#produtos">Ir para produtos</a>
 <div class="commerce-top"><span>✦ SALUZ · Beleza nos detalhes</span><span>Envios de São Paulo (SP) para todo o Brasil via Correios</span></div>
 <header class="commerce-header">
@@ -34,13 +36,10 @@
  </div>
  <nav class="commerce-nav" id="loja-nav" aria-label="Navegação principal">
   <a href="./index.html">Início</a>
-  <a href="./colecoes.html">Todas as coleções</a>
-  <details class="commerce-mega"><summary>Categorias <span aria-hidden="true">⌄</span></summary><div class="commerce-mega-panel">
-   <div><p class="commerce-overline">EXPLORE A SALUZ</p><h2>Cada detalhe conta.</h2><p>Encontre seus favoritos nas coleções.</p></div>
-   <div class="commerce-mega-links"><a href="./colecao-necessaires.html">Nécessaires</a><a href="./colecao-porta-joias.html">Porta-joias</a><a href="./colecao-organizadores-maquiagem.html">Organizadores de maquiagem</a><a href="./colecao-organizadores-bolsa.html">Organizadores de bolsa</a><a href="./colecao-acessorios-viagem.html">Acessórios de viagem</a><a href="./colecao-autocuidado.html">Autocuidado</a><a href="./colecao-acessorios-femininos.html">Acessórios femininos</a><a href="./colecao-kits-presentes.html">Kits e presentes</a></div>
-  </div></details>
+  <a href="./colecoes.html">Categorias</a>
+  <details class="commerce-mega"><summary>Categorias <span aria-hidden="true">⌄</span></summary><div class="commerce-mega-panel"><div><p class="commerce-overline">DESCUBRA A SALUZ</p><h2>Roupas, bolsas & acessórios.</h2><p>Explore por categoria e encontre o que combina com você.</p></div><div class="commerce-mega-links"><div class="fashion-mega-group"><strong><a href="./loja.html?grupo=roupas#produtos">Roupas ↗</a></strong><a href="./loja.html?categoria=Roupas%20%2F%20Blusas#produtos">Blusas</a><a href="./loja.html?categoria=Roupas%20%2F%20Camisas#produtos">Camisas</a><a href="./loja.html?categoria=Roupas%20%2F%20Cal%C3%A7as#produtos">Calças</a><a href="./loja.html?categoria=Roupas%20%2F%20Shorts#produtos">Shorts</a><a href="./loja.html?categoria=Roupas%20%2F%20Vestidos#produtos">Vestidos</a><a href="./loja.html?grupo=roupas#produtos">Ver mais roupas ↗</a></div><div class="fashion-mega-group"><strong><a href="./loja.html?grupo=bolsas#produtos">Bolsas ↗</a></strong><a href="./loja.html?categoria=Bolsas%20%2F%20Transversais#produtos">Transversais</a><a href="./loja.html?categoria=Bolsas%20%2F%20De%20ombro#produtos">De ombro</a><a href="./loja.html?categoria=Bolsas%20%2F%20Mochilas#produtos">Mochilas</a><a href="./loja.html?grupo=bolsas#produtos">Ver bolsas ↗</a></div><div class="fashion-mega-group"><strong><a href="./loja.html?grupo=acessorios#produtos">Acessórios ↗</a></strong><a href="./loja.html?categoria=Acess%C3%B3rios%20%2F%20Bijuterias#produtos">Bijuterias</a><a href="./loja.html?categoria=Acess%C3%B3rios%20%2F%20Cintos#produtos">Cintos</a><a href="./loja.html?categoria=Acess%C3%B3rios%20%2F%20Acess%C3%B3rios%20de%20cabelo#produtos">Acessórios de cabelo</a><a href="./loja.html?grupo=acessorios#produtos">Ver acessórios ↗</a></div></div></div></details>
   <a href="./favoritos.html" class="commerce-favorites-link">♡ Favoritos <span class="favorites-count" data-favorites-count>0</span></a>
-  <a href="./loja.html" aria-current="page">Todos os produtos</a>
+  <a href="./loja.html" aria-current="page">Loja</a>
   <a href="./loja.html?busca=1#produtos" class="commerce-mobile-search">⌕ Buscar produtos</a>
   <a href="./sobre.html">A SALUZ</a>
   <a href="./atendimento.html">Atendimento</a>
@@ -49,23 +48,16 @@
 <main>
   <section class="lead"><div class="lead-inner">
     <span class="eyebrow">SALUZ / A SUA LOJA</span>
-    <h1>Para cada rotina,<br><em>um novo detalhe.</em></h1>
-    <p>Organização, acessórios e presentes para encontrar o que combina com você. Explore as coleções e monte sua sacola.</p>
+    <h1>Roupas, bolsas<br><em>e acessórios.</em></h1>
+    <p>Escolha seu estilo, explore as categorias e encontre as opções de cor e tamanho de cada peça.</p>
     <a class="btn-dark" href="#produtos">Explorar coleções <span aria-hidden="true">↗</span></a>
   </div><div class="lead-art" aria-hidden="true"><div class="art-ring"></div><span>✦</span><small>saluz · beleza nos detalhes</small></div></section>
   <section class="benefits" aria-label="Informações"><span>✦ Escolhas para o seu dia</span><span>✦ Monte sua sacola</span><span>✦ Envio pelos Correios para todo o Brasil</span></section>
-  <section id="colecoes" class="collections" aria-labelledby="colecoes-title"><div class="collections-heading"><span class="eyebrow">NAVEGUE POR CATEGORIA</span><h2 id="colecoes-title">Encontre o que combina com você.</h2></div><div class="collection-grid"><a class="collection-tile" href="./colecao-necessaires.html"><span class="collection-visual visual-case" aria-hidden="true">✦</span><strong>Nécessaires</strong><small>Ver categoria ↗</small></a>
-<a class="collection-tile" href="./colecao-porta-joias.html"><span class="collection-visual visual-jewelry" aria-hidden="true">✦</span><strong>Porta-joias</strong><small>Ver categoria ↗</small></a>
-<a class="collection-tile" href="./colecao-organizadores-maquiagem.html"><span class="collection-visual visual-beauty" aria-hidden="true">✦</span><strong>Organização de maquiagem</strong><small>Ver categoria ↗</small></a>
-<a class="collection-tile" href="./colecao-acessorios-viagem.html"><span class="collection-visual visual-travel" aria-hidden="true">✦</span><strong>Viagem</strong><small>Ver categoria ↗</small></a>
-<a class="collection-tile" href="./colecao-organizadores-bolsa.html"><span class="collection-visual visual-bag" aria-hidden="true">✦</span><strong>Organizadores de bolsa</strong><small>Ver categoria ↗</small></a>
-      <a class="collection-tile" href="./colecao-acessorios-femininos.html"><span class="collection-visual visual-accessories" aria-hidden="true">✦</span><strong>Acessórios femininos</strong><small>Ver categoria ↗</small></a>
-      <a class="collection-tile" href="./colecao-autocuidado.html"><span class="collection-visual visual-care" aria-hidden="true">✦</span><strong>Autocuidado</strong><small>Ver categoria ↗</small></a>
-<a class="collection-tile" href="./colecao-kits-presentes.html"><span class="collection-visual visual-gifts" aria-hidden="true">✦</span><strong>Kits e presentes</strong><small>Ver categoria ↗</small></a></div></section>
+  <section id="colecoes" class="collections fashion-category-section" aria-labelledby="colecoes-title"><div class="collections-heading"><span class="eyebrow">DESCUBRA A SALUZ</span><h2 id="colecoes-title">Encontre por categoria.</h2></div><div class="fashion-category-grid"><a class="fashion-category-card" data-moda-kind="roupas" href="./loja.html?grupo=roupas#produtos"><span class="fashion-category-number">01 / 03</span><span class="fashion-category-copy"><span class="fashion-category-kicker">Universo SALUZ</span><strong>Roupas</strong><small>Explore blusas, calças, vestidos e outras peças.</small><em>Ver produtos ↗</em></span></a><a class="fashion-category-card" data-moda-kind="bolsas" href="./loja.html?grupo=bolsas#produtos"><span class="fashion-category-number">02 / 03</span><span class="fashion-category-copy"><span class="fashion-category-kicker">Universo SALUZ</span><strong>Bolsas</strong><small>Encontre diferentes modelos para o seu dia.</small><em>Ver produtos ↗</em></span></a><a class="fashion-category-card" data-moda-kind="acessorios" href="./loja.html?grupo=acessorios#produtos"><span class="fashion-category-number">03 / 03</span><span class="fashion-category-copy"><span class="fashion-category-kicker">Universo SALUZ</span><strong>Acessórios</strong><small>Complete seu estilo com os detalhes.</small><em>Ver produtos ↗</em></span></a></div><p class="fashion-product-note">A nova vitrine mostrará somente as peças cadastradas nas categorias de moda. Os dados anteriores foram preservados no painel.</p></section><div class="fashion-catalog-banner"><div><strong>Encontre seu próximo favorito.</strong><p>Filtre por roupas, bolsas, acessórios, cor e tamanho.</p></div><a href="./colecoes.html">Todas as categorias ↗</a></div>
   <section id="produtos" class="products-section">
     <div class="section-head"><div><span class="eyebrow">SALUZ / PRODUTOS</span><h2>Explore a coleção</h2><p>Use os filtros e a busca para descobrir os produtos cadastrados.</p></div>
       <label class="search"><span>Buscar</span><input type="search" id="search" placeholder="Nome do produto..." autocomplete="off"></label></div>
-    <div class="filters" id="filters"><button type="button" class="filter active" data-category="all">Todos</button></div>
+    <div class="filters" id="filters"><button type="button" class="filter active" data-category="all">Todos</button></div><div class="fashion-attribute-filters"><label>Cor <select id="fashion-color-filter" aria-label="Filtrar produtos por cor"><option value="all">Todas as cores</option></select></label><label>Tamanho <select id="fashion-size-filter" aria-label="Filtrar produtos por tamanho"><option value="all">Todos os tamanhos</option></select></label></div>
     <div class="catalog-meta"><p class="notice" id="catalog-status" role="status">Carregando catálogo...</p><label class="catalog-sort">Ordenar por <select id="sort"><option value="newest">Novidades</option><option value="price-asc">Menor preço</option><option value="price-desc">Maior preço</option><option value="az">Nome A–Z</option></select></label></div>
     <div class="products" id="products" aria-live="polite"></div>
     <div class="catalog-pagination"><button type="button" id="load-more" class="btn-dark" hidden>Carregar mais produtos ↓</button><p id="pagination-status" role="status" aria-live="polite"></p></div>
@@ -74,10 +66,8 @@
 </main>
 <footer class="commerce-footer">
  <div class="commerce-footer-inner">
-  <section class="commerce-footer-brand"><a href="./index.html">SALUZ ✦</a><p>Beleza nos detalhes.</p><p>Organização, autocuidado, acessórios e presentes.</p></section>
-  <section><h2>Coleções</h2>
-   <a href="./colecoes.html">Todas as coleções</a><a href="./colecao-necessaires.html">Nécessaires</a><a href="./colecao-porta-joias.html">Porta-joias</a><a href="./colecao-kits-presentes.html">Kits e presentes</a>
-  </section>
+  <section class="commerce-footer-brand"><a href="./index.html">SALUZ ✦</a><p>Beleza nos detalhes.</p><p>Roupas, bolsas e acessórios com a identidade SALUZ.</p></section>
+  <section><h2>Categorias</h2><a href="./colecoes.html">Todas as categorias</a><a href="./loja.html?grupo=roupas#produtos">Roupas</a><a href="./loja.html?grupo=bolsas#produtos">Bolsas</a><a href="./loja.html?grupo=acessorios#produtos">Acessórios</a></section>
   <section><h2>Informações</h2>
    <a href="./sobre.html">Sobre a SALUZ</a><a href="./como-comprar.html">Como comprar</a><a href="./atendimento.html">Atendimento</a><a href="./privacidade.html">Privacidade</a>
   </section>
