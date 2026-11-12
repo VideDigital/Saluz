@@ -26,7 +26,7 @@
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="./saluz-store-editable.css?v=2">
 <script src="./saluz-site-content.js?v=2" defer></script>
-<link rel="stylesheet" href="./saluz-moda.css?v=20261112-hero-compacto">
+<link rel="stylesheet" href="./saluz-moda.css?v=20261112-layout-v2">
 </head>
 <body class="fashion-home" data-saluz-fashion="true">
   <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
@@ -58,16 +58,16 @@
 </header>
 
   <main id="conteudo" class="sl-home">
-  <section class="hero fashion-hero sl-hero" id="inicio" aria-labelledby="fashion-hero-title">
+  <section class="sl-hero" id="inicio" aria-labelledby="fashion-hero-title">
     <div class="sl-hero-copy">
       <p class="eyebrow">BEM-VINDA À SALUZ</p>
-      <h1 id="fashion-hero-title">Seu estilo,<br><em>seus detalhes.</em></h1>
-      <p>Roupas, bolsas e acessórios para descobrir, combinar e fazer parte do seu dia.</p>
+      <h1 id="fashion-hero-title">Vista o seu jeito<br><em>de ser.</em></h1>
+      <p>Peças que acompanham o seu estilo. Explore roupas, bolsas e acessórios em um só lugar.</p>
       <div class="sl-hero-actions">
         <a class="sl-button sl-button-dark" href="./loja.html#produtos">Explorar a loja <span aria-hidden="true">↗</span></a>
         <a class="sl-link" href="#categorias">Ver categorias</a>
       </div>
-      <span class="sl-hero-index" aria-hidden="true">SALUZ / MODA & ESTILO</span>
+      
     </div>
     <figure class="sl-hero-photo">
       <img src="https://images.unsplash.com/photo-1603400521630-9f2de124b33b?auto=format&fit=crop&w=1600&q=84" alt="Roupas em arara de boutique, fotografia editorial ilustrativa, não são produtos SALUZ" width="1100" height="1300" fetchpriority="high" decoding="async">
@@ -77,7 +77,7 @@
 
   <section class="sl-departments" id="categorias" aria-labelledby="sl-categories-title">
     <div class="sl-section-head">
-      <div><p class="eyebrow">NAVEGUE PELA LOJA</p><h2 id="sl-categories-title">Descubra a SALUZ.</h2></div>
+      <div><p class="eyebrow">EXPLORE A SALUZ</p><h2 id="sl-categories-title">Encontre o que combina com você.</h2></div>
       <a class="sl-text-link" href="./colecoes.html">Todas as categorias <span aria-hidden="true">↗</span></a>
     </div>
     <div class="sl-dept-grid">
@@ -94,20 +94,18 @@
   <div class="sl-dept-caption"><span><strong>Acessórios</strong><small>Os detalhes do seu estilo.</small></span><span class="sl-dept-arrow" aria-hidden="true">↗</span></div>
 </a>
     </div>
+    <nav class="sl-inline-categories" aria-label="Explore roupas por tipo">
+    <span class="sl-inline-label">Procure por tipo</span>
+    <a href="./loja.html?categoria=Roupas%20%2F%20Blusas#produtos">Blusas</a>
+    <a href="./loja.html?categoria=Roupas%20%2F%20Camisas#produtos">Camisas</a>
+    <a href="./loja.html?categoria=Roupas%20%2F%20Cal%C3%A7as#produtos">Calças</a>
+    <a href="./loja.html?categoria=Roupas%20%2F%20Shorts#produtos">Shorts</a>
+    <a href="./loja.html?categoria=Roupas%20%2F%20Vestidos#produtos">Vestidos</a>
+    <a class="sl-inline-more" href="./colecoes.html#roupas">Mais opções ↗</a>
+  </nav>
   </section>
 
-  <section class="sl-types" aria-label="Compre roupas por tipo">
-    <div><span class="eyebrow">ENCONTRE SUA PEÇA</span><h2>O que você procura?</h2></div>
-    <div class="sl-type-links">
-      <a href="./loja.html?categoria=Roupas%20%2F%20Blusas#produtos">Blusas <span aria-hidden="true">↗</span></a>
-<a href="./loja.html?categoria=Roupas%20%2F%20Camisas#produtos">Camisas <span aria-hidden="true">↗</span></a>
-<a href="./loja.html?categoria=Roupas%20%2F%20Cal%C3%A7as#produtos">Calças <span aria-hidden="true">↗</span></a>
-<a href="./loja.html?categoria=Roupas%20%2F%20Shorts#produtos">Shorts <span aria-hidden="true">↗</span></a>
-<a href="./loja.html?categoria=Roupas%20%2F%20Vestidos#produtos">Vestidos <span aria-hidden="true">↗</span></a>
-<a href="./loja.html?categoria=Roupas%20%2F%20Conjuntos#produtos">Conjuntos <span aria-hidden="true">↗</span></a>
-      <a class="sl-type-all" href="./colecoes.html#roupas">Mais categorias <span aria-hidden="true">↗</span></a>
-    </div>
-  </section>
+
 
   <section class="home-commerce sl-products-home" id="destaques" aria-labelledby="featured-title" hidden>
     <div class="home-commerce-heading sl-section-head">
@@ -131,7 +129,7 @@
 
   <section class="sl-collection-note" aria-label="Informações de envio">
     <span class="sl-collection-kicker">SALUZ / NOVA FASE</span>
-    <div><h2>Uma nova seleção está chegando.</h2><p>Estamos organizando nosso catálogo de roupas, bolsas e acessórios. Acompanhe as categorias e descubra as próximas peças.</p></div>
+    <div><h2>O estilo mora nos detalhes.</h2><p>Explore as categorias e descubra as peças da SALUZ conforme chegam à loja.</p></div>
     <a class="sl-button sl-button-outline" href="./colecoes.html">Conheça as categorias <span aria-hidden="true">↗</span></a>
   </section>
 </main>
