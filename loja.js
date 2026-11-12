@@ -59,15 +59,28 @@ function updateCatalogHeading(){
   const subtitle=$("sl-catalog-description");
   if(!heading||!subtitle)return;
   const category=activeCategory!=="all"?activeCategory.split(" / ")[1]:null;
-  heading.textContent=category||activeGroup||"Todos os produtos";
+  const selected=category||activeGroup||"Todos os produtos";
+  heading.textContent=selected;
   subtitle.textContent=category
-    ? "Veja as opções disponíveis de "+category.toLocaleLowerCase("pt-BR")+"."
+    ? "Explore "+category.toLocaleLowerCase("pt-BR")+" em "+activeGroup.toLocaleLowerCase("pt-BR")+"."
     : activeGroup
-    ? "Explore as peças da categoria "+activeGroup.toLocaleLowerCase("pt-BR")+"."
+    ? "Veja todas as peças de "+activeGroup.toLocaleLowerCase("pt-BR")+" disponíveis na SALUZ."
     : "Explore roupas, bolsas e acessórios. Use os filtros para encontrar o que procura.";
+  const current=$("sl-current-category");
+  if(current)current.textContent=activeGroup?(category?activeGroup+" / "+category:activeGroup):"Todos os produtos";
   const activeSlug=activeGroup?fashion.slugs[activeGroup]:"all";
   document.querySelectorAll(".sl-shop-tabs [data-group]").forEach(link=>{
-    if(link.dataset.group===activeSlug)link.setAttribute("aria-current","page");
+    const selected=link.dataset.group===activeSlug;
+    if(selected)link.setAttribute("aria-current","page");
+    else link.removeAttribute("aria-current");
+    link.classList.toggle("is-selected",selected);
+  });
+  document.querySelectorAll(".commerce-nav > a, .commerce-mega > summary").forEach(link=>{
+    const label=(link.textContent||"").trim().toLocaleLowerCase("pt-BR");
+    const groupName=activeGroup?.toLocaleLowerCase("pt-BR");
+    const isActive=groupName?label.startsWith(groupName):false;
+    link.classList.toggle("sl-nav-selected",isActive);
+    if(isActive)link.setAttribute("aria-current","page");
     else link.removeAttribute("aria-current");
   });
 }
@@ -79,7 +92,7 @@ function renderFilters(){
   const selected=name===(activeGroup||"all");
   const button=node("button","filter"+(selected?" active":""),label);
   button.type="button";button.setAttribute("aria-pressed",String(selected));
-  button.onclick=()=>{activeGroup=name==="all"?null:name;activeCategory="all";renderFilters();renderProducts();};
+  button.onclick=()=>{activeGroup=name==="all"?null:name;activeCategory="all";history.replaceState(null,"",activeGroup?"./loja.html?grupo="+encodeURIComponent(fashion.slugs[activeGroup])+"#produtos":"./loja.html#produtos");renderFilters();renderProducts();};
   root.append(button);
  }
  if(activeGroup){
@@ -88,7 +101,7 @@ function renderFilters(){
    const name=activeGroup+" / "+type;
    const button=node("button","filter fashion-subfilter"+(activeCategory===name?" active":""),type);
    button.type="button";button.setAttribute("aria-pressed",String(activeCategory===name));
-   button.onclick=()=>{activeCategory=activeCategory===name?"all":name;renderFilters();renderProducts();};
+   button.onclick=()=>{activeCategory=activeCategory===name?"all":name;history.replaceState(null,"",activeCategory==="all"?"./loja.html?grupo="+encodeURIComponent(fashion.slugs[activeGroup])+"#produtos":"./loja.html?categoria="+encodeURIComponent(activeCategory)+"#produtos");renderFilters();renderProducts();};
    root.append(button);
   }
  }
@@ -307,7 +320,7 @@ async function loadStore(){
     products=[];catalogPage=0;
     await fetchCatalogPage(1);
     await loadBagReferences();
-  }catch{available=false;checkoutEnabled=false;checkoutPreview=false;products=[];catalogHasMore=false;}
+  }catch(err){console.warn("SALUZ: não foi possível carregar o catálogo.",err?.message||"Erro de conexão");available=false;checkoutEnabled=false;checkoutPreview=false;products=[];catalogHasMore=false;}
   finally{catalogLoading=false;}
   $("checkout-status").textContent=checkoutEnabled?"Solicitação sem pagamento online. A SALUZ entrará em contato para confirmar valores, frete e forma de pagamento.":"O cadastro de pedidos está desativado até concluirmos a infraestrutura, segurança e políticas da loja.";
   $("checkout-submit").disabled=!checkoutEnabled;
@@ -333,6 +346,9 @@ if($("year"))$("year").textContent=new Date().getFullYear();
 $("search").value=urlParams.get("q")||"";
 $("search").addEventListener("input",renderProducts);
 for(const id of ["fashion-color-filter","fashion-size-filter"]){$(id)?.addEventListener("change",renderProducts);}
+// Renderiza categoria e estado inicial imediatamente, sem depender da resposta do catálogo.
+renderFilters();
+renderProducts();
 if(urlParams.get("busca")==="1"){
   window.addEventListener("load",()=>{
     const field=$("search");

@@ -102,7 +102,7 @@ function updateSelection(){
 function render(p){
  product=p;
  syncProductFavorite();
- document.title=p.name+" | SALUZ";
+ document.title="SALUZ | Roupas, Bolsas e Acessórios";
  const meta=document.querySelector('meta[name="description"]');
  if(meta)meta.setAttribute("content",String(p.description||("Conheça "+p.name+" na SALUZ.")).trim().slice(0,155));
  const canonical=document.querySelector('link[rel="canonical"]');
