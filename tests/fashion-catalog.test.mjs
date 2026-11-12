@@ -40,7 +40,8 @@ test("a loja não mistura produtos do catálogo anterior com a vitrine de moda",
  assert.match(file("index.html"),/sl-dept-grid/);
  assert.doesNotMatch(file("index.html"),/class="trust-strip"/);
  assert.match(file("home-vitrine.js"),/section.hidden=valid.length===0/);
- assert.match(file("index.html"),/fashion-hero/);
+ assert.match(file("index.html"),/class="sl-hero"/);
+ assert.doesNotMatch(file("index.html"),/class="hero fashion-hero/);
  assert.match(file("colecoes.html"),/sl-collection-row/);
  assert.match(file("index.html"),/Imagem editorial ilustrativa/);
 });
