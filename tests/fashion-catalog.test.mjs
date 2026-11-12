@@ -41,7 +41,7 @@ test("a loja não mistura produtos do catálogo anterior com a vitrine de moda",
  assert.doesNotMatch(file("index.html"),/class="trust-strip"/);
  assert.match(file("home-vitrine.js"),/section.hidden=valid.length===0/);
  assert.match(file("index.html"),/fashion-hero/);
- assert.match(file("colecoes.html"),/fashion-collection-block/);
+ assert.match(file("colecoes.html"),/sl-collection-row/);
  assert.match(file("index.html"),/Imagem editorial ilustrativa/);
 });
 test("pagamento continua bloqueado e produção não recebe migração",()=>{
