@@ -1,0 +1,148 @@
+/* SALUZ • Páginas institucionais da nova fase de moda.
+   Componentes exclusivos de Sobre e Atendimento: não alteram a Home ou o catálogo.
+*/
+body[data-saluz-fashion] .commerce-page:is(.sl-about-page,.sl-help-page){
+  max-width:1280px;margin:0 auto;padding:34px 28px 100px;
+  background:transparent;color:var(--sl-ink);
+}
+.sl-info-breadcrumb{display:flex;align-items:center;gap:11px;margin:0 0 42px;color:#8A796D;font:500 12px/1.5 var(--sl-sans);}
+.sl-info-breadcrumb a{color:inherit;text-decoration:none;}
+.sl-info-breadcrumb a:hover{text-decoration:underline;text-underline-offset:4px;}
+.sl-info-breadcrumb span:last-child{color:var(--sl-ink);font-weight:600;}
+
+/* SOBRE: editorial de moda com fotografia realista de referência. */
+.sl-about-hero{
+  display:grid;grid-template-columns:minmax(0,1.04fr) minmax(0,.96fr);
+  min-height:480px;background:#F3ECE5;overflow:hidden;
+}
+.sl-about-intro{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;padding:62px clamp(32px,5vw,80px);}
+.sl-about-intro h1{
+  margin:0 0 22px;color:var(--sl-ink);
+  font:400 clamp(46px,5.1vw,70px)/1.08 var(--sl-serif);
+  letter-spacing:-.03em;text-wrap:balance;
+}
+.sl-about-intro h1 em{font-style:italic;color:#A17C66;}
+.sl-about-intro .sl-info-lead{font:500 17px/1.65 var(--sl-sans);color:#5C5048;max-width:490px;margin:0 0 12px;}
+.sl-about-intro>p:not(.eyebrow):not(.sl-info-lead){font:400 14px/1.8 var(--sl-sans);color:#766A62;max-width:495px;margin:0 0 27px;}
+.sl-about-visual{position:relative;overflow:hidden;min-height:480px;margin:0;background:#D8C7BB;}
+.sl-about-visual img{display:block;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 53%;filter:saturate(.82);}
+.sl-about-visual figcaption{position:absolute;bottom:16px;right:16px;max-width:calc(100% - 32px);background:rgba(255,253,249,.95);color:#51443B;padding:7px 10px;font:500 10px/1.4 var(--sl-sans);}
+
+.sl-about-universe{padding:79px 0 69px;}
+.sl-info-section-head{display:flex;align-items:end;justify-content:space-between;gap:30px;margin-bottom:32px;}
+.sl-info-section-head h2{font:400 clamp(33px,3.7vw,47px)/1.15 var(--sl-serif);letter-spacing:-.015em;margin:0;max-width:650px;}
+.sl-info-section-head>p{font:400 14px/1.75 var(--sl-sans);color:var(--sl-muted);max-width:350px;margin:0;}
+.sl-about-categories{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--sl-line);}
+.sl-about-categories a{
+  display:flex;flex-direction:column;align-items:flex-start;position:relative;
+  padding:27px 24px 27px 0;min-height:181px;
+  border-bottom:1px solid var(--sl-line);
+  text-decoration:none;color:var(--sl-ink);
+  transition:background .2s;
+}
+.sl-about-categories a:not(:first-child){padding-left:24px;border-left:1px solid var(--sl-line);}
+.sl-about-categories a:hover{background:#F9F5F1;}
+.sl-about-number{font:700 10px/1.4 var(--sl-sans);letter-spacing:.12em;color:#9B8372;margin-bottom:13px;}
+.sl-about-categories strong{font:400 31px/1.2 var(--sl-serif);color:var(--sl-ink);margin-bottom:7px;}
+.sl-about-categories a>span:nth-of-type(2){font:400 13px/1.65 var(--sl-sans);color:var(--sl-muted);max-width:225px;}
+.sl-about-arrow{position:absolute;right:23px;top:30px;font:400 22px var(--sl-sans);color:var(--sl-ink);}
+.sl-info-outro{
+  display:flex;align-items:center;justify-content:space-between;gap:30px;
+  border-top:1px solid var(--sl-line);padding:40px 0 0;
+}
+.sl-info-outro h2{font:400 clamp(27px,3vw,36px)/1.18 var(--sl-serif);margin:0;}
+
+/* ATENDIMENTO: um canal prioritário e FAQ em vez de 3 cards repetidos. */
+.sl-help-hero{max-width:790px;margin:0 0 43px;}
+.sl-help-hero h1{
+  color:var(--sl-ink);
+  font:400 clamp(48px,5.6vw,76px)/1.08 var(--sl-serif);
+  letter-spacing:-.028em;margin:0 0 19px;
+}
+.sl-help-hero h1 em{font-style:italic;color:#A17C66;}
+.sl-help-hero>p:not(.eyebrow){font:400 16px/1.75 var(--sl-sans);color:var(--sl-muted);max-width:635px;margin:0;}
+.sl-help-layout{display:grid;grid-template-columns:minmax(0,.93fr) minmax(0,1.07fr);gap:42px;align-items:stretch;margin-bottom:65px;}
+.sl-help-contact{
+  display:flex;flex-direction:column;justify-content:space-between;align-items:flex-start;
+  background:#51443B;color:#FFFDF9;min-height:410px;
+  padding:43px clamp(27px,4vw,51px);
+}
+.sl-help-contact .eyebrow{color:#DFC5B1!important;}
+.sl-help-contact-icon{font:400 29px var(--sl-sans);color:#E3C9B8;display:inline-block;margin:0 0 25px;}
+.sl-help-contact h2{font:400 clamp(31px,3.6vw,44px)/1.15 var(--sl-serif);color:#FFFDF9;margin:0 0 14px;}
+.sl-help-contact p:not(.eyebrow){font:400 14px/1.75 var(--sl-sans);color:#E8DDD4;max-width:345px;margin:0 0 17px;}
+body[data-saluz-fashion] .sl-help-email{
+  display:inline-flex;gap:11px;align-items:center;
+  max-width:100%;padding:12px 0;
+  color:#FFFDF9!important;-webkit-text-fill-color:#FFFDF9!important;
+  font:600 clamp(13px,1.2vw,16px)/1.4 var(--sl-sans);
+  border-bottom:1px solid #C9AD98;text-decoration:none;
+  overflow-wrap:anywhere;
+}
+.sl-help-email:hover{border-bottom-color:#FFFDF9;}
+.sl-help-footnote{font:500 11px/1.4 var(--sl-sans);color:#D4C2B3;margin-top:14px;}
+.sl-help-faq{padding:4px 0 0;}
+.sl-help-faq-heading h2{font:400 clamp(32px,3.4vw,43px)/1.2 var(--sl-serif);margin:0 0 13px;color:var(--sl-ink);}
+.sl-help-faq-heading>p:not(.eyebrow){font:400 14px/1.7 var(--sl-sans);color:var(--sl-muted);margin:0 0 25px;}
+.sl-help-questions{border-top:1px solid var(--sl-line);}
+.sl-help-questions details{border-bottom:1px solid var(--sl-line);padding:0 0 1px;}
+.sl-help-questions summary{
+  display:flex;align-items:center;justify-content:space-between;gap:24px;
+  padding:18px 0;min-height:60px;
+  cursor:pointer;list-style:none;
+  font:600 14px/1.55 var(--sl-sans);color:var(--sl-ink);
+}
+.sl-help-questions summary::-webkit-details-marker{display:none;}
+.sl-help-questions summary span{font:400 24px/1 var(--sl-sans);color:#967A67;transition:transform .2s;}
+.sl-help-questions details[open] summary span{transform:rotate(45deg);}
+.sl-help-questions details p{font:400 13px/1.8 var(--sl-sans);color:var(--sl-muted);margin:0 0 20px;max-width:520px;}
+.sl-help-questions details a{display:inline-block;font:600 13px var(--sl-sans);text-decoration:underline;text-underline-offset:4px;margin:0 0 20px;}
+.sl-help-bottom{
+  padding:33px 0 0;border-top:1px solid var(--sl-line);
+  display:flex;align-items:center;justify-content:space-between;gap:28px;
+}
+.sl-help-bottom h2{font:400 clamp(27px,3vw,36px)/1.15 var(--sl-serif);margin:0 0 8px;}
+.sl-help-bottom p:not(.eyebrow){font:400 14px/1.65 var(--sl-sans);color:var(--sl-muted);margin:0;}
+
+/* Reusar os botões oficiais, com contraste mesmo quando a pessoa não passa o mouse. */
+body[data-saluz-fashion] :is(.sl-about-page,.sl-help-page) .sl-button-dark{color:#FFFDF9!important;background:#51443B!important;}
+body[data-saluz-fashion] :is(.sl-about-page,.sl-help-page) .sl-button-dark:is(:hover,:focus-visible){background:#362C26!important;}
+body[data-saluz-fashion] :is(.sl-about-page,.sl-help-page) .sl-button-outline{background:transparent!important;color:#51443B!important;}
+body[data-saluz-fashion] :is(.sl-about-page,.sl-help-page) .sl-button-outline:hover{background:#F1EAE3!important;}
+
+@media(max-width:960px){
+  .sl-about-intro{padding:40px 36px;}
+  .sl-about-hero{min-height:420px;}
+  .sl-about-visual{min-height:420px;}
+  .sl-help-layout{gap:24px;}
+  .sl-help-contact{padding:32px 29px;}
+}
+@media(max-width:740px){
+  body[data-saluz-fashion] .commerce-page:is(.sl-about-page,.sl-help-page){padding:24px 19px 70px;}
+  .sl-info-breadcrumb{margin-bottom:29px;}
+  .sl-about-hero{grid-template-columns:minmax(0,1fr);}
+  .sl-about-intro{padding:39px 26px 42px;}
+  .sl-about-intro h1{font-size:clamp(43px,8vw,61px);}
+  .sl-about-visual{min-height:275px;max-height:340px;height:320px;}
+  .sl-about-universe{padding:56px 0 43px;}
+  .sl-info-section-head{display:block;}
+  .sl-info-section-head>p{margin:14px 0 0;}
+  .sl-about-categories{grid-template-columns:minmax(0,1fr);}
+  .sl-about-categories a,.sl-about-categories a:not(:first-child){padding:20px 42px 20px 5px;border-left:0;min-height:122px;}
+  .sl-about-arrow{right:10px;top:25px;}
+  .sl-info-outro{align-items:flex-start;flex-direction:column;padding-top:30px;gap:20px;}
+  .sl-help-hero h1{font-size:clamp(43px,8vw,63px);}
+  .sl-help-layout{grid-template-columns:minmax(0,1fr);gap:36px;margin-bottom:45px;}
+  .sl-help-contact{min-height:320px;}
+  .sl-help-bottom{flex-direction:column;align-items:flex-start;gap:20px;}
+}
+@media(max-width:420px){
+  .sl-help-hero{margin-bottom:31px;}
+  .sl-help-hero h1,.sl-about-intro h1{font-size:43px;}
+  .sl-about-intro{padding:31px 20px 34px;}
+  .sl-about-visual{height:245px;min-height:245px;}
+  .sl-help-contact{padding:28px 23px;min-height:345px;}
+  .sl-help-email{font-size:13px!important;}
+  .sl-about-universe{padding-top:45px;}
+}
+@media(prefers-reduced-motion:reduce){.sl-about-categories a,.sl-help-questions summary span{transition:none;}}
