@@ -4,7 +4,7 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#f7f4ef">
-<title>Loja SALUZ | Roupas, Bolsas e Acessórios</title>
+<title>Loja de roupas, bolsas e acessórios | SALUZ</title>
 <meta name="description" content="Conheça roupas, bolsas e acessórios da SALUZ. Filtre por tipo, cor e tamanho.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -53,26 +53,50 @@
     <a href="./loja.html?busca=1#produtos" class="commerce-mobile-search">Buscar produtos</a>
   </nav>
 </header>
-<main>
-<section id="colecoes" class="fashion-catalog-intro" aria-labelledby="fashion-catalog-title">
-  <p class="eyebrow">LOJA SALUZ</p>
-  <h1 id="fashion-catalog-title">Descubra a coleção.</h1>
-  <p>Roupas, bolsas e acessórios. Encontre sua categoria e escolha com tranquilidade.</p>
-  <nav class="fashion-catalog-links" aria-label="Explorar grupos de produtos">
-    <a href="./loja.html?grupo=roupas#produtos">Roupas ↗</a>
-    <a href="./loja.html?grupo=bolsas#produtos">Bolsas ↗</a>
-    <a href="./loja.html?grupo=acessorios#produtos">Acessórios ↗</a>
-  </nav>
-</section>
-<section id="produtos" class="products-section">
-    <div class="section-head"><div><span class="eyebrow">PRODUTOS</span><h2>Explore as peças</h2><p>Filtre por tipo, cor e tamanho.</p></div>
-      <label class="search"><span>Buscar</span><input type="search" id="search" placeholder="Nome do produto..." autocomplete="off"></label></div>
-    <div class="filters" id="filters"><button type="button" class="filter active" data-category="all">Todos</button></div><div class="fashion-attribute-filters"><label>Cor <select id="fashion-color-filter" aria-label="Filtrar produtos por cor"><option value="all">Todas as cores</option></select></label><label>Tamanho <select id="fashion-size-filter" aria-label="Filtrar produtos por tamanho"><option value="all">Todos os tamanhos</option></select></label></div>
-    <div class="catalog-meta"><p class="notice" id="catalog-status" role="status">Carregando catálogo...</p><label class="catalog-sort">Ordenar por <select id="sort"><option value="newest">Novidades</option><option value="price-asc">Menor preço</option><option value="price-desc">Maior preço</option><option value="az">Nome A–Z</option></select></label></div>
-    <div class="products" id="products" aria-live="polite"></div>
-    <div class="catalog-pagination"><button type="button" id="load-more" class="btn-dark" hidden>Carregar mais produtos ↓</button><p id="pagination-status" role="status" aria-live="polite"></p></div>
+<main id="conteudo" class="sl-shop-main">
+  <section id="colecoes" class="sl-shop-intro" aria-labelledby="sl-catalog-heading">
+    <nav class="sl-breadcrumb" aria-label="Caminho"><a href="./index.html">Início</a><span aria-hidden="true">/</span><span>Loja</span></nav>
+    <p class="eyebrow">LOJA SALUZ</p>
+    <h1 id="sl-catalog-heading">Todos os produtos.</h1>
+    <p id="sl-catalog-description">Explore roupas, bolsas e acessórios. Use os filtros para encontrar o que procura.</p>
+    <nav class="sl-shop-tabs" aria-label="Comprar por categoria">
+      <a href="./loja.html#produtos" data-group="all">Ver tudo</a>
+      <a href="./loja.html?grupo=roupas#produtos" data-group="roupas">Roupas</a>
+      <a href="./loja.html?grupo=bolsas#produtos" data-group="bolsas">Bolsas</a>
+      <a href="./loja.html?grupo=acessorios#produtos" data-group="acessorios">Acessórios</a>
+    </nav>
   </section>
-  <section id="atendimento" class="contact"><div><span class="eyebrow">NÓS NOS IMPORTAMOS</span><h2>Alguma dúvida?</h2><p>Fale com a equipe SALUZ. Atendimento de segunda a sexta, das 8h às 19h.</p></div><a href="mailto:anny.csalustiano@gmail.com" id="email-link">anny.csalustiano@gmail.com ↗</a></section>
+
+  <section id="produtos" class="products-section sl-shop-section" aria-label="Produtos da SALUZ">
+    <div class="sl-shop-toolbar">
+      <label class="search sl-search"><span>Buscar produtos</span><input type="search" id="search" placeholder="Nome, cor ou tipo de peça" autocomplete="off"></label>
+      <label class="catalog-sort">Ordenar por
+        <select id="sort"><option value="newest">Mais recentes</option><option value="price-asc">Menor preço</option><option value="price-desc">Maior preço</option><option value="az">Nome A–Z</option></select>
+      </label>
+    </div>
+
+    <div class="sl-mobile-filter-trigger"><button id="sl-filter-toggle" type="button" aria-controls="sl-filter-panel" aria-expanded="false">☷ Filtros <span aria-hidden="true">+</span></button></div>
+    <div class="sl-shop-layout">
+      <aside class="sl-filter-panel" id="sl-filter-panel" aria-label="Filtrar produtos">
+        <div class="sl-filter-heading"><strong>Filtrar por</strong><a href="./loja.html#produtos">Limpar</a></div>
+        <div class="filters" id="filters"><button type="button" class="filter active" data-category="all">Todos</button></div>
+        <div class="fashion-attribute-filters">
+          <label>Cor <select id="fashion-color-filter" aria-label="Filtrar produtos por cor"><option value="all">Todas as cores</option></select></label>
+          <label>Tamanho <select id="fashion-size-filter" aria-label="Filtrar produtos por tamanho"><option value="all">Todos os tamanhos</option></select></label>
+        </div>
+      </aside>
+      <div class="sl-shop-results">
+        <div class="catalog-meta"><p class="notice" id="catalog-status" role="status" aria-live="polite">Carregando catálogo...</p></div>
+        <div class="products" id="products" aria-live="polite"></div>
+        <div class="catalog-pagination"><button type="button" id="load-more" class="btn-dark" hidden>Carregar mais produtos ↓</button><p id="pagination-status" role="status" aria-live="polite"></p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sl-catalog-help" id="atendimento">
+    <div><p class="eyebrow">PRECISA DE AJUDA?</p><h2>Fale com a SALUZ.</h2><p>Se tiver dúvidas sobre os produtos, cores ou tamanhos, entre em contato.</p></div>
+    <a href="mailto:anny.csalustiano@gmail.com">Entrar em contato <span aria-hidden="true">↗</span></a>
+  </section>
 </main>
 <footer class="commerce-footer">
   <div class="commerce-footer-inner">
