@@ -126,7 +126,8 @@ function render(p){
  byId("breadcrumb-product").textContent=p.name;
  const categoryLink=byId("breadcrumb-category");
  const cat=slug[p.category];
- if(cat){categoryLink.href="./colecao-"+cat+".html";categoryLink.textContent=p.category;}
+ if(window.SaluzModa?.isCategory(p.category)){categoryLink.href=window.SaluzModa.link(window.SaluzModa.groupOf(p.category),p.category.split(" / ")[1]);categoryLink.textContent=p.category.replace(" / "," · ");}
+ else if(cat){categoryLink.href="./colecao-"+cat+".html";categoryLink.textContent=p.category;}
  else{categoryLink.href="./colecoes.html";categoryLink.textContent="Coleções";}
  const colors=[...new Set(variations().map(v=>v.color||"Única"))];
  const color=byId("sku-color");color.replaceChildren();
@@ -173,7 +174,7 @@ async function loadRelated(current){
   if(!items.length)return;
   grid.replaceChildren();
   const categorySlug=slug[current.category];
-  byId("related-category").href=categorySlug?"./colecao-"+categorySlug+".html":"./colecoes.html";
+  byId("related-category").href=window.SaluzModa?.isCategory(current.category)?window.SaluzModa.link(window.SaluzModa.groupOf(current.category)):(categorySlug?"./colecao-"+categorySlug+".html":"./colecoes.html");
   for(const p of items){
    const article=node("article","product-related-card");
    const link=node("a","product-related-image");
