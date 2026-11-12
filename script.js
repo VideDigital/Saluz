@@ -24,17 +24,10 @@ mobileNav?.querySelectorAll("a").forEach(link => {
   });
 });
 
-const searchIndex = [
-  {title:"Nécessaires",type:"Coleção",keywords:"necessaire necessaires bolsa organizacao maquiagem",href:"./colecao-necessaires.html"},
-  {title:"Porta-joias",type:"Coleção",keywords:"porta joias joias acessorios organizar",href:"./colecao-porta-joias.html"},
-  {title:"Organizadores de maquiagem",type:"Coleção",keywords:"maquiagem organizador organizacao beleza",href:"./colecao-organizadores-maquiagem.html"},
-  {title:"Organizadores de bolsa",type:"Coleção",keywords:"bolsa organizadores divisorias organizacao",href:"./colecao-organizadores-bolsa.html"},
-  {title:"Acessórios de viagem",type:"Coleção",keywords:"viagem mala acessorios viagem",href:"./colecao-acessorios-viagem.html"},
-  {title:"Autocuidado",type:"Coleção",keywords:"autocuidado rotina cuidado",href:"./colecao-autocuidado.html"},
-  {title:"Acessórios femininos",type:"Coleção",keywords:"acessorios feminino cabelo",href:"./colecao-acessorios-femininos.html"},
-  {title:"Kits e presentes",type:"Coleção",keywords:"kits presentes presente para ela",href:"./colecao-kits-presentes.html"}
-]
-
+const searchIndex = Object.entries(window.SaluzModa.groups).flatMap(([group,types])=>[
+ {title:group,type:"Categoria",keywords:group+" moda estilo",href:window.SaluzModa.link(group)},
+ ...types.map(type=>({title:type,type:group,keywords:group+" "+type,href:window.SaluzModa.link(group,type)}))
+]);
 function normalizeText(value = "") {
   return value
     .normalize("NFD")
@@ -50,7 +43,7 @@ function renderSearchResults(query = "") {
 
   if (!normalizedQuery) {
     searchResults.innerHTML =
-      '<p class="search-hint">Experimente buscar por “viagem”, “presente”, “nécessaire” ou “organização”.</p>';
+      '<p class="search-hint">Experimente buscar por “blusa”, “calça”, “bolsa” ou “acessórios”.</p>';
     return;
   }
 
