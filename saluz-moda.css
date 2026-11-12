@@ -81,3 +81,14 @@ body[data-saluz-fashion] .commerce-footer-brand p{max-width:270px}
  .fashion-photo-credit{font-size:10px}
 }
 @media(prefers-reduced-motion:reduce){.fashion-category-card{transition:none}}
+
+/* Controles de moda: filtros de cor/tamanho e instruções de caimento */
+.fashion-attribute-filters{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin:18px 0 20px}
+.fashion-attribute-filters label{display:flex;align-items:center;gap:9px;font:600 13px "DM Sans",sans-serif;color:#51443b}
+.fashion-attribute-filters select{appearance:auto;min-width:158px;height:43px;border:1px solid #d5c4b7;border-radius:3px;background:#fffdfb;padding:8px 10px;color:#51443b;font:500 14px "DM Sans",sans-serif}
+.fashion-filter-divider{display:inline-flex;align-items:center;font:700 12px "DM Sans",sans-serif;white-space:nowrap;letter-spacing:.04em;padding:0 5px}
+#filters .fashion-subfilter{font-size:13px;padding:7px 13px;min-height:39px}
+.fashion-size-help{margin:10px 0 16px;padding:12px 14px;border:1px solid #e1d4ca;background:#faf6f1;color:#51443b}
+.fashion-size-help summary{font:600 14px "DM Sans",sans-serif;cursor:pointer;text-decoration:underline;text-underline-offset:4px}
+.fashion-size-help p{font:400 14px/1.65 "DM Sans",sans-serif;margin:8px 0 0}
+@media(max-width:680px){.fashion-attribute-filters{display:grid;grid-template-columns:1fr 1fr;gap:10px}.fashion-attribute-filters label{display:grid;gap:4px;min-width:0}.fashion-attribute-filters select{width:100%;min-width:0}.fashion-filter-divider{width:100%}}
