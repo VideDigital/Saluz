@@ -17,6 +17,7 @@ test("todas as páginas usam o mesmo cabeçalho, navegação e rodapé",()=>{
   assert.equal((html.match(/id="menu-toggle"/g)||[]).length,1,name+" menu");
   assert.equal((html.match(/id="loja-nav"/g)||[]).length,1,name+" nav");
   assert.match(html,/data-saluz-fashion="true"/,name+" body");
+  assert.doesNotMatch(html,/class="commerce-top"/,name+" faixa superior removida");
   assert.match(html,/saluz-moda.css\?v=20261112-editorial/,name+" stylesheet");
   assert.match(html,/href="\.\/loja.html\?grupo=bolsas#produtos"/,name+" bags");
   assert.match(html,/href="\.\/loja.html\?grupo=acessorios#produtos"/,name+" accessories");
@@ -49,4 +50,13 @@ test("vitrine oculta seções quando não há produto real publicado",()=>{
  assert.match(js,/section\.hidden=valid\.length===0/);
  assert.match(html,/id="featured-products"/);
  assert.match(html,/id="new-products"/);
+});
+
+test("primeiro bloco tem imagem reduzida em desktop e mobile",()=>{
+ const css=page("saluz-moda.css");
+ assert.match(css,/height:460px;/);
+ assert.match(css,/height:440px;min-height:0/);
+ assert.match(css,/height:235px;max-height:235px/);
+ assert.match(css,/height:200px;max-height:200px/);
+ assert.doesNotMatch(page("index.html"),/class="commerce-top"/);
 });
