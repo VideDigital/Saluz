@@ -73,8 +73,7 @@ async function isAdmin(request,env) {
 function validateProduct(raw) {
   const name=safeText(raw.name,140), description=safeText(raw.description,2000);
   const category=safeText(raw.category,70), image_url=safeText(raw.image_url,500);
-  const allowedCategories=new Set(["Nécessaires","Porta-joias","Organizadores de maquiagem",
-    "Organizadores de bolsa","Acessórios de viagem","Autocuidado","Acessórios femininos","Kits e presentes"]);
+  const allowedCategories=new Set(["Roupas / Blusas","Roupas / Camisas","Roupas / Camisetas e regatas","Roupas / Croppeds","Roupas / Calças","Roupas / Shorts","Roupas / Saias","Roupas / Vestidos","Roupas / Conjuntos","Roupas / Casacos e jaquetas","Bolsas / Transversais","Bolsas / De ombro","Bolsas / Tote e shopper","Bolsas / Mochilas","Bolsas / Carteiras","Acessórios / Bijuterias","Acessórios / Cintos","Acessórios / Lenços e echarpes","Acessórios / Óculos","Acessórios / Acessórios de cabelo","Nécessaires","Porta-joias","Organizadores de maquiagem","Organizadores de bolsa","Acessórios de viagem","Autocuidado","Acessórios femininos","Kits e presentes"]);
   if(!allowedCategories.has(category))throw new Error("Selecione uma categoria válida da SALUZ");
   const price_cents=Number(raw.price_cents);
   const original_price_cents=raw.original_price_cents==null||raw.original_price_cents===""?null:Number(raw.original_price_cents);
@@ -557,8 +556,7 @@ export async function onRequest({request,env}) {
         return matches.length?output({product:matches[0],configured:true}):error("Produto não encontrado",404);
       }
       // O filtro é aplicado no servidor e não apenas no navegador.
-      const allowedCategories=new Set(["Nécessaires","Porta-joias","Organizadores de maquiagem",
-        "Organizadores de bolsa","Acessórios de viagem","Autocuidado","Acessórios femininos","Kits e presentes"]);
+      const allowedCategories=new Set(["Roupas / Blusas","Roupas / Camisas","Roupas / Camisetas e regatas","Roupas / Croppeds","Roupas / Calças","Roupas / Shorts","Roupas / Saias","Roupas / Vestidos","Roupas / Conjuntos","Roupas / Casacos e jaquetas","Bolsas / Transversais","Bolsas / De ombro","Bolsas / Tote e shopper","Bolsas / Mochilas","Bolsas / Carteiras","Acessórios / Bijuterias","Acessórios / Cintos","Acessórios / Lenços e echarpes","Acessórios / Óculos","Acessórios / Acessórios de cabelo","Nécessaires","Porta-joias","Organizadores de maquiagem","Organizadores de bolsa","Acessórios de viagem","Autocuidado","Acessórios femininos","Kits e presentes"]);
       const category=new URL(request.url).searchParams.get("category");
       if(category && !allowedCategories.has(category))return error("Categoria inválida",400);
       const filter=category?"&category=eq."+encodeURIComponent(category):"";
