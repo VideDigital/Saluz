@@ -34,7 +34,12 @@ test("a loja não mistura produtos do catálogo anterior com a vitrine de moda",
  assert.match(file("home-vitrine.js"),/SaluzModa\?\.isCategory\(p\.category\)/);
  assert.match(file("loja.js"),/fashion-color-filter/);
  assert.match(file("loja.js"),/fashion-size-filter/);
- assert.match(file("loja.html"),/fashion-category-grid/);
+ assert.match(file("loja.html"),/fashion-catalog-intro/);
+ assert.match(file("loja.html"),/fashion-catalog-links/);
+ assert.doesNotMatch(file("loja.html"),/art-ring/);
+ assert.doesNotMatch(file("index.html"),/fashion-style-note/);
+ assert.doesNotMatch(file("index.html"),/class="trust-strip"/);
+ assert.match(file("home-vitrine.js"),/section.hidden=valid.length===0/);
  assert.match(file("index.html"),/fashion-hero/);
  assert.match(file("colecoes.html"),/fashion-collection-block/);
  assert.match(file("index.html"),/Imagem ilustrativa/);
