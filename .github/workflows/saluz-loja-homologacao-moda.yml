@@ -77,7 +77,7 @@ jobs:
             src=root/filename
             if not src.is_file():raise SystemExit('Asset ausente: '+filename)
             shutil.copy2(src,out/filename)
-          (out/'robots.txt').write_text('User-agent: *\\nDisallow: /\\n','utf-8')
+          (out/'robots.txt').write_text('User-agent: *\nDisallow: /\n','utf-8')
           headers=(out/'_headers').read_text('utf-8')
           if not headers.startswith('/*\n'):raise SystemExit('Cabecalho inesperado')
           (out/'_headers').write_text(headers.replace('/*\n','/*\n  X-Robots-Tag: noindex, nofollow\n',1),'utf-8')
