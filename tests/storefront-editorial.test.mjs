@@ -18,7 +18,7 @@ test("todas as páginas usam o mesmo cabeçalho, navegação e rodapé",()=>{
   assert.equal((html.match(/id="loja-nav"/g)||[]).length,1,name+" nav");
   assert.match(html,/data-saluz-fashion="true"/,name+" body");
   assert.doesNotMatch(html,/class="commerce-top"/,name+" faixa superior removida");
-  assert.match(html,/saluz-moda.css\?v=20261112-editorial/,name+" stylesheet");
+  assert.match(html,/saluz-moda.css\?v=20261112-hero-compacto/,name+" stylesheet");
   assert.match(html,/href="\.\/loja.html\?grupo=bolsas#produtos"/,name+" bags");
   assert.match(html,/href="\.\/loja.html\?grupo=acessorios#produtos"/,name+" accessories");
   assert.match(html,/<summary>Roupas /,name+" mega");
