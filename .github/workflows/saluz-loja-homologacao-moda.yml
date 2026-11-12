@@ -63,7 +63,7 @@ jobs:
           pages=['index.html','loja.html','colecoes.html','produto.html','favoritos.html','sobre.html','atendimento.html','como-comprar.html','privacidade.html',
             'colecao-necessaires.html','colecao-porta-joias.html','colecao-organizadores-maquiagem.html','colecao-organizadores-bolsa.html',
             'colecao-acessorios-viagem.html','colecao-autocuidado.html','colecao-acessorios-femininos.html','colecao-kits-presentes.html']
-          files=set(pages+['favicon.svg','robots.txt','sitemap.xml','_headers'])
+          files=set(pages+['favicon.svg','_headers'])
           for page in pages:
             source=root/page
             if not source.is_file():raise SystemExit('Pagina publica ausente: '+page)
@@ -77,6 +77,7 @@ jobs:
             src=root/filename
             if not src.is_file():raise SystemExit('Asset ausente: '+filename)
             shutil.copy2(src,out/filename)
+          (out/'robots.txt').write_text('User-agent: *\\nDisallow: /\\n','utf-8')
           headers=(out/'_headers').read_text('utf-8')
           if not headers.startswith('/*\n'):raise SystemExit('Cabecalho inesperado')
           (out/'_headers').write_text(headers.replace('/*\n','/*\n  X-Robots-Tag: noindex, nofollow\n',1),'utf-8')
