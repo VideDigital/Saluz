@@ -715,3 +715,84 @@ body[data-saluz-fashion] .product-page .commerce-next{background:#F5EEE8;border:
   html{scroll-behavior:auto}
   .sl-dept-photo img,.sl-shop-results .product-image img,.sl-button{transition:none}
 }
+
+/* SALUZ — Correções críticas de legibilidade e estado ativo (nov/2026).
+   As regras antigas usam "body a { color:inherit }" e sufocam textos de CTA.
+   Texto e fundo agora ficam consistentes também em hover, visited e focus. */
+body[data-saluz-fashion] :is(a.sl-button-dark,button.sl-button-dark,a.btn-dark,button.btn-dark,a.button-dark,button.button-dark,a.saluz-pay-finish,button.saluz-pay-finish){
+  background-color:#51443B!important;
+  border-color:#51443B!important;
+  color:#FFFDF9!important;
+  -webkit-text-fill-color:#FFFDF9!important;
+  opacity:1;
+}
+body[data-saluz-fashion] :is(a.sl-button-dark,button.sl-button-dark,a.btn-dark,button.btn-dark,a.button-dark,button.button-dark,a.saluz-pay-finish,button.saluz-pay-finish):is(:hover,:focus-visible,:active){
+  background-color:#362C26!important;
+  border-color:#362C26!important;
+  color:#FFFDF9!important;
+  -webkit-text-fill-color:#FFFDF9!important;
+}
+body[data-saluz-fashion] :is(a.sl-button-dark,button.sl-button-dark,a.btn-dark,button.btn-dark,a.button-dark,button.button-dark) :is(span,strong,small,em){
+  color:inherit!important;
+  -webkit-text-fill-color:inherit!important;
+}
+body[data-saluz-fashion] :is(a.sl-button-outline,a.sl-button-outline:visited,button.sl-button-outline){
+  background-color:transparent!important;
+  color:#51443B!important;
+  -webkit-text-fill-color:#51443B!important;
+  border-color:#51443B!important;
+}
+body[data-saluz-fashion] :is(a.sl-button-outline,button.sl-button-outline):is(:hover,:focus-visible){
+  background-color:#EDE4DC!important;
+  color:#51443B!important;
+  -webkit-text-fill-color:#51443B!important;
+}
+/* Não sobrescrever estado desativado nem parecer habilitar pagamento */
+body[data-saluz-fashion] :is(button.btn-dark,button.saluz-pay-finish):disabled{
+  opacity:.6;
+  cursor:not-allowed;
+}
+/* Estado da categoria fica evidente mesmo sem movimento ou hover. */
+body[data-saluz-fashion] .sl-shop-tabs a[aria-current="page"],
+body[data-saluz-fashion] .sl-shop-tabs a.is-selected{
+  color:#51443B!important;
+  -webkit-text-fill-color:#51443B!important;
+  border-bottom:3px solid #51443B!important;
+  background:linear-gradient(0deg,rgba(220,200,184,.18),transparent 70%);
+  font-weight:700;
+}
+body[data-saluz-fashion] .commerce-nav :is(a.sl-nav-selected,summary.sl-nav-selected){
+  color:#51443B!important;
+  -webkit-text-fill-color:#51443B!important;
+  box-shadow:inset 0 -3px 0 #51443B;
+}
+body[data-saluz-fashion] .sl-shop-intro .sl-breadcrumb strong{
+  color:#51443B;
+  font-weight:700;
+}
+body[data-saluz-fashion] #filters button.filter[aria-pressed="true"]{
+  color:#51443B!important;
+  font-weight:700!important;
+  background:#F2E9E1;
+  padding-inline:9px;
+  border-left:3px solid #51443B;
+}
+body[data-saluz-fashion] .sl-shop-results .empty-collection .empty-link{
+  display:inline-flex;
+  min-height:43px;
+  padding:11px 18px;
+  border:1px solid #51443B;
+  background:transparent;
+  color:#51443B!important;
+  -webkit-text-fill-color:#51443B!important;
+  text-decoration:none;
+  font:600 13px var(--sl-sans);
+}
+@media(max-width:930px){
+  body[data-saluz-fashion] .commerce-nav :is(a.sl-nav-selected,summary.sl-nav-selected){
+    box-shadow:none;
+    background:#F2E9E1;
+    padding-inline:12px;
+    border-left:3px solid #51443B;
+  }
+}
