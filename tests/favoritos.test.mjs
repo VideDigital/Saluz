@@ -64,7 +64,9 @@ test('páginas públicas incluem menu e módulos de favoritos',()=>{
  const pages=readdirSync('.').filter(name=>name.endsWith('.html')&&!['admin.html','migration-lab.html','migration-showcase.html'].includes(name));
  for(const file of pages){
    const html=readFileSync(file,'utf8');
-   assert.match(html,/class="commerce-favorites-link"/,file);
+   assert.match(html,/class="(?:commerce-favorites-link|sl-favorite-link)"/,file);
+    assert.match(html,/href="\.\/favoritos.html"/,file);
+    assert.match(html,/data-favorites-count/,file);
    assert.match(html,/src="\.\/favoritos\.js"/,file);
    assert.match(html,/href="\.\/favoritos\.css"/,file);
  }
