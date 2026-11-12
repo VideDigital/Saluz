@@ -81,7 +81,7 @@ body[data-saluz-fashion] .commerce-brand{
   grid-column:2;white-space:nowrap;
   display:inline-flex;align-items:flex-start;gap:5px;
   color:var(--sl-ink);
-  font:400 clamp(31px,3.5vw,42px)/1 var(--sl-serif);
+  font:400 clamp(29px,3.1vw,39px)/1.2 var(--sl-serif);
   letter-spacing:.16em;
   text-decoration:none!important;
 }
@@ -192,100 +192,155 @@ body[data-saluz-fashion] .commerce-footer-end{
   color:#81756C;
 }
 
-/* --- Home: uma história visual consistente --- */
+/* --- Home: hero independente dos estilos legados .hero e .hero-content --- */
 .sl-home{background:var(--sl-paper)}
-.fashion-home .hero.fashion-hero.sl-hero{
-  max-width:none;
-  padding:0;
-  margin:0;
-  min-height:0;
-  height:460px;
+.sl-home .sl-hero{
   display:grid;
-  grid-template-columns: minmax(0,1.12fr) minmax(0,.88fr);
-  gap:0;
-  background:var(--sl-cream);
-  align-items:stretch;
+  grid-template-columns:minmax(0,1.06fr) minmax(0,.94fr);
+  min-height:460px;
+  height:auto;
+  margin:0;
+  width:100%;
+  background:#F3EFEA;
+  isolation:isolate;
 }
+.sl-home .sl-hero>*{min-width:0}
 .sl-hero-copy{
-  display:flex;flex-direction:column;justify-content:center;align-items:flex-start;
-  padding:35px clamp(35px,5vw,90px);
-  padding-left:max(36px,calc((100vw - 1240px)/2));
-  max-width:710px;
-  margin:0 auto 0 0;
+  min-height:460px;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  justify-content:center;
+  padding:50px clamp(32px,5.2vw,96px);
+  padding-left:max(40px,calc((100vw - 1250px)/2));
 }
 .sl-hero-copy h1{
-  font:400 clamp(47px,4.5vw,68px)/1.07 var(--sl-serif);
+  font:400 clamp(44px,4.5vw,69px)/1.14 var(--sl-serif);
   color:var(--sl-ink);
-  letter-spacing:-.03em;
-  margin:0 0 24px;
-  text-wrap:balance;
+  letter-spacing:-.035em;
+  margin:0 0 18px;
+  max-width:610px;
+  overflow-wrap:normal;
 }
-.sl-hero-copy h1 em{font-style:italic;color:#A1806B}
+.sl-hero-copy h1 em{font-style:italic;color:#987A68}
 .sl-hero-copy>p:not(.eyebrow){
   margin:0;
-  max-width:405px;
-  font:400 17px/1.72 var(--sl-sans);
-  color:#746960;
+  max-width:430px;
+  font:400 clamp(15px,1.2vw,16px)/1.75 var(--sl-sans);
+  color:#726760;
 }
-.sl-hero-actions{display:flex;align-items:center;flex-wrap:wrap;gap:22px;margin:34px 0 0}
+.sl-hero-actions{
+  display:flex;align-items:center;gap:26px;
+  flex-wrap:wrap;margin-top:27px
+}
 .sl-hero-actions .sl-link{
-  padding:8px 0;
+  padding:7px 0;
   font:600 13px var(--sl-sans);
-  text-decoration:none;
-  border-bottom:1px solid #837265;
+  text-decoration:none;border-bottom:1px solid #907C6B;
 }
-.sl-hero-index{font:500 10px var(--sl-sans);letter-spacing:.16em;color:#8B7767;margin-top:23px}
-.sl-hero-photo{position:relative;overflow:hidden;margin:0;background:#E8DDD4}
-.sl-hero-photo img{width:100%;height:100%;object-fit:cover;object-position:center 48%;display:block;filter:saturate(.88)}
+.sl-hero-photo{
+  position:relative;
+  min-height:460px;
+  overflow:hidden;
+  margin:0;
+  background:#E7DCD3;
+}
+.sl-hero-photo img{
+  position:absolute;
+  inset:0;
+  display:block;
+  width:100%;
+  height:100%;
+  max-width:100%;
+  max-height:100%;
+  object-fit:cover;
+  object-position:center 49%;
+  filter:saturate(.88);
+}
 .sl-hero-photo figcaption{
-  position:absolute;bottom:16px;right:22px;
+  position:absolute;
+  bottom:14px;right:17px;
   color:#554840;background:#fffdfaed;
-  padding:7px 10px;
+  padding:6px 10px;
   font:500 10px/1.3 var(--sl-sans);
 }
-.sl-departments{max-width:var(--sl-max);margin:auto;padding:93px 28px 78px}
-.sl-section-head{display:flex;align-items:end;justify-content:space-between;gap:25px;margin-bottom:33px}
+.sl-departments{max-width:var(--sl-max);margin:0 auto;padding:76px 28px 56px;clear:both;position:relative}
+.sl-section-head{display:flex;align-items:end;justify-content:space-between;gap:25px;margin-bottom:28px}
 .sl-section-head h2{
-  font:400 clamp(35px,4vw,52px)/1.13 var(--sl-serif);
+  font:400 clamp(34px,3.8vw,48px)/1.17 var(--sl-serif);
   letter-spacing:-.016em;
   color:var(--sl-ink);margin:0;
 }
 .sl-dept-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
-.sl-dept-card{display:block;text-decoration:none!important;min-width:0}
-.sl-dept-photo{position:relative;aspect-ratio:4 / 4.7;overflow:hidden;background:#F1EAE3}
+.sl-dept-card{
+  position:relative;
+  display:block;
+  min-width:0;
+  overflow:hidden;
+  background:#F1EAE3;
+  color:#FFFDF9!important;
+  text-decoration:none!important;
+}
+.sl-dept-photo{position:relative;aspect-ratio:5 / 5.3;overflow:hidden;background:#F1EAE3}
+.sl-dept-photo::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,transparent 47%,rgba(30,24,21,.1) 65%,rgba(30,24,21,.68) 100%);
+  pointer-events:none;
+}
 .sl-dept-photo img{
   display:block;width:100%;height:100%;object-fit:cover;
-  filter:saturate(.88);
+  filter:saturate(.84);
   transition:transform .5s ease;
 }
-.sl-dept-card:hover img{transform:scale(1.035)}
+.sl-dept-card:hover img{transform:scale(1.04)}
 .sl-dept-caption{
-  display:flex;align-items:center;justify-content:space-between;gap:15px;
-  border-bottom:1px solid #E5DCD3;
-  padding:20px 2px 22px;
+  position:absolute;
+  bottom:0;left:0;right:0;
+  display:flex;align-items:end;justify-content:space-between;gap:15px;
+  padding:30px clamp(18px,2.4vw,34px) 29px;
+  color:#FFFDF9;
 }
-.sl-dept-caption>span:first-child{display:flex;flex-direction:column;gap:4px}
-.sl-dept-caption strong{font:400 30px/1.17 var(--sl-serif)}
-.sl-dept-caption small{font:400 13px/1.55 var(--sl-sans);color:var(--sl-muted)}
-.sl-dept-arrow{font:400 24px var(--sl-sans);align-self:center}
-.sl-types{
-  max-width:var(--sl-max);margin:0 auto;
-  padding:25px 28px 79px;
-  display:grid;grid-template-columns:1fr 2.15fr;gap:48px;
-  border-bottom:1px solid var(--sl-line);
+.sl-dept-caption>span:first-child{display:flex;flex-direction:column;gap:5px}
+.sl-dept-caption strong{
+  font:400 clamp(31px,3.1vw,43px)/1.1 var(--sl-serif);
+  color:#FFFDF9;
+  text-shadow:0 1px 15px rgba(0,0,0,.13)
 }
-.sl-types h2{font:400 27px/1.2 var(--sl-serif);margin:0}
-.sl-type-links{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
-.sl-type-links a{
-  display:inline-flex;align-items:center;justify-content:space-between;gap:16px;
-  padding:12px 17px;min-height:44px;
-  border:1px solid #E6DDD4;
-  font:600 13px/1.2 var(--sl-sans);
-  text-decoration:none!important;background:var(--sl-paper);
-  transition:background .2s,border-color .2s;
+.sl-dept-caption small{font:500 13px/1.55 var(--sl-sans);color:#FFFDF9}
+.sl-dept-arrow{font:400 25px var(--sl-sans);align-self:end;color:#FFFDF9}
+.sl-inline-categories{
+  display:flex;align-items:center;gap:10px 25px;
+  flex-wrap:wrap;
+  border-top:1px solid var(--sl-line);
+  margin-top:40px;
+  padding-top:22px;
 }
-.sl-type-links a:hover{background:#F5EFE9;border-color:#B7A293}
-.sl-type-links .sl-type-all{border-color:#AA9080}
+.sl-inline-label{
+  color:#8B796C;
+  font:700 11px/1.5 var(--sl-sans);
+  letter-spacing:.075em;
+  text-transform:uppercase;
+  margin-right:8px;
+}
+.sl-inline-categories a{
+  display:inline-flex;
+  align-items:center;
+  min-height:30px;
+  padding:3px 0;
+  border:0;
+  background:transparent;
+  border-bottom:1px solid transparent;
+  font:600 13px/1.4 var(--sl-sans);
+  color:var(--sl-ink);
+  text-decoration:none;
+}
+.sl-inline-categories a:hover,.sl-inline-categories a:focus-visible{
+  border-bottom-color:var(--sl-ink);
+}
+.sl-inline-categories .sl-inline-more{
+  color:#8B6E5C;
+  margin-left:auto;
+}
 .sl-products-home.home-commerce{max-width:var(--sl-max);padding:82px 28px;margin:0 auto}
 .sl-products-home .home-commerce-heading{margin-bottom:24px}
 .sl-products-home .home-commerce-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
@@ -298,7 +353,7 @@ body[data-saluz-fashion] .commerce-footer-end{
 .sl-products-home .home-product-price{font:700 15px var(--sl-sans)}
 .sl-products-home .home-product-link{font:600 12px var(--sl-sans)}
 .sl-collection-note{
-  max-width:var(--sl-max);margin:28px auto 100px;
+  max-width:var(--sl-max);margin:15px auto 80px;
   background:#F3EAE2;
   padding:48px 45px;
   display:grid;grid-template-columns:.72fr 1.7fr auto;gap:26px;align-items:center;
@@ -542,11 +597,11 @@ body[data-saluz-fashion] .product-page .commerce-next{background:#F5EEE8;border:
   body[data-saluz-fashion] .commerce-nav.is-open>.commerce-mobile-search{display:flex!important;background:transparent;padding:12px 0;font-weight:600}
   body[data-saluz-fashion] .commerce-footer-inner{grid-template-columns:1.2fr 1fr 1fr;gap:28px}
   body[data-saluz-fashion] .commerce-footer-inner section:last-child{grid-column:2/4}
-  .fashion-home .hero.fashion-hero.sl-hero{height:440px;min-height:0}
-  .sl-hero-copy{padding:40px 32px}
-  .sl-hero-copy h1{font-size:clamp(47px,6vw,64px)}
-  .sl-departments{padding:70px 22px 60px}
-  .sl-types{grid-template-columns:1fr;gap:22px;padding:12px 22px 70px}
+  .sl-home .sl-hero{min-height:430px}
+  .sl-hero-copy{min-height:430px;padding:40px 32px}
+  .sl-hero-photo{min-height:430px}
+  .sl-hero-copy h1{font-size:clamp(42px,5vw,58px)}
+  .sl-departments{padding:62px 22px 42px}
   .sl-collection-note{grid-template-columns:1fr auto;padding:38px;margin:25px 22px 75px}
   .sl-collection-kicker{grid-column:1/-1}
   .sl-shop-layout{grid-template-columns:1fr;gap:0;padding-top:20px}
@@ -566,14 +621,13 @@ body[data-saluz-fashion] .product-page .commerce-next{background:#F5EEE8;border:
   .sl-collection-row{grid-template-columns:210px minmax(0,1fr);gap:28px}
 }
 @media(max-width:720px){
-  .fashion-home .hero.fashion-hero.sl-hero{grid-template-columns:1fr;height:auto;min-height:0}
-  .sl-hero-copy{order:2;padding:40px 24px 48px}
-  .sl-hero-photo{order:1;aspect-ratio: 16/9;height:235px;max-height:235px}
-  .sl-hero-copy h1{font-size:clamp(45px,9vw,65px)}
-  .sl-hero-index{display:none}
+  .sl-home .sl-hero{grid-template-columns:minmax(0,1fr);min-height:0}
+  .sl-hero-copy{order:2;min-height:0;padding:39px 24px 45px}
+  .sl-hero-photo{order:1;min-height:0;aspect-ratio:16/8;height:250px;max-height:250px}
+  .sl-hero-copy h1{font-size:clamp(41px,7.7vw,58px)}
   .sl-dept-grid{gap:11px}
-  .sl-dept-caption{padding:14px 0}
-  .sl-dept-caption strong{font-size:25px}
+  .sl-dept-caption{padding:16px 17px}
+  .sl-dept-caption strong{font-size:28px}
   .sl-dept-caption small{font-size:12px}
   .sl-shop-tabs{gap:20px}
   .sl-collection-row{grid-template-columns:180px minmax(0,1fr);gap:23px}
@@ -596,26 +650,26 @@ body[data-saluz-fashion] .product-page .commerce-next{background:#F5EEE8;border:
   body[data-saluz-fashion] .commerce-menu-toggle{font-size:13px;border:0;padding:6px}
   body[data-saluz-fashion] .commerce-menu-toggle span{display:none}
   body[data-saluz-fashion] .commerce-nav{padding:12px 17px 25px}
-  .sl-hero-photo{height:200px;max-height:200px;aspect-ratio: 16/9}
-  .sl-hero-copy{padding:35px 21px 44px}
-  .sl-hero-copy h1{font-size:clamp(45px,11vw,58px);margin-bottom:15px}
+  .sl-hero-photo{height:220px;max-height:220px;aspect-ratio:16/9}
+  .sl-hero-copy{padding:34px 21px 41px}
+  .sl-hero-copy h1{font-size:clamp(41px,9.4vw,51px);margin-bottom:15px}
   .sl-hero-copy>p:not(.eyebrow){font-size:15px}
   .sl-hero-actions{gap:20px;margin-top:25px}
-  .sl-departments{padding:60px 17px 38px}
+  .sl-departments{padding:45px 17px 38px}
   .sl-section-head{display:block;margin-bottom:26px}
-  .sl-section-head h2{font-size:38px;margin-bottom:14px}
+  .sl-section-head h2{font-size:35px;margin-bottom:14px}
   .sl-dept-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 11px}
   .sl-dept-card:first-child{grid-column:1/-1}
-  .sl-dept-card:first-child .sl-dept-photo{aspect-ratio: 16/11}
+  .sl-dept-card:first-child .sl-dept-photo{aspect-ratio:16/10}
   .sl-dept-card:not(:first-child) .sl-dept-photo{aspect-ratio: 4/5}
-  .sl-dept-caption{align-items:flex-start}
+  .sl-dept-caption{align-items:end;padding:15px 14px}
   .sl-dept-caption strong{font-size:25px}
   .sl-dept-caption small{font-size:11px}
   .sl-dept-arrow{font-size:19px}
-  .sl-types{padding:12px 17px 56px;gap:19px}
-  .sl-types h2{font-size:29px}
-  .sl-type-links{gap:9px}
-  .sl-type-links a{padding:11px 12px;font-size:12px;min-height:40px}
+  .sl-inline-categories{margin-top:24px;padding-top:15px;gap:5px 18px}
+  .sl-inline-label{width:100%;margin-bottom:3px}
+  .sl-inline-categories a{font-size:12px}
+  .sl-inline-categories .sl-inline-more{margin-left:0}
   .sl-products-home.home-commerce{padding:58px 17px}
   .sl-collection-note{display:flex;flex-direction:column;align-items:flex-start;gap:14px;margin:12px 17px 55px;padding:29px 22px}
   .sl-collection-note h2{font-size:30px}
