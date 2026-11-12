@@ -54,6 +54,24 @@ function addToBag(p,v,quantity=1){
 }
 function node(tag,cls,text){const e=document.createElement(tag);if(cls)e.className=cls;if(text!==undefined)e.textContent=String(text);return e;}
 function variantsFor(p){return Array.isArray(p.variants)?p.variants.filter(v=>Number(v.stock)>0):[];}
+function updateCatalogHeading(){
+  const heading=$("sl-catalog-heading");
+  const subtitle=$("sl-catalog-description");
+  if(!heading||!subtitle)return;
+  const category=activeCategory!=="all"?activeCategory.split(" / ")[1]:null;
+  heading.textContent=category||activeGroup||"Todos os produtos";
+  subtitle.textContent=category
+    ? "Veja as opções disponíveis de "+category.toLocaleLowerCase("pt-BR")+"."
+    : activeGroup
+    ? "Explore as peças da categoria "+activeGroup.toLocaleLowerCase("pt-BR")+"."
+    : "Explore roupas, bolsas e acessórios. Use os filtros para encontrar o que procura.";
+  const activeSlug=activeGroup?fashion.slugs[activeGroup]:"all";
+  document.querySelectorAll(".sl-shop-tabs [data-group]").forEach(link=>{
+    if(link.dataset.group===activeSlug)link.setAttribute("aria-current","page");
+    else link.removeAttribute("aria-current");
+  });
+}
+
 function renderFilters(){
  const root=$("filters");root.replaceChildren();
  const groups=[["Todos","all"],...Object.keys(fashion.groups).map(name=>[name,name])];
@@ -75,6 +93,7 @@ function renderFilters(){
   }
  }
  refreshAttributeFilters();
+ updateCatalogHeading();
 }
 function refreshAttributeFilters(){
  const eligible=products.filter(p=>fashion.isCategory(p.category)&&(activeGroup===null||fashion.groupOf(p.category)===activeGroup)&&(activeCategory==="all"||p.category===activeCategory));
@@ -321,6 +340,16 @@ if(urlParams.get("busca")==="1"){
     field.focus({preventScroll:true});
   },{once:true});
 }
+const filterToggle=$("sl-filter-toggle");
+const filterPanel=$("sl-filter-panel");
+filterToggle?.addEventListener("click",()=>{
+  if(!filterPanel)return;
+  const open=filterPanel.classList.toggle("is-open");
+  filterToggle.setAttribute("aria-expanded",String(open));
+  const marker=filterToggle.querySelector("span");
+  if(marker)marker.textContent=open?"−":"+";
+});
+
 $("sort").addEventListener("change",renderProducts);
 $("cart-open").onclick=()=>{renderBag();$("cart-dialog").showModal();};
 $("cart-close").onclick=()=>close($("cart-dialog"));
