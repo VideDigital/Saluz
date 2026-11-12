@@ -1,0 +1,117 @@
+name: SALUZ | Loja de homologacao - moda (seguro)
+on:
+  workflow_dispatch:
+  push:
+    branches: [homologacao]
+    paths:
+      - '*.html'
+      - '*.css'
+      - '*.js'
+      - 'functions/**'
+      - 'cloudflare/**'
+      - 'tests/**'
+      - '.github/workflows/saluz-loja-homologacao-moda.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: saluz-loja-preview
+  cancel-in-progress: false
+
+jobs:
+  deploy-loja:
+    if: github.ref == 'refs/heads/homologacao'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: saluz-homologacao
+    env:
+      CLOUDFLARE_ACCOUNT_ID: f84d79f13ae0a665e5046ebeb21ffddd
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+    steps:
+      - name: Obter versao de homologacao
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Garantir branch e segredo do ambiente
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = 'refs/heads/homologacao'
+          test -n "$CLOUDFLARE_API_TOKEN" || { echo '::error::Falta CLOUDFLARE_API_TOKEN no ambiente saluz-homologacao'; exit 1; }
+      - name: Testar regras e scripts antes de publicar
+        run: |
+          set -euo pipefail
+          node --check loja.js
+          node --check saluz-fashion.js
+          node --check script.js
+          node --check home-vitrine.js
+          node --check admin.js
+          node --test tests/*.test.mjs
+      - name: Empacotar apenas arquivos publicos e as Functions
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import pathlib,re,shutil
+          root=pathlib.Path('.')
+          out=pathlib.Path('.saluz-preview-public')
+          out.mkdir(exist_ok=True)
+          pages=['index.html','loja.html','colecoes.html','produto.html','favoritos.html','sobre.html','atendimento.html','como-comprar.html','privacidade.html',
+            'colecao-necessaires.html','colecao-porta-joias.html','colecao-organizadores-maquiagem.html','colecao-organizadores-bolsa.html',
+            'colecao-acessorios-viagem.html','colecao-autocuidado.html','colecao-acessorios-femininos.html','colecao-kits-presentes.html']
+          files=set(pages+['favicon.svg','robots.txt','sitemap.xml','_headers'])
+          for page in pages:
+            source=root/page
+            if not source.is_file():raise SystemExit('Pagina publica ausente: '+page)
+            text=source.read_text('utf-8')
+            for match in re.findall(r'(?:src|href)=["\'](\.\/[^"\'#?]+)',text):
+              asset=match.removeprefix('./')
+              if asset.endswith(('.css','.js','.svg','.png','.jpg','.jpeg','.webp','.ico','.webmanifest')):
+                if '/' in asset or '..' in asset:raise SystemExit('Asset externo inesperado: '+asset)
+                files.add(asset)
+          for filename in sorted(files):
+            src=root/filename
+            if not src.is_file():raise SystemExit('Asset ausente: '+filename)
+            shutil.copy2(src,out/filename)
+          headers=(out/'_headers').read_text('utf-8')
+          if not headers.startswith('/*\n'):raise SystemExit('Cabecalho inesperado')
+          (out/'_headers').write_text(headers.replace('/*\n','/*\n  X-Robots-Tag: noindex, nofollow\n',1),'utf-8')
+          assert not (out/'admin.html').exists()
+          assert not (out/'admin.js').exists()
+          assert (out/'saluz-fashion.js').exists()
+          print('Publicados',len(files),'arquivos publicos; nenhum painel/admin ou segredos no pacote.')
+          PY
+      - name: Publicar apenas na branch de homologacao
+        run: |
+          set -euo pipefail
+          npx --yes wrangler@4 pages deploy .saluz-preview-public --project-name saluz-loja --branch homologacao
+      - name: Validar paginas e checkout bloqueado
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          const base='https://homologacao.saluz-loja.pages.dev';
+          let found=false;
+          for(let i=0;i<18;i++){
+            try{
+              const nonce=Date.now()+'-'+i;
+              const [h,c,a]=await Promise.all([
+                fetch(base+'/?ci='+nonce,{cache:'no-store',signal:AbortSignal.timeout(12000)}),
+                fetch(base+'/colecoes.html?ci='+nonce,{cache:'no-store',signal:AbortSignal.timeout(12000)}),
+                fetch(base+'/saluz-fashion.js?ci='+nonce,{cache:'no-store',signal:AbortSignal.timeout(12000)})
+              ]);
+              const [home,collections,taxonomy]=await Promise.all([h.text(),c.text(),a.text()]);
+              if(h.ok&&c.ok&&a.ok&&home.includes('fashion-hero')&&collections.includes('fashion-collection-block')&&taxonomy.includes('Roupas / ')){found=true;break;}
+            }catch{}
+            await new Promise(r=>setTimeout(r,2500));
+          }
+          assert.equal(found,true,'Nova versao da moda nao apareceu no alias de homologacao');
+          const st=await fetch(base+'/api/status',{cache:'no-store'});
+          assert.equal(st.status,200);
+          const settings=await st.json();
+          assert.equal(settings.checkout_enabled,false);
+          console.log('SALUZ moda em homologacao: pagina, categorias e checkout bloqueado confirmados.');
+          NODE
