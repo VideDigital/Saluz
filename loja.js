@@ -74,6 +74,19 @@ function renderFilters(){
    root.append(button);
   }
  }
+ refreshAttributeFilters();
+}
+function refreshAttributeFilters(){
+ const eligible=products.filter(p=>fashion.isCategory(p.category)&&(activeGroup===null||fashion.groupOf(p.category)===activeGroup)&&(activeCategory==="all"||p.category===activeCategory));
+ const options=[["fashion-color-filter","color","Todas as cores"],["fashion-size-filter","size","Todos os tamanhos"]];
+ for(const [id,key,label] of options){
+  const select=$(id);if(!select)continue;
+  const values=[...new Set(eligible.flatMap(p=>(p.variants||[]).filter(v=>Number(v.stock)>0).map(v=>String(v[key]||"").trim())).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"pt-BR",{numeric:true}));
+  const chosen=select.value;select.replaceChildren();
+  const all=node("option","",label);all.value="all";select.append(all);
+  for(const value of values){const o=node("option","",value);o.value=value;select.append(o);}
+  select.value=values.includes(chosen)?chosen:"all";
+ }
 }
 function syncFavoriteButtons(){
   document.querySelectorAll("[data-favorite-product]").forEach(button=>{
@@ -157,7 +170,8 @@ function productCard(p){
 const normalizedSearch=value=>String(value??"").normalize("NFD").replace(/\p{M}/gu,"").toLocaleLowerCase("pt-BR").trim();
 function renderProducts(){
   const query=normalizedSearch($("search").value);
-  const chosen=products.filter(p=>fashion.isCategory(p.category)&&(activeGroup===null||fashion.groupOf(p.category)===activeGroup)&&(activeCategory==="all"||p.category===activeCategory)&&normalizedSearch(
+  const filterColor=$("fashion-color-filter")?.value||"all",filterSize=$("fashion-size-filter")?.value||"all";
+   const chosen=products.filter(p=>fashion.isCategory(p.category)&&(activeGroup===null||fashion.groupOf(p.category)===activeGroup)&&(activeCategory==="all"||p.category===activeCategory)&&(filterColor==="all"&&filterSize==="all"||(p.variants||[]).some(v=>Number(v.stock)>0&&(filterColor==="all"||v.color===filterColor)&&(filterSize==="all"||v.size===filterSize)))&&normalizedSearch(
     p.name+" "+p.category+" "+p.description+" "+(p.variants||[]).map(v=>v.color+" "+v.size).join(" ")
   ).includes(query));
   const sort=$("sort").value;
@@ -299,6 +313,7 @@ function close(dialog){if(dialog.open)dialog.close();}
 if($("year"))$("year").textContent=new Date().getFullYear();
 $("search").value=urlParams.get("q")||"";
 $("search").addEventListener("input",renderProducts);
+for(const id of ["fashion-color-filter","fashion-size-filter"]){$(id)?.addEventListener("change",renderProducts);}
 if(urlParams.get("busca")==="1"){
   window.addEventListener("load",()=>{
     const field=$("search");
