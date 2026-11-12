@@ -42,7 +42,8 @@ function render(items,key){
  const root=$(key+"-products"),status=$(key+"-status"),empty=$(key+"-empty");
  const valid=Array.isArray(items)?items.filter(p=>p?.id&&p?.name&&Number.isInteger(p?.price_cents)&&window.SaluzModa?.isCategory(p.category)):[];
  root.replaceChildren(...valid.slice(0,8).map(card));
- if(key==="new"){const section=$("novidades");if(section)section.hidden=valid.length===0;}
+ const section=$(key==="featured"?"destaques":"novidades");
+ if(section)section.hidden=valid.length===0;
  empty.hidden=valid.length>0;
  status.textContent=valid.length?valid.length+" produto(s) para descobrir":"";
  status.hidden=!!valid.length;
