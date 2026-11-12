@@ -104,7 +104,7 @@ jobs:
                 fetch(base+'/saluz-fashion.js?ci='+nonce,{cache:'no-store',signal:AbortSignal.timeout(12000)})
               ]);
               const [home,collections,taxonomy]=await Promise.all([h.text(),c.text(),a.text()]);
-              if(h.ok&&c.ok&&a.ok&&home.includes('fashion-hero')&&collections.includes('fashion-collection-block')&&taxonomy.includes('Roupas / ')){found=true;break;}
+              if(h.ok&&c.ok&&a.ok&&home.includes('sl-hero')&&!home.includes('class="commerce-top"')&&home.includes('saluz-moda.css?v=20261112-hero-compacto')&&collections.includes('sl-collection-row')&&taxonomy.includes('Roupas / ')){found=true;break;}
             }catch{}
             await new Promise(r=>setTimeout(r,2500));
           }
