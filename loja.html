@@ -5,7 +5,7 @@
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#f7f4ef">
 <title>Loja SALUZ — Beleza nos detalhes</title>
-<meta name="description" content="Conheça a coleção SALUZ de organização, acessórios e presentes.">
+<meta name="description" content="Conheça roupas, bolsas e acessórios da SALUZ. Filtre por tipo, cor e tamanho.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
@@ -17,13 +17,15 @@
 <script src="./favoritos.js" defer></script>
 <script src="./saluz-shell.js?v=20261022-d1-default" defer></script>
 <script src="./sacola.js" defer></script>
+<script src="./saluz-fashion.js" defer></script>
 <script src="./loja.js?v=20261022-d1-default" defer></script>
 <link rel="stylesheet" href="./saluz-checkout-preview.css?v=1">
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="./saluz-store-editable.css?v=2">
 <script src="./saluz-site-content.js?v=2" defer></script>
+<link rel="stylesheet" href="./saluz-moda.css?v=1">
 </head>
-<body>
+<body data-saluz-fashion="true">
 <a class="skip" href="#produtos">Ir para produtos</a>
 <div class="commerce-top"><span>✦ SALUZ · Beleza nos detalhes</span><span>Envios de São Paulo (SP) para todo o Brasil via Correios</span></div>
 <header class="commerce-header">
@@ -49,19 +51,12 @@
 <main>
   <section class="lead"><div class="lead-inner">
     <span class="eyebrow">SALUZ / A SUA LOJA</span>
-    <h1>Para cada rotina,<br><em>um novo detalhe.</em></h1>
-    <p>Organização, acessórios e presentes para encontrar o que combina com você. Explore as coleções e monte sua sacola.</p>
+    <h1>Roupas, bolsas<br><em>e acessórios.</em></h1>
+    <p>Escolha seu estilo, explore as categorias e encontre as opções de cor e tamanho de cada peça.</p>
     <a class="btn-dark" href="#produtos">Explorar coleções <span aria-hidden="true">↗</span></a>
   </div><div class="lead-art" aria-hidden="true"><div class="art-ring"></div><span>✦</span><small>saluz · beleza nos detalhes</small></div></section>
   <section class="benefits" aria-label="Informações"><span>✦ Escolhas para o seu dia</span><span>✦ Monte sua sacola</span><span>✦ Envio pelos Correios para todo o Brasil</span></section>
-  <section id="colecoes" class="collections" aria-labelledby="colecoes-title"><div class="collections-heading"><span class="eyebrow">NAVEGUE POR CATEGORIA</span><h2 id="colecoes-title">Encontre o que combina com você.</h2></div><div class="collection-grid"><a class="collection-tile" href="./colecao-necessaires.html"><span class="collection-visual visual-case" aria-hidden="true">✦</span><strong>Nécessaires</strong><small>Ver categoria ↗</small></a>
-<a class="collection-tile" href="./colecao-porta-joias.html"><span class="collection-visual visual-jewelry" aria-hidden="true">✦</span><strong>Porta-joias</strong><small>Ver categoria ↗</small></a>
-<a class="collection-tile" href="./colecao-organizadores-maquiagem.html"><span class="collection-visual visual-beauty" aria-hidden="true">✦</span><strong>Organização de maquiagem</strong><small>Ver categoria ↗</small></a>
-<a class="collection-tile" href="./colecao-acessorios-viagem.html"><span class="collection-visual visual-travel" aria-hidden="true">✦</span><strong>Viagem</strong><small>Ver categoria ↗</small></a>
-<a class="collection-tile" href="./colecao-organizadores-bolsa.html"><span class="collection-visual visual-bag" aria-hidden="true">✦</span><strong>Organizadores de bolsa</strong><small>Ver categoria ↗</small></a>
-      <a class="collection-tile" href="./colecao-acessorios-femininos.html"><span class="collection-visual visual-accessories" aria-hidden="true">✦</span><strong>Acessórios femininos</strong><small>Ver categoria ↗</small></a>
-      <a class="collection-tile" href="./colecao-autocuidado.html"><span class="collection-visual visual-care" aria-hidden="true">✦</span><strong>Autocuidado</strong><small>Ver categoria ↗</small></a>
-<a class="collection-tile" href="./colecao-kits-presentes.html"><span class="collection-visual visual-gifts" aria-hidden="true">✦</span><strong>Kits e presentes</strong><small>Ver categoria ↗</small></a></div></section>
+  <section id="colecoes" class="collections fashion-category-section" aria-labelledby="colecoes-title"><div class="collections-heading"><span class="eyebrow">DESCUBRA A SALUZ</span><h2 id="colecoes-title">Encontre por categoria.</h2></div><div class="fashion-category-grid"><a class="fashion-category-card" data-moda-kind="roupas" href="./loja.html?grupo=roupas#produtos"><span class="fashion-category-number">01 / 03</span><span class="fashion-category-copy"><span class="fashion-category-kicker">Universo SALUZ</span><strong>Roupas</strong><small>Explore blusas, calças, vestidos e outras peças.</small><em>Ver produtos ↗</em></span></a><a class="fashion-category-card" data-moda-kind="bolsas" href="./loja.html?grupo=bolsas#produtos"><span class="fashion-category-number">02 / 03</span><span class="fashion-category-copy"><span class="fashion-category-kicker">Universo SALUZ</span><strong>Bolsas</strong><small>Encontre diferentes modelos para o seu dia.</small><em>Ver produtos ↗</em></span></a><a class="fashion-category-card" data-moda-kind="acessorios" href="./loja.html?grupo=acessorios#produtos"><span class="fashion-category-number">03 / 03</span><span class="fashion-category-copy"><span class="fashion-category-kicker">Universo SALUZ</span><strong>Acessórios</strong><small>Complete seu estilo com os detalhes.</small><em>Ver produtos ↗</em></span></a></div><p class="fashion-product-note">A nova vitrine mostrará somente as peças cadastradas nas categorias de moda. Os dados anteriores foram preservados no painel.</p></section><div class="fashion-catalog-banner"><div><strong>Encontre seu próximo favorito.</strong><p>Filtre por roupas, bolsas, acessórios, cor e tamanho.</p></div><a href="./colecoes.html">Todas as categorias ↗</a></div>
   <section id="produtos" class="products-section">
     <div class="section-head"><div><span class="eyebrow">SALUZ / PRODUTOS</span><h2>Explore a coleção</h2><p>Use os filtros e a busca para descobrir os produtos cadastrados.</p></div>
       <label class="search"><span>Buscar</span><input type="search" id="search" placeholder="Nome do produto..." autocomplete="off"></label></div>
