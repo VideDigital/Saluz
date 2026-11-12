@@ -18,7 +18,7 @@ test("todas as páginas usam o mesmo cabeçalho, navegação e rodapé",()=>{
   assert.equal((html.match(/id="loja-nav"/g)||[]).length,1,name+" nav");
   assert.match(html,/data-saluz-fashion="true"/,name+" body");
   assert.doesNotMatch(html,/class="commerce-top"/,name+" faixa superior removida");
-  assert.match(html,/saluz-moda.css\?v=20261112-hero-compacto/,name+" stylesheet");
+  assert.match(html,/saluz-moda.css\?v=20261112-layout-v2/,name+" stylesheet");
   assert.match(html,/href="\.\/loja.html\?grupo=bolsas#produtos"/,name+" bags");
   assert.match(html,/href="\.\/loja.html\?grupo=acessorios#produtos"/,name+" accessories");
   assert.match(html,/<summary>Roupas /,name+" mega");
@@ -52,11 +52,17 @@ test("vitrine oculta seções quando não há produto real publicado",()=>{
  assert.match(html,/id="new-products"/);
 });
 
-test("primeiro bloco tem imagem reduzida em desktop e mobile",()=>{
+test("hero independente do CSS legado não pode invadir o bloco seguinte",()=>{
+ const html=page("index.html");
  const css=page("saluz-moda.css");
- assert.match(css,/height:460px;/);
- assert.match(css,/height:440px;min-height:0/);
- assert.match(css,/height:235px;max-height:235px/);
- assert.match(css,/height:200px;max-height:200px/);
- assert.doesNotMatch(page("index.html"),/class="commerce-top"/);
+ assert.match(html,/class="sl-hero"/);
+ assert.doesNotMatch(html,/class="hero fashion-hero/);
+ assert.match(css,/\.sl-home \.sl-hero\{/);
+ assert.match(css,/min-height:460px/);
+ assert.match(css,/\.sl-hero-photo img\{[\s\S]*?position:absolute/);
+ assert.match(css,/\.sl-hero-copy\{[\s\S]*?min-height:460px/);
+ assert.match(css,/\.sl-home \.sl-hero\{grid-template-columns:minmax\(0,1fr\);min-height:0\}/);
+ assert.doesNotMatch(html,/class="sl-types"/);
+ assert.match(html,/class="sl-inline-categories"/);
+ assert.doesNotMatch(html,/class="commerce-top"/);
 });
