@@ -477,7 +477,7 @@ function editProduct(p){
  openProductDialog("Editar produto");
 }
 function newProduct(){
- const f=$("product-form");f.reset();f.elements.id.value="";saluzProductRevision=0;$("variant-rows").replaceChildren();addVariantRow();$("main-preview").replaceChildren();
+ const f=$("product-form");f.reset();f.elements.category.value="Roupas / Blusas";f.elements.id.value="";saluzProductRevision=0;$("variant-rows").replaceChildren();addVariantRow();$("main-preview").replaceChildren();
  $("product-form-label").textContent="NOVO PRODUTO";
  $("cancel-edit").hidden=false;
  $("visit-product").hidden=true;
@@ -570,6 +570,7 @@ function addVariantRow(v={color:"",size:"Único",stock:0,image_url:""}){
   const wrap=text("label",label),input=document.createElement("input");
   input.dataset.field=field;input.type=type;input.value=value??"";input.required=field!=="image";
   if(field==="stock")input.min="0";
+   if(field==="size"){input.setAttribute("list","saluz-fashion-size-options");input.placeholder="P, M, G, 38, Único...";}
   input.maxLength=field==="image"?650:40;wrap.append(input);row.append(wrap);
  }
  const imageWrap=text("div",undefined,"variant-photo");
